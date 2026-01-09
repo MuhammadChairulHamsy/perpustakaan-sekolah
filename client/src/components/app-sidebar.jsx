@@ -1,15 +1,12 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 import {
-  Warehouse,
+  Library,
   LayoutDashboard,
-  Thermometer,
-  Droplets,
-  Video,
-  Package,
-  HeartPulse,
-  Bell,
+  BookOpen,
+  User,
   FileText,
+  ChartBar,
   Settings,
   Camera,
   File,
@@ -19,7 +16,7 @@ import { NavMain } from "@/components/nav-main";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
+  // SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -39,42 +36,27 @@ const data = {
       icon: LayoutDashboard,
     },
     {
-      title: "Suhu Kandang",
-      url: "/SuhuKandang",
-      icon: Thermometer,
+      title: "Buku",
+      url: "/buku",
+      icon: BookOpen,
     },
     {
-      title: "Kelembapan",
-      url: "/monitoringKelembapan",
-      icon: Droplets,
+      title: "Siswa",
+      url: "/siswa",
+      icon: User,
     },
     {
-      title: "Live Kamera",
-      url: "/livekamera",
-      icon: Video,
-    },
-    {
-      title: "Stok Kambing",
-      url: "/stokkambing",
-      icon: Package,
-    },
-    {
-      title: "Kondisi Kambing",
-      url: "/kondisikambing",
-      icon: HeartPulse,
-    },
-    {
-      title: "Notifikasi",
-      url: "/notifikasi",
-      icon: Bell,
+      title: "Pinjaman",
+      url: "/pinjaman",
+      icon: FileText,
     },
     {
       title: "Laporan",
       url: "/laporan",
-      icon: FileText,
+      icon: ChartBar,
     },
     {
-      title: "pengaturan",
+      title: "Pengaturan",
       url: "/pengaturan",
       icon: Settings,
     },
@@ -128,15 +110,15 @@ export function AppSidebar({ ...props }) {
               <Link to="/dashboard">
                 <div className="flex items-center gap-3">
                   <div className="bg-primary h-8 w-8 rounded-xl flex items-center justify-center shrink-0">
-                  <Warehouse className="text-primary-foreground" size={22} />
+                  <Library className="text-primary-foreground" size={22} />
                   </div>
                   <div className="flex flex-col">
                     {" "}
                     <h1 className="font-bold text-sidebar-foreground text-lg leading-tight truncate">
-                      Hikma Aqiqah
+                      Pusat Perpustakaan
                     </h1>
                     <p className="text-xs text-sidebar-foreground/60 truncate">
-                      Monitoring System
+                      Perpustakaan Sekolah
                     </p>
                   </div>
                 </div>
