@@ -23,7 +23,7 @@ const Loans = () => {
           .from("peminjaman")
           .select(`
             *,
-            siswa:student_id (nama, kelas),
+            siswa:student_id (name, class),
             buku:book_id (title, author)
           `)
           .order("created_at", { ascending: false });
@@ -187,10 +187,10 @@ const Loans = () => {
                       <TableCell className="px-4 py-3">
                         <div className="flex flex-col">
                           <span className="font-medium text-foreground">
-                            {loan.siswa?.nama || "Unknown Student"}
+                            {loan.siswa?.name || "Unknown Student"}
                           </span>
                           <span className="text-xs text-muted-foreground">
-                            {loan.siswa?.kelas || "-"}
+                            {loan.siswa?.class || "-"}
                           </span>
                         </div>
                       </TableCell>

@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import supabase from "../lib/db";
-import { BookOpen, Users, BookMarked, AlertTriangle, ArrowRight } from "lucide-react";
+import {
+  BookOpen,
+  Users,
+  BookMarked,
+  AlertTriangle,
+  ArrowRight,
+} from "lucide-react";
 import {
   Table,
   TableBody,
@@ -30,30 +36,34 @@ export const Dashboard = () => {
         // Fetch total siswa
         const { data: students } = await supabase.from("siswa").select("*");
 
-        // Fetch pinjaman hari ini
+        // Fetch pinjaman hari ini (gunakan load_date sesuai database kamu)
         const today = new Date().toISOString().split("T")[0];
         const { data: todayLoans } = await supabase
           .from("peminjaman")
           .select("*")
-          .eq("tanggal_pinjam", today);
+          .eq("load_date", today);
 
-        // Fetch pinjaman tertunggak (melewati tanggal kembali)
+        // Fetch pinjaman tertunggak (gunakan due_date dan status)
         const { data: overdueLoans } = await supabase
           .from("peminjaman")
           .select("*")
-          .lt("tanggal_kembali", new Date().toISOString())
-          .is("status", null);
+          .lt("due_date", new Date().toISOString())
+          .neq("status", "returned"); // Yang belum dikembalikan
 
         // Fetch latest activities (5 aktivitas terbaru)
         const { data: activities } = await supabase
           .from("peminjaman")
-          .select(`
+          .select(
+            `
             *,
-            siswa:siswa_id (nama),
-            buku:buku_id (title)
-          `)
+            siswa:student_id (name),
+            buku:book_id (title)
+          `
+          )
           .order("created_at", { ascending: false })
           .limit(5);
+
+        console.log("Activities:", activities); // Debug
 
         setStats({
           totalBooks: books?.length || 0,
@@ -106,31 +116,35 @@ export const Dashboard = () => {
 
   const getActivityStatus = (activity) => {
     const today = new Date();
-    const returnDate = new Date(activity.tanggal_kembali);
+    const dueDate = new Date(activity.due_date);
 
-    if (activity.status === "dikembalikan") {
+    // Cek status returned
+    if (activity.status === "returned") {
       return {
         label: "Completed",
-        badge: "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400",
-        action: "Returned",
+        badge:
+          "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400",
+        action: "Dikembalikan",
       };
     }
 
-    if (returnDate < today && activity.status !== "dikembalikan") {
+    // Cek overdue
+    if (dueDate < today && activity.status !== "returned") {
       const daysOverdue = Math.floor(
-        (today - returnDate) / (1000 * 60 * 60 * 24)
+        (today - dueDate) / (1000 * 60 * 60 * 24)
       );
       return {
-        label: "Overdue",
+        label: "Terlambat",
         badge: "bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400",
         action: `${daysOverdue} days overdue`,
       };
     }
 
+    // Status active (sedang dipinjam)
     return {
       label: "Active",
       badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400",
-      action: "Borrowed",
+      action: "dipinjam",
     };
   };
 
@@ -143,8 +157,10 @@ export const Dashboard = () => {
     const diffDays = Math.floor(diffMs / 86400000);
 
     if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? "s" : ""} ago`;
-    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+    if (diffMins < 60)
+      return `${diffMins} minute${diffMins > 1 ? "s" : ""} ago`;
+    if (diffHours < 24)
+      return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
     return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
   };
 
@@ -211,10 +227,10 @@ export const Dashboard = () => {
           <Table>
             <TableHeader>
               <TableRow className="hover:bg-transparent border-border">
-                <TableHead className="text-muted-foreground">Student</TableHead>
-                <TableHead className="text-muted-foreground">Book</TableHead>
+                <TableHead className="text-muted-foreground">Siswa</TableHead>
+                <TableHead className="text-muted-foreground">Buku</TableHead>
                 <TableHead className="text-muted-foreground">Action</TableHead>
-                <TableHead className="text-muted-foreground">Time</TableHead>
+                <TableHead className="text-muted-foreground">Waktu</TableHead>
                 <TableHead className="text-muted-foreground">Status</TableHead>
               </TableRow>
             </TableHeader>
@@ -237,13 +253,13 @@ export const Dashboard = () => {
                       className="hover:bg-muted/50 transition-colors"
                     >
                       <TableCell className="font-medium">
-                        {activity.nama?.name || "Unknown Student"}
+                        {activity.siswa?.name || "Unknown Student"}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
-                        {activity.title?.title || "Unknown Book"}
+                        {activity.buku?.title || "Unknown Book"}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
-                        {statusInfo.status}
+                        {statusInfo.action}
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {getTimeAgo(activity.created_at)}
