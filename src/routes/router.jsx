@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 
-import DashboardLayout from "../components/layout/DashboardLayout";
+import DashboardLayout from "../components/dashboard/DashboardLayout";
 import { Dashboard } from "../pages/Dashboard";
 import Books from "../pages/Books";
 import Students from "../pages/Students";
