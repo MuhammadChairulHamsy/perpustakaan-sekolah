@@ -1,13 +1,26 @@
 // src/pages/Books.jsx
-import { BookTable } from "../components/books";
+import { BookTable, BookDialog } from "../components/books";
+import { Plus } from "lucide-react";
 import { useBooks } from "../hooks/useBooks";
+import { Button } from "../components/ui/button";
+import { useState } from "react";
 
 const Books = () => {
-  const { books, loading, deleteBook } = useBooks();
+  const { books, loading, editBook, deleteBook, addBook } = useBooks();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingBook, setEditingBook] = useState(null);
 
-  const handleEdit = (book) => {
-    console.log("Edit book:", book);
-    // Tambahkan logic edit di sini
+  const handleOpenDialog = (book = null) => {
+    setEditingBook(book);
+    setDialogOpen(true);
+  };
+
+  const handleSubmit = async (formData) => {
+    if (editingBook) {
+      return await editBook(editingBook.id, formData);
+    } else {
+      return await addBook(formData);
+    }
   };
 
   const handleDelete = async (id) => {
@@ -26,14 +39,31 @@ const Books = () => {
 
   return (
     <div className="container min-h-screen">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Buku</h1>
-        <p className="text-muted-foreground">
-          Kelola koleksi buku perpustakaan Anda
-        </p>
+      <div className="mb-6 w-full flex justify-between items-start">
+        <div className="flex flex-col">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Buku</h1>
+          <p className="text-muted-foreground">
+            Kelola koleksi buku perpustakaan Anda
+          </p>
+        </div>
+
+        <Button onClick={() => handleOpenDialog()} className="font-bold gap-2">
+          <Plus className="h-4 w-4" />
+          Tambah Buku
+        </Button>
+        <BookDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          book={editingBook}
+          onSubmit={handleSubmit}
+        />
       </div>
 
-      <BookTable books={books} onEdit={handleEdit} onDelete={handleDelete} />
+      <BookTable
+        books={books}
+        onEdit={handleOpenDialog}
+        onDelete={handleDelete}
+      />
     </div>
   );
 };

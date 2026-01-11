@@ -29,17 +29,68 @@ export const useBooks = () => {
     }
   };
 
-  const deleteBook = async (id) => {
-    const { error } = await supabase.from("buku").delete().eq("id", id);
+  const addBook = async (bookData) => {
+    try {
+      const { data, error } = await supabase
+        .from("buku")
+        .insert([bookData])
+        .select();
 
-    if (error) {
-      console.error("Error deleting:", error);
-      return false;
-    } else {
-      setBooks(books.filter((book) => book.id !== id));
+      if (error) throw error;
+
+      // Tambahkan buku baru ke state
+      setBooks((prevBooks) => [...prevBooks, ...data]);
       return true;
+    } catch (err) {
+      console.error("Error adding book:", err);
+      return false;
     }
   };
 
-  return { books, loading, error, deleteBook, refetch: fetchBooks };
+  const editBook = async (id, updatedData) => {
+    try {
+      const { error } = await supabase
+        .from("buku")
+        .update(updatedData)
+        .eq("id", id);
+
+      if (error) throw error;
+
+      // Update state lokal
+      setBooks((prevBooks) =>
+        prevBooks.map((book) =>
+          book.id === id ? { ...book, ...updatedData } : book
+        )
+      );
+
+      return true;
+    } catch (err) {
+      console.error("Error editing:", err);
+      return false;
+    }
+  };
+
+  const deleteBook = async (id) => {
+    try {
+      const { error } = await supabase.from("buku").delete().eq("id", id);
+
+      if (error) throw error;
+
+      setBooks(books.filter((book) => book.id !== id));
+      return true;
+    } catch (err) {
+      console.error("Error deleting:", err);
+      return false;
+    }
+  };
+
+  return {
+    books,
+    loading,
+    error,
+    addBook,
+    editBook,
+    deleteBook,
+    refetch: fetchBooks,
+  };
 };
