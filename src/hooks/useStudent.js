@@ -28,6 +28,48 @@ export const useStudents = () => {
     }
   };
 
+    const addStudent = async (studentData) => {
+    try {
+      const { data, error } = await supabase
+        .from("siswa")
+        .insert([studentData])
+        .select();
+
+      if (error) throw error;
+
+      // Tambahkan buku baru ke state
+      setStudents((prevStudent) => [...prevStudent, ...data]);
+      return true;
+    } catch (err) {
+      console.error("Error adding student:", err);
+      return false;
+    }
+  };
+
+    const editStudent = async (id, updatedData) => {
+    try {
+      const { error } = await supabase
+        .from("siswa")
+        .update(updatedData)
+        .eq("id", id);
+
+      if (error) throw error;
+
+      // Update state lokal
+      setStudents((prevStudent) =>
+        prevStudent.map((student) =>
+          student.id === id ? { ...student, ...updatedData } : student
+        )
+      );
+
+      return true;
+    } catch (err) {
+      console.error("Error editing:", err);
+      return false;
+    }
+  };
+
+
   const deleteStudent = async (id) => {
     const { error } = await supabase.from("siswa").delete().eq("id", id);
 
@@ -40,5 +82,5 @@ export const useStudents = () => {
     }
   };
 
-  return { students, loading, error, deleteStudent, refetch: fetchStudents };
+  return { students, loading, error, addStudent, editStudent, deleteStudent, refetch: fetchStudents };
 };

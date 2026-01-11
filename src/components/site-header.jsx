@@ -1,7 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { ExternalLink } from "lucide-react";
 
 export function SiteHeader() {
   return (
@@ -13,19 +11,6 @@ export function SiteHeader() {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <h1 className="text-base font-medium">Documents</h1>
-        <div className="ml-auto flex items-center gap-2">
-          <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
-            <a
-              href="https://hikma-aqiqah.vercel.app/"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="dark:text-foreground"
-            >
-              Portal Pemesanan
-              <ExternalLink className="h-3 w-3" />
-            </a>
-          </Button>
-        </div>
       </div>
     </header>
   );

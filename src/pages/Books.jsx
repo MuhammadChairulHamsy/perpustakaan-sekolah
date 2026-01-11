@@ -47,7 +47,7 @@ const Books = () => {
           </p>
         </div>
 
-        <Button onClick={() => handleOpenDialog()} className="font-bold gap-2">
+        <Button onClick={() => handleOpenDialog()} className="font-bold gap-2 cursor-pointer">
           <Plus className="h-4 w-4" />
           Tambah Buku
         </Button>

@@ -52,7 +52,7 @@ export const BookRow = ({ book, onEdit, onDelete }) => {
             variant="ghost"
             size="sm"
             onClick={() => onEdit(book)}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10 cursor-pointer"
           >
             <Pencil className="h-4 w-4" />
           </Button>
@@ -60,7 +60,7 @@ export const BookRow = ({ book, onEdit, onDelete }) => {
             variant="ghost"
             size="sm"
             onClick={() => onDelete(book.id)}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
           >
             <Trash2 className="h-4 w-4" />
           </Button>

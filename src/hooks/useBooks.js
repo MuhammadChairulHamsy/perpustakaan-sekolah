@@ -1,4 +1,3 @@
-// src/hooks/useBooks.js
 import { useState, useEffect } from "react";
 import supabase from "../lib/db";
 
