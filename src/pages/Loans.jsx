@@ -123,14 +123,14 @@ const Loans = () => {
 
   if (loading) {
     return (
-      <div className="container min-h-screen flex items-center justify-center">
-        <p className="text-muted-foreground">Loading...</p>
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="container min-h-screen py-8">
+    <div className="container min-h-screen">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-foreground mb-2">Peminjaman</h1>
         <p className="text-muted-foreground">
