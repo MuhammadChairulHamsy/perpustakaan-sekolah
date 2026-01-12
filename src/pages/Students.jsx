@@ -7,7 +7,6 @@ import { StudentDialog } from "../components/student/StudentDialog";
 
 const Students = () => {
   const { students, loading, addStudent, editStudent, deleteStudent } = useStudents();
-    useStudents();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
 

@@ -16,20 +16,24 @@ export const useDashboardData = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const { data: books } = await supabase.from("buku").select("*");
-        const { data: students } = await supabase.from("siswa").select("*");
-
         const today = new Date().toISOString().split("T")[0];
+        
+        const [{ data: books }, { data: students }] = await Promise.all([
+          supabase.from("buku").select("id"),
+          supabase.from("siswa").select("id"),
+        ]);
+        
         const { data: todayLoans } = await supabase
           .from("peminjaman")
-          .select("*")
-          .eq("load_date", today);
+          .select("id")
+          .eq("loan_date", today)
+          .eq("status", "borrowed");
 
         const { data: overdueLoans } = await supabase
           .from("peminjaman")
-          .select("*")
+          .select("id")
           .lt("due_date", new Date().toISOString())
-          .neq("status", "returned");
+          .neq("status", "borrowed");
 
         const { data: activities } = await supabase
           .from("peminjaman")
