@@ -1,6 +1,5 @@
-// src/hooks/useDashboardData.js
 import { useState, useEffect } from "react";
-import supabase from "../lib/db";
+import supabase from "../lib/supabase/client";
 
 export const useDashboardData = () => {
   const [stats, setStats] = useState({
@@ -17,8 +16,6 @@ export const useDashboardData = () => {
     const fetchStats = async () => {
       try {
         const today = new Date().toISOString().split("T")[0];
-
-        await supabase.rpc("refresh_overdue_loans");
 
         const [{ data: books }, { data: students }] = await Promise.all([
           supabase.from("buku").select("id"),
@@ -38,13 +35,11 @@ export const useDashboardData = () => {
 
         const { data: activities } = await supabase
           .from("peminjaman")
-          .select(
-            `
+          .select(`
             *,
             siswa:student_id (name),
             buku:book_id (title)
-          `
-          )
+          `)
           .order("created_at", { ascending: false })
           .limit(5);
 
@@ -57,7 +52,7 @@ export const useDashboardData = () => {
 
         setLatestActivities(activities || []);
       } catch (err) {
-        console.error("Error fetching stats:", err);
+        console.error(err);
         setError(err);
       } finally {
         setLoading(false);

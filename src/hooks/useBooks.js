@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import supabase from "../lib/db";
+import supabase from "../lib/supabase/client";
 
 export const useBooks = () => {
   const [books, setBooks] = useState([]);
@@ -36,7 +36,7 @@ export const useBooks = () => {
         setError(error);
       } else {
         setBooks(data || []);
-        setFilteredBooks(data || [])
+        setFilteredBooks(data || []);
       }
     } catch (err) {
       console.error("Catch Error:", err);

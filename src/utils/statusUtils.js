@@ -5,7 +5,7 @@ export const getActivityStatus = (activity) => {
 
   if (activity.status === "returned") {
     return {
-      label: "Completed",
+      label: "Selesai",
       badge:
         "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400",
       action: "Dikembalikan",
@@ -22,7 +22,7 @@ export const getActivityStatus = (activity) => {
   }
 
   return {
-    label: "Active",
+    label: "Aktif",
     badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400",
     action: "Dipinjam",
   };

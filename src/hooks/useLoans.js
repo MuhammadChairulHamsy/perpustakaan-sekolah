@@ -1,6 +1,6 @@
 // src/hooks/useLoans.js
 import { useEffect, useState } from "react";
-import supabase from "../lib/db";
+import supabase from "../lib/supabase/client";
 
 export const useLoans = () => {
   const [loans, setLoans] = useState([]);
@@ -54,20 +54,19 @@ export const useLoans = () => {
     }
   };
 
-  const addLoan = async (loanData) => {
+  const addLoan = async ({ student_id, book_id }) => {
     try {
       const { data, error } = await supabase
         .from("peminjaman")
-        .insert([loanData])
+        .insert([{ student_id, book_id }])
         .select();
 
       if (error) throw error;
 
-      // Tambahkan buku baru ke state
-      setLoans((prevLoan) => [...prevLoan, ...data]);
+      setLoans((prev) => [...data, ...prev]);
       return true;
     } catch (err) {
-      console.error("Error adding loan:", err);
+      console.error(err);
       return false;
     }
   };
@@ -95,36 +94,32 @@ export const useLoans = () => {
     }
   };
 
-  const returnLoan = async (loan) => {
-    try {
-      const { error } = await supabase
-        .from("peminjaman")
-        .update({
-          status: "returned",
-          return_date: new Date().toISOString(),
-        })
-        .eq("id", loan.id);
+ const returnLoan = async (loan) => {
+  try {
+    const { error } = await supabase
+      .from("peminjaman")
+      .update({
+        status: "returned",
+        return_date: new Date().toISOString().split("T")[0],
+      })
+      .eq("id", loan.id);
 
-      if (error) throw error;
+    if (error) throw error;
 
-      // Update state local
-      setLoans((prevLoans) =>
-        prevLoans.map((l) =>
-          l.id === loan.id
-            ? {
-                ...l,
-                status: "returned",
-                return_date: new Date().toISOString(),
-              }
-            : l
-        )
-      );
-      return true;
-    } catch (err) {
-      console.error("Error returning loan:", err);
-      return false;
-    }
-  };
+    setLoans((prev) =>
+      prev.map((l) =>
+        l.id === loan.id
+          ? { ...l, status: "returned", return_date: new Date() }
+          : l
+      )
+    );
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+};
+
 
   const deleteLoan = async (id) => {
     try {

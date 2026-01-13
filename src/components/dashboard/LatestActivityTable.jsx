@@ -14,18 +14,18 @@ import { getActivityStatus, getTimeAgo } from "../../utils/statusUtils";
 export const LatestActivityTable = ({ activities }) => {
   return (
     <div className="bg-card border border-border rounded-lg">
-      <div className="flex items-center justify-between p-6 border-b border-border">
+      <div className="flex items-center justify-between p-3 border-b border-border">
         <div>
           <h2 className="text-xl font-bold text-foreground">
             Aktivitas Terbaru
           </h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-sm text-muted-foreground">
             Aktivitas peminjaman dan pengembalian baru-baru ini
           </p>
         </div>
-        <Button variant="ghost" size="sm" className="text-primary">
-          View all
-          <ArrowRight className="ml-2 h-4 w-4" />
+        <Button variant="ghost" size="sm" className="text-primary cursor-pointer">
+         Lihat semua
+          <ArrowRight className=" h-4 w-4" />
         </Button>
       </div>
 
