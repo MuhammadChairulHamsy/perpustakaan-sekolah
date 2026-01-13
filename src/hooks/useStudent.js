@@ -3,12 +3,28 @@ import supabase from "../lib/db";
 
 export const useStudents = () => {
   const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchStudents();
   }, []);
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      setFilteredStudents(students);
+    } else {
+      const filtered = students.filter(
+        (student) =>
+          student.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          student.class?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          student.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredStudents(filtered);
+    }
+  }, [searchQuery, students]);
 
   const fetchStudents = async () => {
     try {
@@ -19,16 +35,17 @@ export const useStudents = () => {
         setError(error);
       } else {
         setStudents(data || []);
+        setFilteredStudents(data || []);
       }
     } catch (err) {
       console.error("Catch Error:", err);
-      setError(err)
+      setError(err);
     } finally {
       setLoading(false);
     }
   };
 
-    const addStudent = async (studentData) => {
+  const addStudent = async (studentData) => {
     try {
       const { data, error } = await supabase
         .from("siswa")
@@ -46,7 +63,7 @@ export const useStudents = () => {
     }
   };
 
-    const editStudent = async (id, updatedData) => {
+  const editStudent = async (id, updatedData) => {
     try {
       const { error } = await supabase
         .from("siswa")
@@ -69,7 +86,6 @@ export const useStudents = () => {
     }
   };
 
-
   const deleteStudent = async (id) => {
     const { error } = await supabase.from("siswa").delete().eq("id", id);
 
@@ -82,5 +98,15 @@ export const useStudents = () => {
     }
   };
 
-  return { students, loading, error, addStudent, editStudent, deleteStudent, refetch: fetchStudents };
+  return {
+    students: filteredStudents,
+    searchQuery,
+    setSearchQuery,
+    loading,
+    error,
+    addStudent,
+    editStudent,
+    deleteStudent,
+    refetch: fetchStudents,
+  };
 };

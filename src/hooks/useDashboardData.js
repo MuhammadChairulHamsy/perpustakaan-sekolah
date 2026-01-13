@@ -17,12 +17,14 @@ export const useDashboardData = () => {
     const fetchStats = async () => {
       try {
         const today = new Date().toISOString().split("T")[0];
-        
+
+        await supabase.rpc("refresh_overdue_loans");
+
         const [{ data: books }, { data: students }] = await Promise.all([
           supabase.from("buku").select("id"),
           supabase.from("siswa").select("id"),
         ]);
-        
+
         const { data: todayLoans } = await supabase
           .from("peminjaman")
           .select("id")
@@ -32,8 +34,7 @@ export const useDashboardData = () => {
         const { data: overdueLoans } = await supabase
           .from("peminjaman")
           .select("id")
-          .lt("due_date", new Date().toISOString())
-          .neq("status", "borrowed");
+          .eq("status", "overdue");
 
         const { data: activities } = await supabase
           .from("peminjaman")

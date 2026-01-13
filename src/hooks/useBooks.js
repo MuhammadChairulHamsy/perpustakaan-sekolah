@@ -3,12 +3,29 @@ import supabase from "../lib/db";
 
 export const useBooks = () => {
   const [books, setBooks] = useState([]);
+  const [filteredBooks, setFilteredBooks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchBooks();
   }, []);
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      setFilteredBooks(books);
+    } else {
+      const filtered = books.filter(
+        (book) =>
+          book.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.isbn?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          book.category?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredBooks(filtered);
+    }
+  }, [searchQuery, books]);
 
   const fetchBooks = async () => {
     try {
@@ -19,6 +36,7 @@ export const useBooks = () => {
         setError(error);
       } else {
         setBooks(data || []);
+        setFilteredBooks(data || [])
       }
     } catch (err) {
       console.error("Catch Error:", err);
@@ -84,7 +102,9 @@ export const useBooks = () => {
   };
 
   return {
-    books,
+    books: filteredBooks,
+    searchQuery,
+    setSearchQuery,
     loading,
     error,
     addBook,

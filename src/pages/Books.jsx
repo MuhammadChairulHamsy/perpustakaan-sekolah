@@ -2,11 +2,20 @@
 import { BookTable, BookDialog } from "../components/books";
 import { Plus } from "lucide-react";
 import { useBooks } from "../hooks/useBooks";
+import { SearchBar } from "../components/search-bar";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
 
 const Books = () => {
-  const { books, loading, editBook, deleteBook, addBook } = useBooks();
+  const {
+    books,
+    searchQuery,
+    setSearchQuery,
+    loading,
+    editBook,
+    deleteBook,
+    addBook,
+  } = useBooks();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
 
@@ -39,18 +48,39 @@ const Books = () => {
 
   return (
     <div className="container min-h-screen">
-      <div className="mb-6 w-full flex justify-between items-start">
-        <div className="flex flex-col">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Buku</h1>
-          <p className="text-muted-foreground">
-            Kelola koleksi buku perpustakaan Anda
-          </p>
+      <div className="mb-6 w-full flex flex-col gap-4">
+        <div className="flex justify-between items-start">
+          <div className="flex flex-col">
+            <h1 className="text-3xl font-bold text-foreground mb-2">Buku</h1>
+            <p className="text-muted-foreground">
+              Kelola koleksi buku perpustakaan Anda
+            </p>
+          </div>
+
+          <Button
+            onClick={() => handleOpenDialog()}
+            className="font-bold gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Tambah Buku
+          </Button>
         </div>
 
-        <Button onClick={() => handleOpenDialog()} className="font-bold gap-2 cursor-pointer">
-          <Plus className="h-4 w-4" />
-          Tambah Buku
-        </Button>
+        <div className="relative max-w-md">
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Cari judul, pengarang, ISBN, atau kategori..."
+            className="max-w-md"
+          />
+        </div>
+
+        <BookTable
+          books={books}
+          onEdit={handleOpenDialog}
+          onDelete={handleDelete}
+        />
+
         <BookDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
@@ -58,12 +88,6 @@ const Books = () => {
           onSubmit={handleSubmit}
         />
       </div>
-
-      <BookTable
-        books={books}
-        onEdit={handleOpenDialog}
-        onDelete={handleDelete}
-      />
     </div>
   );
 };
