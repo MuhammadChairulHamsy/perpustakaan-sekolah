@@ -1,12 +1,21 @@
 import { Plus } from "lucide-react";
+import { useLoans } from "../hooks/useLoans";
+import { SearchBar } from "../components/search-bar";
 import { LoanDialog, LoanTable } from "../components/loans";
 import { Button } from "../components/ui/button";
-import { useLoans } from "../hooks/useLoans";
 import { useState } from "react";
 
 const Loans = () => {
-  const { loans, loading, addLoan, editLoan, returnLoan, deleteLoan } =
-    useLoans();
+  const {
+    loans,
+    searchQuery,
+    setSearchQuery,
+    loading,
+    addLoan,
+    editLoan,
+    returnLoan,
+    deleteLoan,
+  } = useLoans();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingLoan, setEditingLoan] = useState(null);
 
@@ -45,37 +54,49 @@ const Loans = () => {
 
   return (
     <div className="container min-h-screen">
-      <div className="mb-6 w-full flex justify-between items-center">
-        <div className="flex flex-col">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            Peminjaman
-          </h1>
-          <p className="text-muted-foreground">
-            Lacak peminjaman dan pengembalian buku.
-          </p>
+      <div className="mb-6 w-full flex flex-col gap-4">
+        <div className="flex flex-col justify-between items-start lg:flex lg:flex-row">
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              Peminjaman
+            </h1>
+            <p className="text-muted-foreground">
+              Lacak peminjaman dan pengembalian buku.
+            </p>
+          </div>
+
+          <Button
+            onClick={() => handleOpenDialog()}
+            className="font-bold mt-2 gap-2 cursor-pointer"
+          >
+            <Plus className="h-4 w-4" />
+            Tambah Pinjam Buku
+          </Button>
         </div>
 
-        <Button
-          onClick={() => handleOpenDialog()}
-          className="font-bold gap-2 cursor-pointer"
-        >
-          <Plus className="h-4 w-4" />
-          Tambah Pinjam Buku 
-        </Button>
+        <div className="relative max-w-md">
+          <SearchBar
+            value={searchQuery}
+            onChange={setSearchQuery}
+            placeholder="Cari berdasarkan siswa atau buku..."
+            className="max-w-md"
+          />
+        </div>
+
         <LoanDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           loan={editingLoan}
           onSubmit={handleSubmit}
         />
-      </div>
 
-      <LoanTable
-        loans={loans}
-        onEdit={handleOpenDialog}
-        onDelete={handleDelete}
-        onReturn={handleReturn}
-      />
+        <LoanTable
+          loans={loans}
+          onEdit={handleOpenDialog}
+          onDelete={handleDelete}
+          onReturn={handleReturn}
+        />
+      </div>
     </div>
   );
 };

@@ -4,12 +4,27 @@ import supabase from "../lib/db";
 
 export const useLoans = () => {
   const [loans, setLoans] = useState([]);
+  const [filteredLoans, setFilteredLoans] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchLoans();
   }, []);
+
+  useEffect(() => {
+    if (searchQuery === "") {
+      setFilteredLoans(loans);
+    } else {
+      const filtered = loans.filter(
+        (loan) =>
+          loan.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          loan.title?.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredLoans(filtered);
+    }
+  }, [searchQuery, loans]);
 
   const fetchLoans = async () => {
     try {
@@ -29,6 +44,7 @@ export const useLoans = () => {
         setError(error);
       } else {
         setLoans(data || []);
+        setFilteredLoans(data || []);
       }
     } catch (err) {
       console.error("Catch Error:", err);
@@ -38,8 +54,7 @@ export const useLoans = () => {
     }
   };
 
-  
-    const addLoan = async (loanData) => {
+  const addLoan = async (loanData) => {
     try {
       const { data, error } = await supabase
         .from("peminjaman")
@@ -57,7 +72,7 @@ export const useLoans = () => {
     }
   };
 
-   const editLoan = async (id, updatedData) => {
+  const editLoan = async (id, updatedData) => {
     try {
       const { error } = await supabase
         .from("peminjaman")
@@ -79,7 +94,6 @@ export const useLoans = () => {
       return false;
     }
   };
-
 
   const returnLoan = async (loan) => {
     try {
@@ -127,7 +141,9 @@ export const useLoans = () => {
   };
 
   return {
-    loans,
+    loans: filteredLoans,
+    searchQuery,
+    setSearchQuery,
     loading,
     error,
     addLoan,

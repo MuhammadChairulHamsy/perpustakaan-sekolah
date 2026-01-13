@@ -49,16 +49,16 @@ const Students = () => {
   return (
     <div className="container min-h-screen">
       <div className="mb-6 w-full flex flex-col gap-4">
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col justify-between items-start lg:flex lg:flex-row">
           <div className="flex flex-col">
-            <h1 className="text-3xl font-bold text-foreground mb-2">Siswa</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">Siswa</h1>
             <p className="text-muted-foreground">
               Kelola anggota perpustakaan terdaftar
             </p>
           </div>
           <Button
             onClick={() => handleOpenDialog()}
-            className="font-bold gap-2 cursor-pointer"
+            className="font-bold mt-2 gap-2 cursor-pointer"
           >
             <Plus className="h-4 w-4" />
             Tambah Siswa

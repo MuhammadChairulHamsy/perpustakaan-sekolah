@@ -58,7 +58,7 @@ export const LoanRow = ({ loan, onEdit, onDelete, onReturn }) => {
               variant="ghost"
               size="sm"
               onClick={() => onReturn(loan)}
-              className="h-8 px-3 text-muted-foreground hover:text-green-600 hover:bg-green-600/10"
+              className="h-8 px-3 text-muted-foreground hover:text-green-600 hover:bg-green-600/10 cursor-pointer"
             >
               <CheckCircle className="h-4 w-4 mr-1" />
               Kembalikan

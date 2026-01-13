@@ -12,29 +12,29 @@ export const Dashboard = () => {
       title: "Total Buku",
       value: stats.totalBooks,
       icon: BookOpen,
-      color: "text-blue-600 dark:text-blue-400",
-      bgColor: "bg-blue-100 dark:bg-blue-900/20",
+      color: "text-sky-400",
+      bgColor: "bg-sky-100",
     },
     {
       title: "Dipinjam Hari Ini",
       value: stats.borrowedToday,
       icon: BookMarked,
-      color: "text-green-600 dark:text-green-400",
-      bgColor: "bg-green-100 dark:bg-green-900/20",
+      color: "text-green-400",
+      bgColor: "bg-green-100",
     },
     {
       title: "Total Siswa",
       value: stats.totalStudents,
       icon: Users,
-      color: "text-purple-600 dark:text-purple-400",
-      bgColor: "bg-purple-100 dark:bg-purple-900/20",
+      color: "text-green-400",
+      bgColor: "bg-green-100",
     },
     {
       title: "Pinjaman Tertunggak",
       value: stats.overdueLoan,
       icon: AlertTriangle,
-      color: "text-red-600 dark:text-red-400",
-      bgColor: "bg-red-100 dark:bg-red-900/20",
+      color: "text-orange-400",
+      bgColor: "bg-orange-100",
     },
   ];
 
@@ -47,9 +47,9 @@ export const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
+    <div className="container min-h-screen">
+      <div className="mb-6 w h-full flex flex-col">
+        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
         <p className="text-muted-foreground">
           Selamat datang kembali! Berikut adalah kegiatan yang berlangsung di
           perpustakaan Anda hari ini.
