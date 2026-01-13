@@ -12,24 +12,17 @@ const Loans = () => {
     setSearchQuery,
     loading,
     addLoan,
-    editLoan,
     returnLoan,
     deleteLoan,
   } = useLoans();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingLoan, setEditingLoan] = useState(null);
 
-  const handleOpenDialog = (loan = null) => {
-    setEditingLoan(loan);
+  const handleOpenDialog = () => {
     setDialogOpen(true);
   };
 
   const handleSubmit = async (formData) => {
-    if (editingLoan) {
-      return await editLoan(editingLoan.id, formData);
-    } else {
-      return await addLoan(formData);
-    }
+   return await addLoan(formData)
   };
 
   const handleDelete = async (id) => {
@@ -86,7 +79,6 @@ const Loans = () => {
         <LoanDialog
           open={dialogOpen}
           onOpenChange={setDialogOpen}
-          loan={editingLoan}
           onSubmit={handleSubmit}
         />
 

@@ -74,7 +74,7 @@ export const LoanDialog = ({ open, onOpenChange, onSubmit }) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent key={open ? "open" : "closed"} className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Tambah Peminjaman</DialogTitle>
           <DialogDescription>

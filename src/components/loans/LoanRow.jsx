@@ -1,11 +1,11 @@
 // src/components/loans/LoanRow.jsx
 import { TableCell, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
-import { BookOpen, Pencil, Trash2, CheckCircle } from "lucide-react";
+import { BookOpen, Trash2, CheckCircle } from "lucide-react";
 import { formatDate } from "../../utils/dateUtils";
 import { getLoanStatus } from "../../utils/loanUtils";
 
-export const LoanRow = ({ loan, onEdit, onDelete, onReturn }) => {
+export const LoanRow = ({ loan, onDelete, onReturn }) => {
   const statusInfo = getLoanStatus(loan);
 
   return (
@@ -67,16 +67,8 @@ export const LoanRow = ({ loan, onEdit, onDelete, onReturn }) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onEdit(loan)}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
             onClick={() => onDelete(loan.id)}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
           >
             <Trash2 className="h-4 w-4" />
           </Button>

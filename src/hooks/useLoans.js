@@ -71,28 +71,6 @@ export const useLoans = () => {
     }
   };
 
-  const editLoan = async (id, updatedData) => {
-    try {
-      const { error } = await supabase
-        .from("peminjaman")
-        .update(updatedData)
-        .eq("id", id);
-
-      if (error) throw error;
-
-      // Update state lokal
-      setLoans((prevLoan) =>
-        prevLoan.map((loan) =>
-          loan.id === id ? { ...loan, ...updatedData } : loan
-        )
-      );
-
-      return true;
-    } catch (err) {
-      console.error("Error editing:", err);
-      return false;
-    }
-  };
 
  const returnLoan = async (loan) => {
   try {
@@ -142,7 +120,6 @@ export const useLoans = () => {
     loading,
     error,
     addLoan,
-    editLoan,
     returnLoan,
     deleteLoan,
     refetch: fetchLoans,

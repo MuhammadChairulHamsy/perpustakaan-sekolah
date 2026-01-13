@@ -23,21 +23,35 @@ export const LatestActivityTable = ({ activities }) => {
             Aktivitas peminjaman dan pengembalian baru-baru ini
           </p>
         </div>
-        <Button variant="ghost" size="sm" className="text-primary cursor-pointer">
-         Lihat semua
+        <Button
+          variant="ghost"
+          size="sm"
+          className="text-primary cursor-pointer"
+        >
+          Lihat semua
           <ArrowRight className=" h-4 w-4" />
         </Button>
       </div>
 
       <div className="overflow-x-auto">
-        <Table>
+        <Table className="w-full">
           <TableHeader>
-            <TableRow className="hover:bg-transparent border-border">
-              <TableHead className="text-muted-foreground">Siswa</TableHead>
-              <TableHead className="text-muted-foreground">Buku</TableHead>
-              <TableHead className="text-muted-foreground">Action</TableHead>
-              <TableHead className="text-muted-foreground">Waktu</TableHead>
-              <TableHead className="text-muted-foreground">Status</TableHead>
+            <TableRow className="border-b border-border bg-muted/30 hover:bg-muted/30">
+              <TableHead className="py-3 text-left text-sm font-medium text-muted-foreground">
+                Siswa
+              </TableHead>
+              <TableHead className="py-3 text-left text-sm font-medium text-muted-foreground">
+                Buku
+              </TableHead>
+              <TableHead className="py-3 text-left text-sm font-medium text-muted-foreground">
+                Action
+              </TableHead>
+              <TableHead className="py-3 text-left text-sm font-medium text-muted-foreground">
+                Waktu
+              </TableHead>
+              <TableHead className="py-3 text-left text-sm font-medium text-muted-foreground">
+                Status
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -68,7 +82,9 @@ export const LatestActivityTable = ({ activities }) => {
                       {statusInfo.action}
                     </TableCell>
                     <TableCell className="text-muted-foreground">
-                      {getTimeAgo(activity.created_at)}
+                      {activity.created_at
+                        ? getTimeAgo(activity.created_at)
+                        : "-"}
                     </TableCell>
                     <TableCell>
                       <span

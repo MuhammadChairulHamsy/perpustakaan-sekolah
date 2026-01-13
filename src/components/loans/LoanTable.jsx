@@ -9,7 +9,7 @@ import {
 } from "../ui/table";
 import { LoanRow } from "./LoanRow";
 
-export const LoanTable = ({ loans, onEdit, onDelete, onReturn }) => {
+export const LoanTable = ({ loans, onDelete, onReturn }) => {
   return (
     <div className="data-table rounded-lg border border-border bg-card">
       <div className="overflow-x-auto">
@@ -54,7 +54,6 @@ export const LoanTable = ({ loans, onEdit, onDelete, onReturn }) => {
                 <LoanRow
                   key={loan.id}
                   loan={loan}
-                  onEdit={onEdit}
                   onDelete={onDelete}
                   onReturn={onReturn}
                 />
