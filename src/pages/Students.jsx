@@ -33,9 +33,7 @@ const Students = () => {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Apakah Anda yakin ingin menghapus siswa ini?")) {
       await deleteStudent(id);
-    }
   };
 
   if (loading) {

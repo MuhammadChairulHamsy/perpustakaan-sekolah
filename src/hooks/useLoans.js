@@ -54,22 +54,49 @@ export const useLoans = () => {
     }
   };
 
-  const addLoan = async ({ student_id, book_id }) => {
-    try {
-      const { data, error } = await supabase
-        .from("peminjaman")
-        .insert([{ student_id, book_id }])
-        .select();
+ const addLoan = async ({ student_id, book_id }) => {
+  try {
+    // 1. insert dulu
+    const { error: insertError } = await supabase
+      .from("peminjaman")
+      .insert([{ student_id, book_id }]);
 
-      if (error) throw error;
+    if (insertError) throw insertError;
 
-      setLoans((prev) => [...data, ...prev]);
-      return true;
-    } catch (err) {
-      console.error(err);
-      return false;
-    }
-  };
+    // 2. ambil ulang data TERAKHIR + JOIN
+    const { data, error } = await supabase
+      .from("peminjaman")
+      .select(`
+        id,
+        loan_date,
+        due_date,
+        return_date,
+        status,
+        fine,
+        siswa:student_id (
+          id,
+          name,
+          class
+        ),
+        buku:book_id (
+          id,
+          title,
+          author
+        )
+      `)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error) throw error;
+
+    setLoans((prev) => [data, ...prev]);
+    return true;
+  } catch (err) {
+    console.error("addLoan error:", err);
+    return false;
+  }
+};
 
 
  const returnLoan = async (loan) => {

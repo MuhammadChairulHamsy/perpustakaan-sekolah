@@ -23,7 +23,7 @@ export const LoanDialog = ({ open, onOpenChange, onSubmit }) => {
 
   const [formData, setFormData] = useState({
     student_id: "",
-    book_id: "",
+    book_id: ""
   });
 
   // fetch siswa & buku tersedia
@@ -52,7 +52,7 @@ export const LoanDialog = ({ open, onOpenChange, onSubmit }) => {
     if (open) {
       setFormData({
         student_id: "",
-        book_id: "",
+        book_id: ""
       });
     }
   }, [open]);
@@ -134,7 +134,7 @@ export const LoanDialog = ({ open, onOpenChange, onSubmit }) => {
             >
               Batal
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button type="submit" disabled={loading} className="cursor-pointer">
               {loading ? "Menyimpan..." : "Tambah Peminjaman"}
             </Button>
           </div>

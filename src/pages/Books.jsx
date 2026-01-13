@@ -33,9 +33,7 @@ const Books = () => {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Apakah Anda yakin ingin menghapus buku ini?")) {
       await deleteBook(id);
-    }
   };
 
   if (loading) {

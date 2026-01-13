@@ -26,9 +26,7 @@ const Loans = () => {
   };
 
   const handleDelete = async (id) => {
-    if (confirm("Apakah Anda yakin ingin menghapus data peminjaman ini?")) {
       await deleteLoan(id);
-    }
   };
 
   const handleReturn = async (loan) => {
@@ -63,7 +61,7 @@ const Loans = () => {
             className="font-bold mt-2 gap-2 cursor-pointer"
           >
             <Plus className="h-4 w-4" />
-            Tambah Pinjam Buku
+            Pinjam Buku
           </Button>
         </div>
 
