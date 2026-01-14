@@ -5,6 +5,7 @@ import { useBooks } from "../hooks/useBooks";
 import { SearchBar } from "../components/search-bar";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const Books = () => {
   const {
@@ -25,15 +26,27 @@ const Books = () => {
   };
 
   const handleSubmit = async (formData) => {
-    if (editingBook) {
-      return await editBook(editingBook.id, formData);
+    const success = await (editingBook
+      ? editBook(editingBook.id, formData)
+      : addBook(formData));
+    if (success) {
+      toast.success("Berhasil Simpan!", {
+        description: `Buku ${formData.title} sudah masuk sistem.`,
+        className: "!text-white",
+      });
     } else {
-      return await addBook(formData);
+      toast.error("Gagal Menyimpan Buku", {
+        description: "ISBN tidak boleh sama dengan buku yang sudah ada.",
+      });
     }
+    return success;
   };
 
   const handleDelete = async (id) => {
-      await deleteBook(id);
+    const success = await deleteBook(id);
+    if (success) {
+      toast.success("Data buku dihapus");
+    }
   };
 
   if (loading) {

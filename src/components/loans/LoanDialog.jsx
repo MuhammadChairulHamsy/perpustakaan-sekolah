@@ -23,7 +23,7 @@ export const LoanDialog = ({ open, onOpenChange, onSubmit }) => {
 
   const [formData, setFormData] = useState({
     student_id: "",
-    book_id: ""
+    book_id: "",
   });
 
   // fetch siswa & buku tersedia
@@ -52,7 +52,7 @@ export const LoanDialog = ({ open, onOpenChange, onSubmit }) => {
     if (open) {
       setFormData({
         student_id: "",
-        book_id: ""
+        book_id: "",
       });
     }
   }, [open]);
@@ -129,6 +129,7 @@ export const LoanDialog = ({ open, onOpenChange, onSubmit }) => {
             <Button
               type="button"
               variant="outline"
+              className="cursor-pointer"
               onClick={() => onOpenChange(false)}
               disabled={loading}
             >

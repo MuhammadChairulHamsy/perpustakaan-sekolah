@@ -5,6 +5,7 @@ import { Button } from "../components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { StudentDialog } from "../components/student/StudentDialog";
+import { toast } from "sonner";
 
 const Students = () => {
   const {
@@ -25,15 +26,25 @@ const Students = () => {
   };
 
   const handleSubmit = async (formData) => {
-    if (editingStudent) {
-      return await editStudent(editingStudent.id, formData);
+    const success = await (editingStudent
+      ? editStudent(editingStudent.id, formData)
+      : addStudent(formData));
+    if (success) {
+      toast.success("Berhasil Simpan!", {
+        description: `Siswa ${formData.name} sudah masuk sistem.`,
+        className: "!text-white",
+      });
     } else {
-      return await addStudent(formData);
+      toast.error("Gagal Menyimpan Siswa Yang Sudah Ada");
     }
+    return success;
   };
 
   const handleDelete = async (id) => {
-      await deleteStudent(id);
+    const success = await deleteStudent(id);
+    if (success) {
+      toast.success("Data siswa dihapus");
+    }
   };
 
   if (loading) {

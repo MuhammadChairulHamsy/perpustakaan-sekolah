@@ -80,7 +80,7 @@ export const LoanRow = ({ loan, onDelete, onReturn }) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-destructive hover:bg-destructive/10"
+                className="text-destructive hover:bg-destructive/10 cursor-pointer"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -95,9 +95,9 @@ export const LoanRow = ({ loan, onDelete, onReturn }) => {
               </AlertDialogHeader>
 
               <AlertDialogFooter>
-                <AlertDialogCancel>Batal</AlertDialogCancel>
+                <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
                 <AlertDialogAction
-                  className="bg-destructive text-white hover:bg-destructive/90"
+                  className="bg-destructive text-white hover:bg-destructive/90 cursor-pointer"
                   onClick={() => onDelete(loan.id)}
                 >
                   Ya, Hapus

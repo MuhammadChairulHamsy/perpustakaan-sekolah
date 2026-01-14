@@ -4,6 +4,7 @@ import { SearchBar } from "../components/search-bar";
 import { LoanDialog, LoanTable } from "../components/loans";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const Loans = () => {
   const {
@@ -15,6 +16,7 @@ const Loans = () => {
     returnLoan,
     deleteLoan,
   } = useLoans();
+
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenDialog = () => {
@@ -22,16 +24,40 @@ const Loans = () => {
   };
 
   const handleSubmit = async (formData) => {
-   return await addLoan(formData)
+    const success = await addLoan(formData);
+
+    if (success) {
+      toast.success("Peminjaman Berhasil!", {
+        description: "Data peminjaman telah dicatat ke sistem.",
+        className: "!text-white",
+      });
+    } else {
+      toast.error("Gagal Meminjam Buku", {
+        description: "Pastikan stok buku tersedia dan data siswa benar.",
+      });
+    }
+    return success;
   };
 
   const handleDelete = async (id) => {
-      await deleteLoan(id);
+    const success = await deleteLoan(id);
+    if (success) {
+      toast.success("Data pinjaman dihapus", {
+        className: "!text-white",
+      });
+    }
   };
 
-  const handleReturn = async (loan) => {
-    if (confirm("Tandai buku ini sebagai sudah dikembalikan?")) {
-      await returnLoan(loan);
+  const handleReturn = async (loanId) => {
+    const success = await returnLoan(loanId);
+
+    if (success) {
+      toast.success("Buku Telah Dikembalikan", {
+        description: "Status pinjaman diperbarui dan stok buku bertambah.",
+        className: "!text-white",
+      });
+    } else {
+      toast.error("Gagal memproses pengembalian");
     }
   };
 
@@ -57,7 +83,7 @@ const Loans = () => {
           </div>
 
           <Button
-            onClick={() => handleOpenDialog()}
+            onClick={handleOpenDialog}
             className="font-bold mt-2 gap-2 cursor-pointer"
           >
             <Plus className="h-4 w-4" />
@@ -82,9 +108,9 @@ const Loans = () => {
 
         <LoanTable
           loans={loans}
-          onEdit={handleOpenDialog}
           onDelete={handleDelete}
           onReturn={handleReturn}
+          // onEdit dihilangkan karena tidak digunakan
         />
       </div>
     </div>

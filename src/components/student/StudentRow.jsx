@@ -44,7 +44,7 @@ export const StudentRow = ({ student, onEdit, onDelete }) => {
             variant="ghost"
             size="sm"
             onClick={() => onEdit(student)}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10 cursor-pointer"
           >
             <Pencil className="h-4 w-4" />
           </Button>
@@ -53,7 +53,7 @@ export const StudentRow = ({ student, onEdit, onDelete }) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-destructive hover:bg-destructive/10"
+                className="text-destructive hover:bg-destructive/10 cursor-pointer"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -69,9 +69,9 @@ export const StudentRow = ({ student, onEdit, onDelete }) => {
               </AlertDialogHeader>
 
               <AlertDialogFooter>
-                <AlertDialogCancel>Batal</AlertDialogCancel>
+                <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
                 <AlertDialogAction
-                  className="bg-destructive text-white hover:bg-destructive/90"
+                  className="bg-destructive text-white hover:bg-destructive/90 cursor-pointer"
                   onClick={() => onDelete(student.id)}
                 >
                   Ya, Hapus

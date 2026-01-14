@@ -72,7 +72,7 @@ export const BookRow = ({ book, onEdit, onDelete }) => {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-destructive hover:bg-destructive/10"
+                className="text-destructive hover:bg-destructive/10 cursor-pointer"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -82,14 +82,17 @@ export const BookRow = ({ book, onEdit, onDelete }) => {
               <AlertDialogHeader>
                 <AlertDialogTitle>Hapus Buku?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Apakah Anda yakin ingin menghapus buku <b>{book.title}</b> ini? 
+                  Apakah Anda yakin ingin menghapus buku <b>{book.title}</b>{" "}
+                  ini?
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
               <AlertDialogFooter>
-                <AlertDialogCancel>Batal</AlertDialogCancel>
+                <AlertDialogCancel className="cursor-pointer">
+                  Batal
+                </AlertDialogCancel>
                 <AlertDialogAction
-                  className="bg-destructive text-white hover:bg-destructive/90"
+                  className="bg-destructive text-white hover:bg-destructive/90 cursor-pointer"
                   onClick={() => onDelete(book.id)}
                 >
                   Ya, Hapus

@@ -124,11 +124,12 @@ export const BookDialog = ({ open, onOpenChange, book, onSubmit }) => {
             <Button
               type="button"
               variant="outline"
+              className="cursor-pointer"
               onClick={() => onOpenChange(false)}
             >
               Batal
             </Button>
-            <Button type="submit">
+            <Button type="submit" className="cursor-pointer">
               {book ? "Simpan Perubahan" : "Tambah Buku"}
             </Button>
           </div>

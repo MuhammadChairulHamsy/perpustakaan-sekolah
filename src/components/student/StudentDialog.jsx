@@ -58,7 +58,9 @@ export const StudentDialog = ({ open, onOpenChange, student, onSubmit }) => {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{student ? "Edit Siswa" : "Tambah Siswa Baru"}</DialogTitle>
+          <DialogTitle>
+            {student ? "Edit Siswa" : "Tambah Siswa Baru"}
+          </DialogTitle>
           <DialogDescription>
             {student
               ? "Perbarui informasi Siswa"
@@ -97,7 +99,7 @@ export const StudentDialog = ({ open, onOpenChange, student, onSubmit }) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="created_at">Tanggal daftar</Label>
+            <Label htmlFor="created_at" className="cursor-pointer">Tanggal daftar</Label>
             <Input
               id="created_at"
               type="date"
@@ -110,11 +112,12 @@ export const StudentDialog = ({ open, onOpenChange, student, onSubmit }) => {
             <Button
               type="button"
               variant="outline"
+              className="cursor-pointer"
               onClick={() => onOpenChange(false)}
             >
               Batal
             </Button>
-            <Button type="submit">
+            <Button type="submit" className="cursor-pointer">
               {student ? "Simpan Perubahan" : "Tambah Siswa"}
             </Button>
           </div>
