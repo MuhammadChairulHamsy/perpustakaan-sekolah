@@ -2,10 +2,10 @@
 import { BookOpen, Users, BookMarked, AlertTriangle } from "lucide-react";
 import { StatsCard } from "../components/dashboard/StatsCard";
 import { LatestActivityTable } from "../components/dashboard/LatestActivityTable";
-import { useDashboardData } from "../hooks/useDashboardData";
+import { useDashboard } from "../hooks/useDashboard";
 
 export const Dashboard = () => {
-  const { stats, latestActivities, loading, error } = useDashboardData();
+  const { stats, latestActivities, loading, error } = useDashboard();
 
   const statsCards = [
     {

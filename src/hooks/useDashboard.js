@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import supabase from "../lib/supabase/client";
 
-export const useDashboardData = () => {
+export const useDashboard = () => {
   const [stats, setStats] = useState({
     totalBooks: 0,
     totalStudents: 0,

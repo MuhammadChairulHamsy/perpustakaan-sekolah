@@ -1,74 +1,83 @@
 // src/pages/Reports.jsx
-import { StatsCard } from "../components/dashboard";
-import { useReportsData } from "../hooks/useReport";
 import { TrendingUp, BookOpen, AlertTriangle, Users } from "lucide-react";
 
-const Reports = () => {
-  const { stats, loading, error } = useReportsData();
+import { StatsCard } from "../components/dashboard/StatsCard";
+import { useReport } from "../hooks/useReport";
+import MonthlyLoanChart from "../components/reports/MonthlyLoanChart";
+import LoanStatusChart from "../components/reports/LoanStatusChart";
+import TopBooksChart from "../components/reports/TopBooksChart";
 
-  const summaryCard = [
+const Reports = () => {
+  const { loading, summary, monthlyLoans, loanStatus, topBooks } =
+    useReport();
+
+  const summaryCards = [
     {
       title: "Total Pinjaman",
-      value: stats.totalLoans,
+      value: summary.totalLoans,
       icon: TrendingUp,
-      color: "text-blue-600 dark:text-blue-400",
-      bgColor: "bg-blue-100 dark:bg-blue-900/20",
+      color: "text-blue-400",
+      bgColor: "bg-blue-100",
     },
     {
-      title: "Rata-rata Pinjaman Harian",
-      value: stats.dailyLoans,
+      title: "Pinjaman Hari Ini",
+      value: summary.dailyLoans,
       icon: BookOpen,
-      color: "text-green-600 dark:text-green-400",
-      bgColor: "bg-green-100 dark:bg-green-900/20",
+      color: "text-green-400",
+      bgColor: "bg-green-100",
     },
     {
-      title: "Tingkat Keterlambatan",
-      value: `${stats.overdueRate}%`,
+      title: "Tingkat Keterlambatan (%)",
+      value: summary.overdueRate,
       icon: AlertTriangle,
-      color: "text-orange-600 dark:text-orange-400",
-      bgColor: "bg-orange-100 dark:bg-orange-900/20",
+      color: "text-orange-400",
+      bgColor: "bg-orange-100",
     },
     {
       title: "Peminjam Aktif",
-      value: stats.activeBorrowers,
+      value: summary.activeBorrowers,
       icon: Users,
-      color: "text-purple-600 dark:text-purple-400",
-      bgColor: "bg-purple-100 dark:bg-purple-900/20",
+      color: "text-purple-400",
+      bgColor: "bg-purple-100",
     },
   ];
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <p className="text-destructive font-semibold mb-2">Error</p>
-          <p className="text-muted-foreground">{error}</p>
-        </div>
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-current border-r-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="container min-h-screen py-8">
-      <div className="mb-6 w-full flex flex-col">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Laporan</h1>
+    <div className="container min-h-screen space-y-8 ">
+      <div>
+        <h1 className="text-2xl font-bold">Laporan</h1>
         <p className="text-muted-foreground">
-          Analisis dan wawasan perpustakaan
+          Analisis dan statistik peminjaman perpustakaan
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {summaryCard.map((stat, index) => (
-          <StatsCard key={index} {...stat} />
+      {/* SUMMARY CARD */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {summaryCards.map((card, index) => (
+          <StatsCard key={index} {...card} />
         ))}
+      </div>
+
+      {/* GRAFIK */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md">
+          <MonthlyLoanChart data={monthlyLoans} />
+        </div>
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md">
+          <LoanStatusChart data={loanStatus} />
+        </div>
+      </div>
+
+      <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md">
+        <TopBooksChart data={topBooks} />
       </div>
     </div>
   );

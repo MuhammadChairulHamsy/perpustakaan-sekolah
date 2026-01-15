@@ -1,91 +1,73 @@
-// src/hooks/useReport.js
+// src/hooks/useReportData.js
 import { useEffect, useState } from "react";
 import supabase from "../lib/supabase/client";
 
-export const useReportsData = () => {
-  const [stats, setStats] = useState({
+export const useReport = () => {
+  const [summary, setSummary] = useState({
     totalLoans: 0,
     dailyLoans: 0,
     overdueRate: 0,
     activeBorrowers: 0,
   });
+
+  const [monthlyLoans, setMonthlyLoans] = useState([]);
+  const [loanStatus, setLoanStatus] = useState([]);
+  const [topBooks, setTopBooks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchReportData();
+    fetchReports();
   }, []);
 
-  const fetchReportData = async () => {
+  const fetchReports = async () => {
     setLoading(true);
-    setError(null);
 
     try {
-      // 1. Total Pinjaman
-      const { count: totalLoans, error: loanError } = await supabase
-        .from("peminjaman")
-        .select("*", { count: "exact", head: true });
+      const [{ data: total }, { data: daily }, { data: overdue }, { data: active }] =
+        await Promise.all([
+          supabase.from("report_total_loans").select("*").single(),
+          supabase.from("report_daily_loans").select("*").single(),
+          supabase.from("report_overdue_rate").select("*").single(),
+          supabase.from("report_active_borrowers").select("*").single(),
+        ]);
 
-      if (loanError) throw loanError;
-
-      // 2. Pinjaman Hari Ini
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      const { data: dailyLoansData, error: dailyLoansError } = await supabase
-        .from("peminjaman")
-        .select("id")
-        .gte("loan_date", today.toISOString());
-
-      if (dailyLoansError) throw dailyLoansError;
-
-      // 3. Tingkat Keterlambatan
-      const { data: overdueData, error: overdueError } = await supabase
-        .from("peminjaman")
-        .select("id")
-        .lt("due_date", new Date().toISOString())
-        .neq("status", "returned");
-
-      if (overdueError) throw overdueError;
-
-      // Hitung persentase keterlambatan
       const overdueRate =
-        totalLoans > 0
-          ? ((overdueData?.length || 0) / totalLoans) * 100
+        overdue.total_loans > 0
+          ? ((overdue.overdue_count / overdue.total_loans) * 100).toFixed(1)
           : 0;
 
-      // 4. Peminjam Aktif (yang sedang pinjam)
-      const { data: activeBorrowersData, error: activeBorrowersError } =
-        await supabase
-          .from("peminjaman")
-          .select("student_id")
-          .eq("status", "borrowed");
-
-      if (activeBorrowersError) throw activeBorrowersError;
-
-      // Hitung unique student_id
-      const uniqueBorrowers = new Set(
-        activeBorrowersData?.map((loan) => loan.student_id)
-      );
-
-      setStats({
-        totalLoans: totalLoans || 0,
-        dailyLoans: dailyLoansData?.length || 0,
-        overdueRate: overdueRate.toFixed(1),
-        activeBorrowers: uniqueBorrowers.size || 0,
+      setSummary({
+        totalLoans: total.total_loans,
+        dailyLoans: daily.daily_loans,
+        overdueRate: Number(overdueRate),
+        activeBorrowers: active.active_borrowers,
       });
-    } catch (err) {
-      console.error("Report Error:", err);
-      setError(err.message || "Terjadi Kesalahan");
+
+      const { data: monthly } = await supabase
+        .from("report_monthly_loans")
+        .select("*");
+
+      const { data: status } = await supabase
+        .from("report_loan_status_distribution")
+        .select("*");
+
+      const { data: books } = await supabase
+        .from("report_top_books")
+        .select("*");
+
+      setMonthlyLoans(monthly || []);
+      setLoanStatus(status || []);
+      setTopBooks(books || []);
     } finally {
       setLoading(false);
     }
   };
 
   return {
-    stats,
     loading,
-    error,
-    refetch: fetchReportData,
+    summary,
+    monthlyLoans,
+    loanStatus,
+    topBooks,
   };
 };

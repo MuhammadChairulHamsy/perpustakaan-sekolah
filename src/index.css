@@ -143,7 +143,7 @@
   input,
   select,
   textarea {
-    font-family: var(--font-sans); /* Inter untuk form elements */
+    font-family: var(--font-sans); 
   }
 }
 
