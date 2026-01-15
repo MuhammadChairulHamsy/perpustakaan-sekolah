@@ -13,6 +13,7 @@ const Books = () => {
     searchQuery,
     setSearchQuery,
     loading,
+    error,
     editBook,
     deleteBook,
     addBook,
@@ -53,6 +54,17 @@ const Books = () => {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-destructive font-semibold mb-2">Error</p>
+          <p className="text-muted-foreground">{error}</p>
+        </div>
       </div>
     );
   }

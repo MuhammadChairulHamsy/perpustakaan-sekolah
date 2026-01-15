@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import supabase from "../lib/supabase/client";
 
 export const useLoans = () => {
+
   const [loans, setLoans] = useState([]);
   const [filteredLoans, setFilteredLoans] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");

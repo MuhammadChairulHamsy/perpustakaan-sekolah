@@ -4,8 +4,8 @@ import supabase from "../lib/supabase/client";
 export const useDashboardData = () => {
   const [stats, setStats] = useState({
     totalBooks: 0,
-    borrowedToday: 0,
     totalStudents: 0,
+    borrowedToday: 0,
     overdueLoan: 0,
   });
 

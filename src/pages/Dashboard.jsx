@@ -5,7 +5,7 @@ import { LatestActivityTable } from "../components/dashboard/LatestActivityTable
 import { useDashboardData } from "../hooks/useDashboardData";
 
 export const Dashboard = () => {
-  const { stats, latestActivities, loading } = useDashboardData();
+  const { stats, latestActivities, loading, error } = useDashboardData();
 
   const statsCards = [
     {
@@ -46,9 +46,20 @@ export const Dashboard = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-destructive font-semibold mb-2">Error</p>
+          <p className="text-muted-foreground">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container min-h-screen">
-      <div className="mb-6 w h-full flex flex-col">
+      <div className="mb-6 w-full flex flex-col">
         <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
         <p className="text-muted-foreground">
           Selamat datang kembali! Berikut adalah kegiatan yang berlangsung di
