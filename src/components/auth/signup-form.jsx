@@ -33,7 +33,7 @@ export function SignupForm({
             <FieldGroup>
               {error && <p className="text-red-500 text-sm">{error}</p>}
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl text-chart-1 font-display font-bold">
+                <h1 className="text-2xl text-foreground font-display font-bold">
                   Buat Akun
                 </h1>
                 <p className="text-muted-foreground text-balance font-body">
@@ -103,7 +103,7 @@ export function SignupForm({
                 Sudah punya akun? {""}
                 <Link
                   to={"/login"}
-                  className="text-chart-1 hover:text-chart-2 font-medium"
+                  className="text-foreground hover:text-chart-2 font-medium"
                 >
                   Masuk di sini
                 </Link>

@@ -9,8 +9,11 @@ import Loans from "../pages/Loans";
 import Reports from "../pages/Reports";
 import Settings from "../pages/Settings";
 import NotFound from "../pages/NotFound";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
+import AuthCallback from "../context/AuthCallback";
 
 const router = createBrowserRouter([
+  // --- Rute Publik (Bisa diakses tanpa login) ---
   {
     path: "/login",
     element: <LoginPage />,
@@ -20,21 +23,72 @@ const router = createBrowserRouter([
     element: <SignupPage />,
   },
   {
+    path: "/auth/callback",
+    element: <AuthCallback />,
+  },
+  {
     path: "/",
     element: <Navigate to="/dashboard" replace />,
   },
+
+  // --- Rute Terlindungi (Harus Login) ---
   {
-    element: <DashboardLayout />,
+    element: (
+      <ProtectedRoute>
+        <DashboardLayout />
+      </ProtectedRoute>
+    ),
     errorElement: <NotFound />,
     children: [
-      { path: "dashboard", element: <Dashboard /> },
-      { path: "buku", element: <Books /> },
-      { path: "siswa", element: <Students /> },
-      { path: "pinjaman", element: <Loans /> },
-      { path: "laporan", element: <Reports /> },
-      { path: "pengaturan", element: <Settings /> },
+      // Bisa diakses Siswa & Admin
+      { 
+        path: "dashboard", 
+        element: <Dashboard /> 
+      },
+      { 
+        path: "buku", 
+        element: <Books /> 
+      },
+      { 
+        path: "pinjaman", 
+        element: <Loans /> 
+      },
+
+      // KHUSUS ADMIN SAJA (Gunakan adminOnly={true})
+      { 
+        path: "siswa", 
+        element: (
+          <ProtectedRoute adminOnly={true}>
+            <Students />
+          </ProtectedRoute>
+        ) 
+      },
+      { 
+        path: "laporan", 
+        element: (
+          <ProtectedRoute adminOnly={true}>
+            <Reports />
+          </ProtectedRoute>
+        ) 
+      },
+      { 
+        path: "pengaturan", 
+        element: (
+          <ProtectedRoute adminOnly={true}>
+            <Settings />
+          </ProtectedRoute>
+        ) 
+      },
+
+      // 404 Inside Layout
       { path: "*", element: <NotFound /> },
     ],
+  },
+  
+  // 404 Outside Layout
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 

@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 export function LoginForm({
   onSubmit,
-  onGoogleLogin,
+  // onGoogleLogin,
   email,
   password,
   setEmail,
@@ -29,7 +29,7 @@ export function LoginForm({
           <form onSubmit={onSubmit} className="p-6 md:p-8 border-r">
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl text-chart-1 font-display font-bold">
+                <h1 className="text-2xl text-foreground font-display font-bold">
                   Selamat Datang
                 </h1>
                 <p className="text-muted-foreground text-balance font-body">
@@ -73,7 +73,7 @@ export function LoginForm({
               <Field>
                 <Button
                   type="submit"
-                  className=" cursor-pointer font-sans font-medium text-background bg-chart-1 hover:bg-chart-2 transition-colors duration-500 ease-in-out"
+                  className=" cursor-pointer font-sans font-medium text-background bg-primary hover:bg-chart-2 transition-colors duration-500 ease-in-out"
                   disabled={loading}
                 >
                   {loading ? "Signing in..." : "Masuk"}
@@ -84,7 +84,7 @@ export function LoginForm({
                 <Button
                   variant="outline"
                   type="button"
-                  onClick={onGoogleLogin}
+                  // onClick={onGoogleLogin}
                   className="cursor-pointer font-sans"
                   disabled={loading}
                 >
@@ -102,7 +102,7 @@ export function LoginForm({
                 Belum punya akun?{" "}
                 <Link
                   to="/register"
-                  className="text-chart-1 hover:text-chart-2 font-medium"
+                  className="text-primary hover:text-chart-2 font-medium"
                 >
                   Daftar Sekarang
                 </Link>

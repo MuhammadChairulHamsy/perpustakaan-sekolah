@@ -12,11 +12,11 @@ import {
   File,
 } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
-// import { NavUser } from "@/components/nav-user";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
-  // SidebarFooter,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -130,9 +130,9 @@ export function AppSidebar({ ...props }) {
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
-      {/* <SidebarFooter>
+      <SidebarFooter>
         <NavUser />
-      </SidebarFooter> */}
+      </SidebarFooter>
     </Sidebar>
   );
 }
