@@ -11,21 +11,23 @@ import {
 
 const MonthlyLoanChart = ({ data }) => {
   const formattedData = data.map((item) => ({
-    month: new Date(item.month).toLocaleString("id-ID", {
-      month: "short",
-      year: "numeric",
-    }),
-    borrowed: item.borrowed,
-    returned: item.returned,
+    // Mengubah '2026-01' menjadi format tanggal yang valid agar bisa dibaca new Date()
+    month: item.month
+      ? new Date(item.month + "-01").toLocaleString("id-ID", {
+          month: "short",
+          year: "numeric",
+        })
+      : "N/A",
+    // SESUAIKAN DI SINI:
+    borrowed: Number(item.borrowed || 0),
+    returned: Number(item.returned || 0),
   }));
 
   return (
-    <div className="dashboard-card">
-      <h3 className="mb-4 text-lg font-semibold">
-        Tren Peminjaman Bulanan
-      </h3>
+    <div className="dashboard-card h-[400px]">
+      <h3 className="mb-4 text-lg font-semibold">Tren Peminjaman Bulanan</h3>
 
-      <div className="h-75">
+      <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={formattedData}>
             <CartesianGrid strokeDasharray="3 3" />

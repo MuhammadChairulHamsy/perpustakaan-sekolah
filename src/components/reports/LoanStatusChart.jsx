@@ -12,15 +12,20 @@ const COLORS = {
   overdue: "#f59e0b", 
 };
 
+
 const LoanStatusChart = ({ data }) => {
   const formatted = data.map((item) => ({
     name: item.status,
     value: item.total,
-    color: COLORS[item.status] || "hsl(var(--muted))",
+    color: COLORS[item.status] || "#e5e7eb",
   }));
 
+  if (!formatted.length) {
+    return <p className="text-muted-foreground">Tidak ada data</p>;
+  }
+
   return (
-    <div className="dashboard-card">
+      <div className="dashboard-card">
       <h3 className="mb-4 text-lg font-semibold">
         Status Peminjaman
       </h3>
@@ -49,5 +54,6 @@ const LoanStatusChart = ({ data }) => {
     </div>
   );
 };
+
 
 export default LoanStatusChart;

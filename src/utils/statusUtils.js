@@ -12,7 +12,7 @@ export const getActivityStatus = (activity) => {
     };
   }
 
-  if (dueDate < today && activity.status !== "returned") {
+  if (dueDate < today && activity.status !== "") {
     const daysOverdue = Math.floor((today - dueDate) / (1000 * 60 * 60 * 24));
     return {
       label: "Terlambat",

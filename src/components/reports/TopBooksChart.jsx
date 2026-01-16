@@ -23,7 +23,7 @@ const TopBooksChart = ({ data }) => {
             <YAxis dataKey="title" type="category" width={150} />
             <Tooltip />
             <Bar
-              dataKey="borrow_count"
+              dataKey="total"
               fill="#0DA2E7"
               radius={[0, 4, 4, 0]}
             />

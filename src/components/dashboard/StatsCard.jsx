@@ -12,7 +12,7 @@ export const StatsCard = ({ title, value, icon: Icon, color, bgColor }) => {
           {title}
         </h2>
         <p className="text-xl font-bold text-foreground">
-          {value.toLocaleString()}
+          {(value ?? 0).toLocaleString()}
         </p>
       </div>
       </div>

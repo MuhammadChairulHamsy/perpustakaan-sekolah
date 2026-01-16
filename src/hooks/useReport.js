@@ -23,24 +23,35 @@ export const useReport = () => {
     setLoading(true);
 
     try {
-      const [{ data: total }, { data: daily }, { data: overdue }, { data: active }] =
-        await Promise.all([
-          supabase.from("report_total_loans").select("*").single(),
-          supabase.from("report_daily_loans").select("*").single(),
-          supabase.from("report_overdue_rate").select("*").single(),
-          supabase.from("report_active_borrowers").select("*").single(),
-        ]);
+      const [totalRes, overdueRes, activeRes] = await Promise.all([
+        supabase.from("report_total_loans").select("*").maybeSingle(),
+        supabase.from("report_overdue_rate").select("*").maybeSingle(),
+        supabase.from("report_active_borrowers").select("*"),
+      ]);
+
+      // Berikan nilai fallback (0) jika data null agar tidak error
+      const total = totalRes.data || { total_loans: 0 };
+      const overdue = overdueRes.data || { total_loans: 0, overdue_count: 0 };
+      const activeCount = activeRes.data ? activeRes.data.length : 0;
 
       const overdueRate =
         overdue.total_loans > 0
           ? ((overdue.overdue_count / overdue.total_loans) * 100).toFixed(1)
           : 0;
 
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const { data: dailyData } = await supabase
+        .from("peminjaman")
+        .select("id")
+        .gte("loan_date", today.toISOString());
+
       setSummary({
         totalLoans: total.total_loans,
-        dailyLoans: daily.daily_loans,
+        dailyLoans: dailyData?.length || 0,
         overdueRate: Number(overdueRate),
-        activeBorrowers: active.active_borrowers,
+        activeBorrowers: activeCount,
       });
 
       const { data: monthly } = await supabase
