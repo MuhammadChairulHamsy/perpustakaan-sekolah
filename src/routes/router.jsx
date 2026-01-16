@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-
+import LoginPage from "../pages/auth/login/Page";
+import SignupPage from "../pages/auth/signup/Page";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import { Dashboard } from "../pages/Dashboard";
 import Books from "../pages/Books";
@@ -10,6 +11,14 @@ import Settings from "../pages/Settings";
 import NotFound from "../pages/NotFound";
 
 const router = createBrowserRouter([
+  {
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <SignupPage />,
+  },
   {
     path: "/",
     element: <Navigate to="/dashboard" replace />,

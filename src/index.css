@@ -119,6 +119,9 @@
   --font-sans: Inter, system-ui, -apple-system, sans-serif;
   --font-display: Rubik, system-ui, sans-serif;
   --font-body: Manrope, system-ui, sans-serif;
+
+  --spacing-chart-main: 300px;
+  --spacing-chart-large: 400px;
 }
 
 @layer base {
