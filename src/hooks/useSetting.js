@@ -28,20 +28,26 @@ export const useSettings = () => {
     }
   };
 
-  const addUsers = async (userData) => {
+  const addUsers = async (formData) => {
     try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .insert([userData])
-        .select();
+      const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: "PasswordDefault123!", // User bisa ganti nanti lewat 'Forgot Password'
+      options: {
+        data: {
+          full_name: formData.full_name,
+          role: formData.role, // Ini akan ditangkap trigger/metadata
+        },
+      },
+    });
 
-      if (error) throw error;
-
-      // Tambahkan buku baru ke state
-      setUsers((prevUser) => [...prevUser, ...data]);
-      return true;
+    if (error) throw error;
+    
+    // Refresh data setelah berhasil
+    await fetchSettings(); 
+    return true;
     } catch (err) {
-      console.error("Error adding user:", err);
+      console.error("Error inviting user:", err);
       return false;
     }
   };
@@ -50,7 +56,10 @@ export const useSettings = () => {
     try {
       const { error } = await supabase
         .from("profiles")
-        .update(updatedData)
+        .update({
+          full_name: updatedData.name,
+          role: updatedData.role,
+        })
         .eq("id", id);
 
       if (error) throw error;
@@ -58,8 +67,8 @@ export const useSettings = () => {
       // Update state lokal
       setUsers((prevUser) =>
         prevUser.map((user) =>
-          user.id === id ? { ...user, ...updatedData } : user
-        )
+          user.id === id ? { ...user, ...updatedData } : user,
+        ),
       );
 
       return true;
@@ -89,5 +98,5 @@ export const useSettings = () => {
     editUser,
     deleteUser,
     refetch: fetchSettings,
-  }
+  };
 };

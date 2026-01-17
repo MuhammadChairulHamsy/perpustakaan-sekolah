@@ -13,9 +13,14 @@ import { TableCell, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
 import { Pencil, Trash2, User } from "lucide-react";
 
-export const SettingRow = ({user, onEdit, onDelete}) => {
-    return(
-          <TableRow key={user.id} className="hover:bg-muted/50 transition-colors">
+export const SettingRow = ({ user, onEdit, onDelete }) => {
+  const roleColors = {
+    admin: "bg-red-100 text-red-700 border-red-200",
+    librarian: "bg-blue-100 text-blue-700 border-blue-200",
+    assistant: "bg-green-100 text-green-700 border-green-200",
+  };
+  return (
+    <TableRow key={user.id} className="hover:bg-muted/50 transition-colors">
       <TableCell className="px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
@@ -32,7 +37,11 @@ export const SettingRow = ({user, onEdit, onDelete}) => {
         {user.email || "-"}
       </TableCell>
       <TableCell className="px-4 py-3 text-sm text-muted-foreground">
-        {user.role || "-"}
+        <span
+          className={`px-2 py-1 rounded-full text-xs font-semibold border ${roleColors[user.role?.toLowerCase()] || roleColors.assistant}`}
+        >
+          {user.role}
+        </span>
       </TableCell>
       <TableCell className="px-4 py-3">
         <div className="flex justify-end gap-2">
@@ -65,7 +74,9 @@ export const SettingRow = ({user, onEdit, onDelete}) => {
               </AlertDialogHeader>
 
               <AlertDialogFooter>
-                <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                <AlertDialogCancel className="cursor-pointer">
+                  Batal
+                </AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-destructive text-white hover:bg-destructive/90 cursor-pointer"
                   onClick={() => onDelete(user.id)}
@@ -78,5 +89,5 @@ export const SettingRow = ({user, onEdit, onDelete}) => {
         </div>
       </TableCell>
     </TableRow>
-    )    
-}
+  );
+};

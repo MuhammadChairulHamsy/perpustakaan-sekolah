@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
         options: {
           data: {
             full_name: name,
-            role: 'siswa',
+            role: 'admin',
           },
         },
       });

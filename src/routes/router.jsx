@@ -12,26 +12,15 @@ import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import AuthCallback from "../context/AuthCallback";
 
-const router = createBrowserRouter([
-  // --- Rute Publik (Bisa diakses tanpa login) ---
-  {
-    path: "/login",
-    element: <LoginPage />,
-  },
-  {
-    path: "/register",
-    element: <SignupPage />,
-  },
-  {
-    path: "/auth/callback",
-    element: <AuthCallback />,
-  },
-  {
-    path: "/",
-    element: <Navigate to="/dashboard" replace />,
-  },
+// Definisi Role Staf agar tidak tulis ulang
+const staffRoles = ["admin", "librarian", "assistant"];
 
-  // --- Rute Terlindungi (Harus Login) ---
+const router = createBrowserRouter([
+  { path: "/login", element: <LoginPage /> },
+  { path: "/register", element: <SignupPage /> },
+  { path: "/auth/callback", element: <AuthCallback /> },
+  { path: "/", element: <Navigate to="/dashboard" replace /> },
+
   {
     element: (
       <ProtectedRoute>
@@ -40,25 +29,16 @@ const router = createBrowserRouter([
     ),
     errorElement: <NotFound />,
     children: [
-      // Bisa diakses Siswa & Admin
-      { 
-        path: "dashboard", 
-        element: <Dashboard /> 
-      },
-      { 
-        path: "buku", 
-        element: <Books /> 
-      },
-      { 
-        path: "pinjaman", 
-        element: <Loans /> 
-      },
+      // Bisa diakses semua orang yang sudah login (Siswa, Admin, dsb)
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "buku", element: <Books /> },
+      { path: "pinjaman", element: <Loans /> },
 
-      // KHUSUS ADMIN SAJA (Gunakan adminOnly={true})
+      // KHUSUS STAF (Admin, Pustakawan, Asisten)
       { 
         path: "siswa", 
         element: (
-          <ProtectedRoute adminOnly={true}>
+          <ProtectedRoute allowedRoles={staffRoles}>
             <Students />
           </ProtectedRoute>
         ) 
@@ -66,7 +46,7 @@ const router = createBrowserRouter([
       { 
         path: "laporan", 
         element: (
-          <ProtectedRoute adminOnly={true}>
+          <ProtectedRoute allowedRoles={staffRoles}>
             <Reports />
           </ProtectedRoute>
         ) 
@@ -74,22 +54,17 @@ const router = createBrowserRouter([
       { 
         path: "pengaturan", 
         element: (
-          <ProtectedRoute adminOnly={true}>
+          <ProtectedRoute allowedRoles={staffRoles}>
             <Settings />
           </ProtectedRoute>
         ) 
       },
 
-      // 404 Inside Layout
       { path: "*", element: <NotFound /> },
     ],
   },
   
-  // 404 Outside Layout
-  {
-    path: "*",
-    element: <NotFound />,
-  },
+  { path: "*", element: <NotFound /> },
 ]);
 
 export default router;

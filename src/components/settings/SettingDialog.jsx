@@ -5,6 +5,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from "../ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
@@ -14,21 +21,21 @@ export const SettingDialog = ({ open, onOpenChange, user, onSubmit }) => {
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
-    role: "",
+    role: "Asisten",
   });
 
   useEffect(() => {
     if (user) {
       setFormData({
-        full_name: profiles.full_name || "",
-        email: profiles.email || "",
-        role: profiles.role || "",
+        full_name: user.full_name || "",
+        email: user.email || "",
+        role: user.role || "Asisten",
       });
     } else {
       setFormData({
         full_name: "",
         email: "",
-        role: "",
+        role: "Asisten",
       });
     }
   }, [user, open]);
@@ -39,6 +46,10 @@ export const SettingDialog = ({ open, onOpenChange, user, onSubmit }) => {
       ...prev,
       [id]: value,
     }));
+  };
+
+  const handleRoleChange = (value) => {
+    setFormData((prev) => ({ ...prev, role: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -83,13 +94,16 @@ export const SettingDialog = ({ open, onOpenChange, user, onSubmit }) => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="role">Role</Label>
-            <Input
-              id="role"
-              value={formData.role}
-              onChange={handleInputChange}
-              placeholder="Masukkan role anda"
-              required
-            />
+            <Select value={formData.role} onValueChange={handleRoleChange}>
+              <SelectTrigger id="role" className="w-full">
+                <SelectValue placeholder="Pilih Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="admin">admin</SelectItem>
+                <SelectItem value="librarian">librarian</SelectItem>
+                <SelectItem value="assistant">assistant</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex justify-end gap-3">
             <Button

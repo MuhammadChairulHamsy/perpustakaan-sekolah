@@ -23,11 +23,11 @@ const Settings = () => {
       : addUsers(formData));
     if (success) {
       toast.success("Berhasil Simpan!", {
-        description: `Siswa ${formData.full_name} sudah masuk sistem.`,
+        description: `User ${formData.full_name} sudah masuk sistem.`,
         className: "!text-white",
       });
     } else {
-      toast.error("Gagal Menyimpan Siswa Yang Sudah Ada");
+      toast.error("Gagal Menyimpan user Yang Sudah Ada");
     }
     return success;
   };
@@ -35,7 +35,7 @@ const Settings = () => {
   const handleDelete = async (id) => {
     const success = await deleteUser(id);
     if (success) {
-      toast.success("Data siswa dihapus");
+      toast.success("Data user dihapus");
     }
   };
 

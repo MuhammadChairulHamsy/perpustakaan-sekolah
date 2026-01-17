@@ -1,32 +1,28 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
-export default function ProtectedRoute({ children, adminOnly = false }) {
+export default function ProtectedRoute({ children, allowedRoles = [] }) {
   const { user, role, loading } = useAuth();
   const location = useLocation();
 
-  // Tampilkan loading saat check auth
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
-          <p className="mt-2 text-sm text-gray-600">Loading...</p>
-        </div>
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent"></div>
       </div>
     );
   }
 
-  // Jika belum login, redirect ke login
+  // 1. Jika belum login
   if (!user) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // Jika halaman ini khusus admin tapi yang login adalah siswa
-  if (adminOnly && role !== 'admin') {
+  // 2. Jika ada pembatasan Role (misal: halaman khusus staf)
+  // Kita cek apakah role user saat ini ada di dalam daftar role yang diizinkan
+  if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // Jika sudah login, render children
   return children;
 }
