@@ -10,7 +10,7 @@ import {
 export function NavMain({ items }) {
   return (
     <SidebarGroup>
-      <SidebarGroupContent className="flex flex-col gap-2">
+      <SidebarGroupContent className="flex flex-col gap-2xx">
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>

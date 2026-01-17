@@ -122,7 +122,6 @@ const Loans = () => {
           loans={loans}
           onDelete={handleDelete}
           onReturn={handleReturn}
-          // onEdit dihilangkan karena tidak digunakan
         />
       </div>
     </div>
