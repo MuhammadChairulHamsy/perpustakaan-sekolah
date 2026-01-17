@@ -112,9 +112,9 @@ export function LoginForm({
 
           <div className="bg-background border-r relative hidden md:block dark:bg-accent-foreground">
             <img
-              src="/image/image-login.png"
+              src="/image/login.png"
               alt="Image Illustration"
-              className="absolute inset-0 h-full w-full object-cover"
+              className="absolute inset-0 h-full w-full object-contain"
             />
           </div>
         </CardContent>

@@ -12,9 +12,9 @@ export default function DashboardLayout() {
         "--header-height": "calc(var(--spacing) * 12)",
       }}
     >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
+      <AppSidebar variant="inset" className="bg-sidebar" />
+      <SidebarInset className="bg-background">
+        <SiteHeader className="bg-background" />
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">

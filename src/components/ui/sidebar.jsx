@@ -213,7 +213,7 @@ function Sidebar({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="bg-background group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm">
+          className="bg-sidebar group-data-[variant=floating]:border-sidebar-border flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm">
           {children}
         </div>
       </div>
@@ -350,7 +350,7 @@ function SidebarContent({
       data-slot="sidebar-content"
       data-sidebar="content"
       className={cn(
-        "bg-background flex min-h-0 flex-1 flex-col gap-2  overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+        "bg-sidebar flex min-h-0 flex-1 flex-col gap-2  overflow-auto group-data-[collapsible=icon]:overflow-hidden",
         className
       )}
       {...props} />
@@ -446,7 +446,7 @@ function SidebarMenuItem({
     <li
       data-slot="sidebar-menu-item"
       data-sidebar="menu-item"
-      className={cn("bg-background group/menu-item relative", className)}
+      className={cn("bg-sidebar group/menu-item relative", className)}
       {...props} />
   );
 }

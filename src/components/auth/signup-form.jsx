@@ -112,7 +112,7 @@ export function SignupForm({
           </form>
           <div className="bg-background border-r relative hidden md:block dark:bg-accent-foreground">
             <img
-              src="/image/image-register.png"
+              src="/image/register.png"
               alt="Image Illustration"
               className="absolute inset-0 h-full w-full object-contain"
             />

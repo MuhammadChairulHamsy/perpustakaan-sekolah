@@ -99,15 +99,15 @@ const data = {
 export function AppSidebar({ ...props }) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
+      <SidebarHeader className="bg-sidebar pb-0">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
               size="lg"
-              className="data-[slot=sidebar-menu-button]:p-1.5!"
+              className="bg-sidebar data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <Link to="/dashboard">
+              <Link to="/dashboard" >
                 <div className="flex items-center gap-3">
                   <div className="bg-primary h-8 w-8 rounded-xl flex items-center justify-center shrink-0">
                   <Library className="text-primary-foreground" size={22} />
@@ -127,10 +127,10 @@ export function AppSidebar({ ...props }) {
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="bg-sidebar">
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="bg-sidebar">
         <NavUser />
       </SidebarFooter>
     </Sidebar>
