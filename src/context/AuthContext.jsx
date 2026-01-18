@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 import supabase from "../lib/supabase/client";
 
 const AuthContext = createContext({});
@@ -8,34 +8,70 @@ export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // 1. Ambil sesi aktif saat pertama kali aplikasi dimuat
-    const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        setUser(session.user);
-        // Ambil role dari user_metadata (misal: 'admin' atau 'siswa')
-        setRole(session.user.user_metadata?.role || 'siswa');
+  // Fungsi untuk mengambil role terbaru dari database
+  const fetchUserRole = useCallback(async (userId) => {
+    if (!userId) return null;
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", userId)
+        .single();
+
+      if (error) {
+        console.warn("Profile not found or error:", error.message);
+        return null;
       }
-      setLoading(false);
+      return data?.role;
+    } catch (err) {
+      console.error("Critical error fetching role:", err);
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    // 1. Inisialisasi Sesi Saat Pertama Kali Load
+    const initializeAuth = async () => {
+      setLoading(true);
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+          setUser(session.user);
+          const latestRole = await fetchUserRole(session.user.id);
+          // Prioritas: Database -> Metadata -> Default 'Siswa'
+          setRole(latestRole || session.user.user_metadata?.role || "Siswa");
+        }
+      } catch (error) {
+        console.error("Initialization error:", error);
+      } finally {
+        // Apapun yang terjadi, matikan loading setelah pengecekan selesai
+        setLoading(false);
+      }
     };
 
-    getInitialSession();
+    initializeAuth();
 
-    // 2. Pantau perubahan status auth (Login, Logout, Password Change, dsb)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // 2. Pantau Perubahan Status Auth (Login/Logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log("Auth Event:", event);
+      
       if (session) {
         setUser(session.user);
-        setRole(session.user.user_metadata?.role || 'siswa');
+        const latestRole = await fetchUserRole(session.user.id);
+        setRole(latestRole || session.user.user_metadata?.role || "Siswa");
+        setLoading(false);
       } else {
         setUser(null);
         setRole(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [fetchUserRole]);
 
   // --- FUNGSI REGISTER ---
   const register = async (name, email, password) => {
@@ -46,11 +82,10 @@ export const AuthProvider = ({ children }) => {
         options: {
           data: {
             full_name: name,
-            role: 'admin',
+            role: "Admin", // Default saat daftar via web adalah Admin
           },
         },
       });
-
       if (error) throw error;
       return { success: true, data };
     } catch (error) {
@@ -65,7 +100,6 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
-
       if (error) throw error;
       return { success: true, data };
     } catch (error) {
@@ -75,7 +109,13 @@ export const AuthProvider = ({ children }) => {
 
   // --- FUNGSI LOGOUT ---
   const logout = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+      setUser(null);
+      setRole(null);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -85,7 +125,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Hook kustom agar kita bisa pakai useAuth() di komponen lain
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

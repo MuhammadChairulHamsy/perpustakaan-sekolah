@@ -7,10 +7,10 @@ export const useSettings = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchSettings();
+    fetchUsers();
   }, []);
 
-  const fetchSettings = async () => {
+  const fetchUsers = async () => {
     try {
       const { data, error } = await supabase.from("profiles").select("*");
 
@@ -31,21 +31,21 @@ export const useSettings = () => {
   const addUsers = async (formData) => {
     try {
       const { data, error } = await supabase.auth.signUp({
-      email: formData.email,
-      password: "PasswordDefault123!", // User bisa ganti nanti lewat 'Forgot Password'
-      options: {
-        data: {
-          full_name: formData.full_name,
-          role: formData.role, // Ini akan ditangkap trigger/metadata
+        email: formData.email,
+        password: "PasswordDefault123!",
+        options: {
+          data: {
+            full_name: formData.full_name,
+            role: formData.role,
+          },
         },
-      },
-    });
+      });
 
-    if (error) throw error;
-    
-    // Refresh data setelah berhasil
-    await fetchSettings(); 
-    return true;
+      if (error) throw error;
+
+      // Refresh data setelah berhasil
+      await fetchUsers();
+      return true;
     } catch (err) {
       console.error("Error inviting user:", err);
       return false;
@@ -57,19 +57,15 @@ export const useSettings = () => {
       const { error } = await supabase
         .from("profiles")
         .update({
-          full_name: updatedData.name,
+          full_name: updatedData.full_name,
           role: updatedData.role,
         })
         .eq("id", id);
 
       if (error) throw error;
 
-      // Update state lokal
-      setUsers((prevUser) =>
-        prevUser.map((user) =>
-          user.id === id ? { ...user, ...updatedData } : user,
-        ),
-      );
+      // AMBIL DATA TERBARU DARI DB (Paling Aman)
+      await fetchUsers();
 
       return true;
     } catch (err) {
@@ -97,6 +93,6 @@ export const useSettings = () => {
     addUsers,
     editUser,
     deleteUser,
-    refetch: fetchSettings,
+    refetch: fetchUsers,
   };
 };

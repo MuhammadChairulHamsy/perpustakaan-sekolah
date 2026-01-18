@@ -13,7 +13,7 @@ import ProtectedRoute from "../components/auth/ProtectedRoute";
 import AuthCallback from "../context/AuthCallback";
 
 // Definisi Role Staf agar tidak tulis ulang
-const staffRoles = ["admin", "librarian", "assistant"];
+const staffRoles = ["Admin", "Pustakawan", "Asisten"];
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },

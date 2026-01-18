@@ -15,9 +15,9 @@ import { Pencil, Trash2, User } from "lucide-react";
 
 export const SettingRow = ({ user, onEdit, onDelete }) => {
   const roleColors = {
-    admin: "bg-red-100 text-red-700 border-red-200",
-    librarian: "bg-blue-100 text-blue-700 border-blue-200",
-    assistant: "bg-green-100 text-green-700 border-green-200",
+    Admin: "bg-red-100 text-red-700 border-red-200",
+    Pustakawan: "bg-blue-100 text-blue-700 border-blue-200",
+    Asisten: "bg-green-100 text-green-700 border-green-200",
   };
   return (
     <TableRow key={user.id} className="hover:bg-muted/50 transition-colors">
@@ -38,7 +38,7 @@ export const SettingRow = ({ user, onEdit, onDelete }) => {
       </TableCell>
       <TableCell className="px-4 py-3 text-sm text-muted-foreground">
         <span
-          className={`px-2 py-1 rounded-full text-xs font-semibold border ${roleColors[user.role?.toLowerCase()] || roleColors.assistant}`}
+          className={`px-2 py-1 rounded-full text-xs font-semibold border ${roleColors[user.role] || "bg-gray-100"}`}
         >
           {user.role}
         </span>

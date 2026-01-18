@@ -99,9 +99,9 @@ export const SettingDialog = ({ open, onOpenChange, user, onSubmit }) => {
                 <SelectValue placeholder="Pilih Role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="admin">admin</SelectItem>
-                <SelectItem value="librarian">librarian</SelectItem>
-                <SelectItem value="assistant">assistant</SelectItem>
+                <SelectItem value="Admin">Admin</SelectItem>
+                <SelectItem value="Pustakawan">Pustakawan</SelectItem>
+                <SelectItem value="Asisten">Asisten</SelectItem>
               </SelectContent>
             </Select>
           </div>
