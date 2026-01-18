@@ -75,14 +75,20 @@ export const useSettings = () => {
   };
 
   const deleteUser = async (id) => {
-    const { error } = await supabase.from("profiles").delete().eq("id", id);
+    try {
+      const { error } = await supabase.from("profiles").delete().eq("id", id);
 
-    if (error) {
-      console.error("Error deleting:", error);
-      return false;
-    } else {
-      setUsers(users.filter((user) => user.id !== id));
+      if (error) {
+        alert("Gagal menghapus: " + error.message);
+        return false;
+      }
+
+      // Jika berhasil di DB, baru hapus di state UI
+      setUsers((prev) => prev.filter((user) => user.id !== id));
       return true;
+    } catch (err) {
+      console.error("Error:", err);
+      return false;
     }
   };
 

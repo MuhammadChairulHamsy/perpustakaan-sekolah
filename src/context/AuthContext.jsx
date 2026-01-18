@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import supabase from "../lib/supabase/client";
 
 const AuthContext = createContext({});
@@ -8,70 +8,38 @@ export const AuthProvider = ({ children }) => {
   const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Fungsi untuk mengambil role terbaru dari database
-  const fetchUserRole = useCallback(async (userId) => {
-    if (!userId) return null;
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", userId)
-        .single();
-
-      if (error) {
-        console.warn("Profile not found or error:", error.message);
-        return null;
-      }
-      return data?.role;
-    } catch (err) {
-      console.error("Critical error fetching role:", err);
-      return null;
-    }
-  }, []);
-
   useEffect(() => {
-    // 1. Inisialisasi Sesi Saat Pertama Kali Load
-    const initializeAuth = async () => {
-      setLoading(true);
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (session) {
-          setUser(session.user);
-          const latestRole = await fetchUserRole(session.user.id);
-          // Prioritas: Database -> Metadata -> Default 'Siswa'
-          setRole(latestRole || session.user.user_metadata?.role || "Siswa");
-        }
-      } catch (error) {
-        console.error("Initialization error:", error);
-      } finally {
-        // Apapun yang terjadi, matikan loading setelah pengecekan selesai
-        setLoading(false);
-      }
-    };
-
-    initializeAuth();
-
-    // 2. Pantau Perubahan Status Auth (Login/Logout)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth Event:", event);
-      
+    // 1. Ambil sesi aktif saat pertama kali aplikasi dimuat
+    const getInitialSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session) {
         setUser(session.user);
-        const latestRole = await fetchUserRole(session.user.id);
-        setRole(latestRole || session.user.user_metadata?.role || "Siswa");
-        setLoading(false);
+        // Ambil role dari user_metadata (misal: 'admin' atau 'siswa')
+        setRole(session.user.user_metadata?.role || "siswa");
+      }
+      setLoading(false);
+    };
+
+    getInitialSession();
+
+    // 2. Pantau perubahan status auth (Login, Logout,  Change, dsb)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setUser(session.user);
+        setRole(session.user.user_metadata?.role || "siswa");
       } else {
         setUser(null);
         setRole(null);
-        setLoading(false);
       }
+      setLoading(false);
     });
 
-    return () => {
-      subscription?.unsubscribe();
-    };
-  }, [fetchUserRole]);
+    return () => subscription.unsubscribe();
+  }, []);
 
   // --- FUNGSI REGISTER ---
   const register = async (name, email, password) => {
@@ -82,10 +50,11 @@ export const AuthProvider = ({ children }) => {
         options: {
           data: {
             full_name: name,
-            role: "Admin", // Default saat daftar via web adalah Admin
+            role: "Admin",
           },
         },
       });
+
       if (error) throw error;
       return { success: true, data };
     } catch (error) {
@@ -100,6 +69,7 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
       });
+
       if (error) throw error;
       return { success: true, data };
     } catch (error) {
@@ -109,22 +79,19 @@ export const AuthProvider = ({ children }) => {
 
   // --- FUNGSI LOGOUT ---
   const logout = async () => {
-    try {
-      await supabase.auth.signOut();
-      setUser(null);
-      setRole(null);
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+    await supabase.auth.signOut();
   };
 
   return (
-    <AuthContext.Provider value={{ user, role, loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, role, loading, login, register, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
+// Hook kustom agar kita bisa pakai useAuth() di komponen lain
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
