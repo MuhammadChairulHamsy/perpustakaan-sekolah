@@ -112,7 +112,7 @@ export const StudentDialog = ({ open, onOpenChange, student, onSubmit }) => {
             <Button
               type="button"
               variant="outline"
-              className="cursor-pointer"
+              className="hover:bg-foreground transition-colors duration-500 ease-in-out cursor-pointer"
               onClick={() => onOpenChange(false)}
             >
               Batal

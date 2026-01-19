@@ -26,7 +26,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form onSubmit={onSubmit} className="p-6 md:p-8 border-r">
+          <form onSubmit={onSubmit} className="bg-background p-6 md:p-8 border-r">
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl text-foreground font-display font-bold">
@@ -73,7 +73,7 @@ export function LoginForm({
               <Field>
                 <Button
                   type="submit"
-                  className=" cursor-pointer font-sans font-medium text-background bg-primary hover:bg-chart-2 transition-colors duration-500 ease-in-out"
+                  className=" cursor-pointer font-sans font-medium text-background bg-primary hover:bg-secondary-foreground transition-colors duration-500 ease-in-out"
                   disabled={loading}
                 >
                   {loading ? "Signing in..." : "Masuk"}
@@ -85,7 +85,7 @@ export function LoginForm({
                   variant="outline"
                   type="button"
                   // onClick={onGoogleLogin}
-                  className="cursor-pointer font-sans"
+                  className="transition-colors duration-500 ease-in-out hover:bg-foreground cursor-pointer font-sans"
                   disabled={loading}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -102,7 +102,7 @@ export function LoginForm({
                 Belum punya akun?{" "}
                 <Link
                   to="/register"
-                  className="text-primary hover:text-chart-2 font-medium"
+                  className="text-primary hover:text-secondary-foreground font-medium"
                 >
                   Daftar Sekarang
                 </Link>

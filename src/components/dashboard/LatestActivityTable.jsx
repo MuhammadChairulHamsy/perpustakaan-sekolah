@@ -26,7 +26,7 @@ export const LatestActivityTable = ({ activities }) => {
         <Button
           variant="ghost"
           size="sm"
-          className="text-primary cursor-pointer"
+          className="text-primary hover:bg-foreground transition-colors duration-500 ease-in-out cursor-pointer"
         >
           Lihat semua
           <ArrowRight className=" h-4 w-4" />

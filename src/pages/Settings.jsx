@@ -23,7 +23,7 @@ const Settings = () => {
   const [editingUser, setEditingUser] = useState(null);
 
   // Library Settings State
-  const [loanDuration, setLoanDuration] = useState("14");
+  const [loanDuration, setLoanDuration] = useState("7");
   const [maxBooks, setMaxBooks] = useState("5");
   const [overdueNotifications, setOverdueNotifications] = useState(true);
   const [dueDateReminders, setDueDateReminders] = useState(true);
@@ -105,16 +105,20 @@ const Settings = () => {
           </TabsList>
 
           {/* Users Tab */}
-          <TabsContent value="users" className="space-y-6">
-            <div className="flex flex-col justify-between lg:flex lg:flex-row lg:items-center">
-              <p>Manajemen Pengguna</p>
-              <Button
-                onClick={() => handleOpenDialog()}
-                className="font-bold cursor-pointer"
-              >
-                <Plus className="h-4 w-4" />
-                Tambah User
-              </Button>
+          <TabsContent value="users" className="space-y-3">
+            <div className="flex flex-col justify-between lg:flex lg:flex-row lg:items-center ">
+              <div className="lg:flex justify-between lg:w-full space-y-3">
+                <h2 className="text-lg font-semibold text-foreground">
+                  Manajemen Pengguna
+                </h2>
+                <Button
+                  onClick={() => handleOpenDialog()}
+                  className="font-bold cursor-pointer"
+                >
+                  <Plus className="h-4 w-4" />
+                  Tambah User
+                </Button>
+              </div>
             </div>
 
             <SettingDialog
@@ -173,7 +177,7 @@ const Settings = () => {
                 </div>
               </div>
               <div className="flex justify-end">
-                <Button>Simpan Preferensi</Button>
+                <Button>Simpan Perubahan</Button>
               </div>
             </div>
           </TabsContent>
@@ -234,6 +238,9 @@ const Settings = () => {
                       className="cursor-pointer"
                     />
                   </div>
+                </div>
+                <div className="flex justify-end">
+                  <Button>Simpan Preferensi</Button>
                 </div>
               </div>
             </div>

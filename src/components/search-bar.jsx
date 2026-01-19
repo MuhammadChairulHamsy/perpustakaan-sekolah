@@ -18,7 +18,7 @@ export const SearchBar = ({ value, onChange, placeholder, className = "" }) => {
         <Button
           onClick={() => onChange("")}
           variant="ghost"
-          className="w-7 h-7 absolute right-3 top-1/2 transform -translate-y-1/2 "
+          className="hover:bg-foreground transition-colors duration-500 ease-in-out w-7 h-7 absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
         >
           <X className="h-4 w-4" />
         </Button>

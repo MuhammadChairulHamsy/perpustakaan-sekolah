@@ -124,7 +124,7 @@ export const BookDialog = ({ open, onOpenChange, book, onSubmit }) => {
             <Button
               type="button"
               variant="outline"
-              className="cursor-pointer"
+              className="cursor-pointer hover:bg-foreground transition-colors duration-500 ease-in-out"
               onClick={() => onOpenChange(false)}
             >
               Batal
