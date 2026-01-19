@@ -4,7 +4,7 @@
    - user tidak bisa hapus data -->
 
 1. Tambah fitur pengaturan
-- User -> table Manajemen Pengguna
+<!-- - User -> table Manajemen Pengguna -->
 - Library -> card Konfigurasi Perpustakaan
 - Notifikasi = Preferensi Pemberitahuan
 
