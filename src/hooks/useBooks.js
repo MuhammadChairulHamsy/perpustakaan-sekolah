@@ -10,6 +10,26 @@ export const useBooks = () => {
 
   useEffect(() => {
     fetchBooks();
+
+    const channel = supabase
+      .channel("perubahan-stok")
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "buku" },
+        (payload) => {
+          // Jika ada stok berubah di DB, update state lokal secara otomatis
+          setBooks((currentBooks) =>
+            currentBooks.map((b) =>
+              b.id === payload.new.id ? payload.new : b,
+            ),
+          );
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -21,7 +41,7 @@ export const useBooks = () => {
           book.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           book.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           book.isbn?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.category?.toLowerCase().includes(searchQuery.toLowerCase())
+          book.category?.toLowerCase().includes(searchQuery.toLowerCase()),
       );
       setFilteredBooks(filtered);
     }
@@ -76,8 +96,8 @@ export const useBooks = () => {
       // Update state lokal
       setBooks((prevBooks) =>
         prevBooks.map((book) =>
-          book.id === id ? { ...book, ...updatedData } : book
-        )
+          book.id === id ? { ...book, ...updatedData } : book,
+        ),
       );
 
       return true;

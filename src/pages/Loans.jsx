@@ -29,12 +29,12 @@ const Loans = () => {
 
     if (success) {
       toast.success("Peminjaman Berhasil!", {
-        description: "Data peminjaman telah dicatat ke sistem.",
+        description: "Data peminjaman telah dicatat dan stok buku berkurang.",
         className: "!text-white",
       });
     } else {
       toast.error("Gagal Meminjam Buku", {
-        description: "Pastikan stok buku tersedia dan data siswa benar.",
+        description: result.message || "Pastikan stok tersedia.",
       });
     }
     return success;

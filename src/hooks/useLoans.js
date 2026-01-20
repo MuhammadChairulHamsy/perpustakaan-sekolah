@@ -95,7 +95,7 @@ export const useLoans = () => {
     return true;
   } catch (err) {
     console.error("addLoan error:", err);
-    return false;
+    return { success: false, message: err.message };
   }
 };
 
