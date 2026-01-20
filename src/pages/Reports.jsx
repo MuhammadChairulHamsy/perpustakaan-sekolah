@@ -8,8 +8,7 @@ import LoanStatusChart from "../components/reports/LoanStatusChart";
 import TopBooksChart from "../components/reports/TopBooksChart";
 
 const Reports = () => {
-  const { loading, summary, monthlyLoans, loanStatus, topBooks } =
-    useReport();
+  const { loading, summary, monthlyLoans, loanStatus, topBooks } = useReport();
 
   const summaryCards = [
     {
@@ -51,7 +50,7 @@ const Reports = () => {
   }
 
   return (
-    <div className="container min-h-screen space-y-8 ">
+    <div className="container min-h-screen space-y-8">
       <div>
         <h1 className="text-2xl font-bold">Laporan</h1>
         <p className="text-muted-foreground">
@@ -68,15 +67,15 @@ const Reports = () => {
 
       {/* GRAFIK */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-1">
           <MonthlyLoanChart data={monthlyLoans} />
         </div>
-        <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md">
+        <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-2">
           <LoanStatusChart data={loanStatus} />
         </div>
       </div>
 
-      <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md">
+      <div className="mt-6 bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-3">
         <TopBooksChart data={topBooks} />
       </div>
     </div>
