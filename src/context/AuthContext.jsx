@@ -9,6 +9,75 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const checkSupabaseSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (session) {
+        // User login via Google
+        setUser({
+          id: session.user.id,
+          email: session.user.email,
+          name:
+            session.user.user_metadata?.full_name ||
+            session.user.user_metadata?.name ||
+            session.user.email.split("@")[0],
+          role: session.user.user_metadata?.role || "admin",
+        });
+        setLoading(false);
+        return true;
+      }
+      return false;
+    };
+
+    // Listener Supabase untuk real-time update (khususnya setelah Google login)
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN" && session) {
+          setUser({
+            id: session.user.id,
+            email: session.user.email,
+            name:
+              session.user.user_metadata?.full_name ||
+              session.user.user_metadata?.name ||
+              session.user.email.split("@")[0],
+            role: session.user.user_metadata?.role || "user",
+          });
+        } else if (event === "SIGNED_OUT") {
+          setUser(null);
+        }
+      },
+    );
+
+    return () => {
+      listener?.subscription?.unsubscribe();
+    };
+  }, []);
+
+  // Google Login — LANGSUNG pakai Supabase client-side
+  const loginWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: {
+          prompt: "consent",
+        },
+      },
+    });
+
+    if (error) {
+      console.error("Google login error:", error);
+      return {
+        success: false,
+        message: error.message || "Gagal memulai login Google",
+      };
+    }
+    // Tidak perlu return apa-apa, browser akan redirect otomatis ke Google
+  };
+
+  useEffect(() => {
     // 1. Ambil sesi aktif saat pertama kali aplikasi dimuat
     const getInitialSession = async () => {
       const {
@@ -16,7 +85,6 @@ export const AuthProvider = ({ children }) => {
       } = await supabase.auth.getSession();
       if (session) {
         setUser(session.user);
-        // Ambil role dari user_metadata (misal: 'admin' atau 'siswa')
         setRole(session.user.user_metadata?.role || "siswa");
       }
       setLoading(false);
@@ -84,7 +152,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, role, loading, login, register, logout }}
+      value={{ user, role, loading, loginWithGoogle, login, register, logout, isAuthenticated: !!user }}
     >
       {children}
     </AuthContext.Provider>

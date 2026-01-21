@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 export function LoginForm({
   onSubmit,
-  // onGoogleLogin,
+  onGoogleLogin,
   email,
   password,
   setEmail,
@@ -84,7 +84,7 @@ export function LoginForm({
                 <Button
                   variant="outline"
                   type="button"
-                  // onClick={onGoogleLogin}
+                  onClick={onGoogleLogin}
                   className="transition-colors duration-500 ease-in-out hover:bg-foreground cursor-pointer font-sans"
                   disabled={loading}
                 >
