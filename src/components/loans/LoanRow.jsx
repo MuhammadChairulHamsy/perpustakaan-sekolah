@@ -12,11 +12,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { TableCell, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
-import { BookOpen, Trash2, CheckCircle } from "lucide-react";
+import { BookOpen, Trash2, CheckCircle, Printer } from "lucide-react";
 import { formatDate } from "../../utils/dateUtils";
 import { getLoanStatus } from "../../utils/loanUtils";
 
-export const LoanRow = ({ loan, onDelete, onReturn }) => {
+export const LoanRow = ({ loan, onDelete, onReturn, onPrint }) => {
   const statusInfo = getLoanStatus(loan);
 
   return (
@@ -63,6 +63,15 @@ export const LoanRow = ({ loan, onDelete, onReturn }) => {
         </span>
       </TableCell>
       <TableCell className="px-4 py-3">
+        <Button 
+          variant="outline" 
+          size="icon" 
+          onClick={() => onPrint(loan)} 
+          className="h-8 w-8 cursor-pointer"
+        >
+          <Printer className="h-4 w-4" />
+        </Button>
+
         <div className="flex justify-end gap-2">
           {loan.status !== "returned" && (
             <Button

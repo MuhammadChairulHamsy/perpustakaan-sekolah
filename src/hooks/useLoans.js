@@ -7,6 +7,7 @@ export const useLoans = () => {
   const [loans, setLoans] = useState([]);
   const [filteredLoans, setFilteredLoans] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLoan, setSelectedLoan] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -20,12 +21,15 @@ export const useLoans = () => {
     } else {
       const filtered = loans.filter(
         (loan) =>
-          loan.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          loan.title?.toLowerCase().includes(searchQuery.toLowerCase())
+          loan.siswa.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          loan.buku.title?.toLowerCase().includes(searchQuery.toLowerCase())
       );
       setFilteredLoans(filtered);
+      console.log("data", filtered);
     }
   }, [searchQuery, loans]);
+
+  
 
   const fetchLoans = async () => {
     try {
@@ -89,10 +93,11 @@ export const useLoans = () => {
       .limit(1)
       .single();
 
-    if (error) throw error;
-
-    setLoans((prev) => [data, ...prev]);
-    return true;
+      
+      if (error) throw error;
+      
+      setLoans((prev) => [data, ...prev]);
+      return true;
   } catch (err) {
     console.error("addLoan error:", err);
     return { success: false, message: err.message };
@@ -145,6 +150,8 @@ export const useLoans = () => {
     loans: filteredLoans,
     searchQuery,
     setSearchQuery,
+    selectedLoan,
+    setSelectedLoan,
     loading,
     error,
     addLoan,
