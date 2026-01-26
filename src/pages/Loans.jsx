@@ -5,8 +5,7 @@ import { LoanDialog, LoanTable } from "../components/loans";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
-import exportToPDF from "../utils/exportPDF";
-import LoanCardTemplate from "../components/export/LoanCardTemplate";
+import { PrintPreviewDialog } from "../components/loans/PrintPreviewDialog";
 
 const Loans = () => {
   const {
@@ -23,6 +22,7 @@ const Loans = () => {
   } = useLoans();
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const handleOpenDialog = () => {
     setDialogOpen(true);
@@ -67,17 +67,8 @@ const Loans = () => {
   };
 
   const handlePrint = async (loan) => {
-    if (!loan || Array.isArray(loan)) {
-      toast.error("Pilih satu data untuk dicetak");
-      return;
-    }
-    await setSelectedLoan(loan);
-    setTimeout(() => {
-      const elementId = `card-${loan.id}`;
-      const fileName = `Kartu_${loan.siswa?.name || "Pinjam"}.pdf`;
-
-      exportToPDF(elementId, fileName);
-    }, 200); // Beri waktu sedikit lebih lama agar DOM siap
+    setSelectedLoan(loan); 
+    setPreviewOpen(true);
   };
 
   if (loading) {
@@ -142,7 +133,11 @@ const Loans = () => {
           onReturn={handleReturn}
           onPrint={handlePrint}
         />
-        <LoanCardTemplate loan={selectedLoan} />
+        <PrintPreviewDialog
+          loan={selectedLoan}
+          open={previewOpen}
+          onOpenChange={setPreviewOpen}
+        />
       </div>
     </div>
   );

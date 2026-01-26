@@ -1,6 +1,6 @@
 import jsPDF from "jspdf";
 
-export const exportToPDF = (loan) => {
+ const exportToPDF = (loan) => {
   if (!loan) return;
 
   // Membuat dokumen landscape ukuran kartu (90mm x 55mm)
@@ -66,4 +66,4 @@ export const exportToPDF = (loan) => {
   doc.save(`Kartu_${loan.siswa?.name || "Pinjam"}.pdf`);
 };
 
-export default exportToPDF;
+export default exportToPDF
