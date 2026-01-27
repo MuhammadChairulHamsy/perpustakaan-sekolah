@@ -1,10 +1,8 @@
-import {z} from "zod";
+import { z } from "zod";
 
 export const signupSchema = z
   .object({
-    name: z
-      .string()
-      .min(3, { message: "Minimal 3 karakter" }),
+    name: z.string().min(3, { message: "Minimal 3 karakter" }),
     email: z.string().email({
       pattern: z.regexes.email,
       message: "Format email tidak valid",
@@ -18,7 +16,12 @@ export const signupSchema = z
       .regex(/[0-9]/, "Harus ada 1 angka"),
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Password tidak cocok",
-    path: ["confirmPassword"],
+  .superRefine(({ password, confirmPassword }, ctx) => {
+    if (confirmPassword !== password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Password tidak cocok",
+        path: ["confirmPassword"],
+      });
+    }
   });

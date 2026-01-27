@@ -4,11 +4,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 export function SignupForm({
   register,
   handleSubmit,
   onSubmit,
+  showPassword,
+  setShowPassword,
   errors = {},
   loading,
   error,
@@ -21,7 +24,7 @@ export function SignupForm({
         <CardContent className="grid p-0 md:grid-cols-2">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            noValidate 
+            noValidate
             className="bg-background p-6 md:p-8 border-r"
           >
             <FieldGroup>
@@ -57,12 +60,25 @@ export function SignupForm({
                 <Field className="grid grid-cols-2 gap-4">
                   <Field>
                     <FieldLabel htmlFor="password">Password</FieldLabel>
-                    <Input
-                      id="password"
-                      type="password"
-                      {...register("password")}
-                      placeholder="••••••••"
-                    />
+                    <div className="relative">
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        {...register("password")}
+                        placeholder="••••••••"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={18} />
+                        ) : (
+                          <Eye size={18} />
+                        )}
+                      </button>
+                    </div>
                     {errors.password && (
                       <p className="text-xs text-red-500">
                         {errors.password.message}
@@ -75,7 +91,7 @@ export function SignupForm({
                     </FieldLabel>
                     <Input
                       id="confirmPassword"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       {...register("confirmPassword")}
                       placeholder="••••••••"
                     />

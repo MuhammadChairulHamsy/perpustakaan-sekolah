@@ -1,22 +1,19 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "../ui/field";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 export function LoginForm({
-  onSubmit,
+  register,
+  handleSubmit,
   onGoogleLogin,
-  email,
-  password,
-  setEmail,
-  setPassword,
+  onSubmit,
+  showPassword,
+  setShowPassword,
+  errors = {},
   loading,
   error,
   className,
@@ -26,7 +23,11 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form onSubmit={onSubmit} className="bg-background p-6 md:p-8 border-r">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="bg-background p-6 md:p-8 border-r"
+          >
             <FieldGroup>
               <div className="flex flex-col items-center gap-2 text-center">
                 <h1 className="text-2xl text-foreground font-display font-bold">
@@ -44,12 +45,13 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  {...register("email")}
                   placeholder="m@example.com"
                   className="font-sans"
-                  required
                 />
+                {errors.email && (
+                  <p className="text-xs text-red-500">{errors.email.message}</p>
+                )}
               </Field>
 
               <Field>
@@ -58,16 +60,27 @@ export function LoginForm({
                     Password
                   </FieldLabel>
                 </div>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="font-sans"
-                  required
-                />
-                {error && <p className="text-sm text-red-500">{error}</p>}
+                <div className="relative">
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    {...register("password")}
+                    placeholder="••••••••"
+                    className="font-sans"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-xs text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
               </Field>
 
               <Field>

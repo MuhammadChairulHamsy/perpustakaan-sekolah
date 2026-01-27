@@ -10,6 +10,7 @@ import { toast } from "sonner";
 export default function SignupPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassowrd, setShowPassword] = useState(false);
   const {
     register: authRegister,
     user,
@@ -92,6 +93,8 @@ export default function SignupPage() {
           register={register}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
+          showPassword={showPassowrd}
+          setShowPassword={setShowPassword}
           errors={errors}
           loading={loading}
           error={error}
