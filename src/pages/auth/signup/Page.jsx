@@ -1,18 +1,42 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signupSchema } from "../../../schemas/registerSchema";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { SignupForm } from "../../../components/auth/signup-form";
 
 export default function SignupPage() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { register, user, logout, loading: authLoading } = useAuth();
+  const {
+    register: authRegister,
+    user,
+    logout,
+    loading: authLoading,
+  } = useAuth();
   const navigate = useNavigate();
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signupSchema),
+    mode: "onChange",
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  useEffect(() => {
+  if (Object.keys(errors).length > 0) {
+    console.log("Error Validasi:", errors);
+  }
+}, [errors]);
   // Redirect jika sudah login
   if (!authLoading && user && !loading) {
     navigate("/dashboard");
@@ -30,21 +54,20 @@ export default function SignupPage() {
     return null; // Akan redirect via useEffect
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (values) => {
+    // e.preventDefault();
     setError("");
     setLoading(true);
 
-    const result = await register(name, email, password);
+    const result = await authRegister(
+      values.name,
+      values.email,
+      values.password,
+    );
 
     if (result.success) {
-      // TAMBAHKAN INI: Paksa logout agar sesi otomatis dari Supabase terhapus
       await logout();
-
-      // Beri notifikasi sukses (opsional)
-      alert("Registrasi berhasil! Silakan login dengan akun baru Anda.");
-
-      // Baru redirect ke login
+      alert("Registrasi berhasil! Silakan login.");
       navigate("/login", { replace: true });
     } else {
       setError(result.message);
@@ -56,15 +79,10 @@ export default function SignupPage() {
     <div className="bg-muted flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
       <div className="w-full max-w-sm md:max-w-4xl">
         <SignupForm
-          name={name}
-          email={email}
-          password={password}
-          confirmPassword={confirmPassword}
-          onNameChange={(e) => setName(e.target.value)}
-          onEmailChange={(e) => setEmail(e.target.value)}
-          onPasswordChange={(e) => setPassword(e.target.value)}
-          onConfirmPasswordChange={(e) => setConfirmPassword(e.target.value)}
-          onSubmit={handleSubmit}
+          register={register}
+          handleSubmit={handleSubmit}
+          onSubmit={onSubmit}
+          errors={error}
           loading={loading}
           error={error}
         />

@@ -1,25 +1,15 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "../ui/field";
+import { Field, FieldDescription, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
 
 export function SignupForm({
-  name,
-  email,
-  password,
-  confirmPassword,
-  onNameChange,
-  onEmailChange,
-  onPasswordChange,
-  onConfirmPasswordChange,
+  register,
+  handleSubmit,
   onSubmit,
+  errors = {},
   loading,
   error,
   className,
@@ -29,7 +19,11 @@ export function SignupForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden p-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form onSubmit={onSubmit} className="bg-background p-6 md:p-8 border-r">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate 
+            className="bg-background p-6 md:p-8 border-r"
+          >
             <FieldGroup>
               {error && <p className="text-red-500 text-sm">{error}</p>}
               <div className="flex flex-col items-center gap-2 text-center">
@@ -42,25 +36,22 @@ export function SignupForm({
               </div>
               <Field>
                 <FieldLabel htmlFor="name">Nama Lengkap</FieldLabel>
-                <Input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={onNameChange}
-                  placeholder="John Doe"
-                  required
-                />
+                <Input id="name" {...register("name")} placeholder="John Doe" />
+                {errors.name && (
+                  <p className="text-xs text-red-500">{errors.name.message}</p>
+                )}
               </Field>
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
                   id="email"
                   type="email"
-                  value={email}
-                  onChange={onEmailChange}
+                  {...register("email")}
                   placeholder="m@example.com"
-                  required
                 />
+                {errors.email && (
+                  <p className="text-xs text-red-500">{errors.email.message}</p>
+                )}
               </Field>
               <Field>
                 <Field className="grid grid-cols-2 gap-4">
@@ -69,24 +60,30 @@ export function SignupForm({
                     <Input
                       id="password"
                       type="password"
-                      value={password}
-                      onChange={onPasswordChange}
+                      {...register("password")}
                       placeholder="••••••••"
-                      required
                     />
+                    {errors.password && (
+                      <p className="text-xs text-red-500">
+                        {errors.password.message}
+                      </p>
+                    )}
                   </Field>
                   <Field>
-                    <FieldLabel htmlFor="confirm-password">
+                    <FieldLabel htmlFor="confirmPassword">
                       Confirm Password
                     </FieldLabel>
                     <Input
-                      id="confirm-password"
+                      id="confirmPassword"
                       type="password"
-                      value={confirmPassword}
-                      onChange={onConfirmPasswordChange}
+                      {...register("confirmPassword")}
                       placeholder="••••••••"
-                      required
                     />
+                    {errors.password && (
+                      <p className="text-xs text-red-500">
+                        {errors.password.message}
+                      </p>
+                    )}
                   </Field>
                 </Field>
               </Field>
