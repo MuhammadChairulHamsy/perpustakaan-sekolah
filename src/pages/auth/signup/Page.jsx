@@ -1,10 +1,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema } from "../../../schemas/registerSchema";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 import { SignupForm } from "../../../components/auth/signup-form";
+import { toast } from "sonner";
 
 export default function SignupPage() {
   const [error, setError] = useState("");
@@ -32,11 +33,6 @@ export default function SignupPage() {
     },
   });
 
-  useEffect(() => {
-  if (Object.keys(errors).length > 0) {
-    console.log("Error Validasi:", errors);
-  }
-}, [errors]);
   // Redirect jika sudah login
   if (!authLoading && user && !loading) {
     navigate("/dashboard");
@@ -55,22 +51,36 @@ export default function SignupPage() {
   }
 
   const onSubmit = async (values) => {
-    // e.preventDefault();
     setError("");
     setLoading(true);
 
-    const result = await authRegister(
-      values.name,
-      values.email,
-      values.password,
-    );
+    try {
+      const result = await authRegister(
+        values.name,
+        values.email,
+        values.password,
+      );
 
-    if (result.success) {
-      await logout();
-      alert("Registrasi berhasil! Silakan login.");
-      navigate("/login", { replace: true });
-    } else {
-      setError(result.message);
+      if (result.success) {
+        // 1. Bersihkan sesi otomatis dari Supabase
+        await logout();
+
+        // 2. Munculkan Toast
+        toast.success("Registrasi berhasil!", {
+          description: "Silakan login dengan akun baru Anda.",
+        });
+
+        // 3. Redirect ke login
+        navigate("/login", { replace: true });
+      } else {
+        setError(result.message);
+        toast.error("Gagal membuat akun", {
+          description: result.message,
+        });
+      }
+    } catch (err) {
+      toast.error("Terjadi kesalahan sistem");
+    } finally {
       setLoading(false);
     }
   };
@@ -82,7 +92,7 @@ export default function SignupPage() {
           register={register}
           handleSubmit={handleSubmit}
           onSubmit={onSubmit}
-          errors={error}
+          errors={errors}
           loading={loading}
           error={error}
         />

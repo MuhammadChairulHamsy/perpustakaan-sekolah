@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }) => {
 
     // 2. Satu listener untuk semua perubahan status (Login, Logout, Token Refresh)
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`Auth Event: ${event}`);
       setUser(formatUser(session?.user));
       setLoading(false);
     });
