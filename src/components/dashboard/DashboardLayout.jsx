@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
-import { useNotification } from "@/src/hooks/useNotification";
+import { useNotification } from "../../hooks/useNotification";
 
 export default function DashboardLayout() {
   useNotification();

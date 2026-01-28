@@ -1,6 +1,8 @@
-import { useSettings } from "../hooks/useSetting";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bell, Database, Plus, User } from "lucide-react";
+import supabase from "../lib/supabase/client";
+import { useAuth } from "../context/AuthContext";
+import { useSettings } from "../hooks/useSetting";
 import { Button } from "../components/ui/button";
 import { SettingTable } from "../components/settings/SettingTable";
 import { SettingDialog } from "../components/settings";
@@ -17,17 +19,79 @@ import {
 import { Switch } from "../components/ui/switch";
 
 const Settings = () => {
+  const { user } = useAuth();
   const { users, loading, error, addUsers, editUser, deleteUser } =
     useSettings();
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Library Settings State
   const [loanDuration, setLoanDuration] = useState("7");
   const [maxBooks, setMaxBooks] = useState("5");
+
+  // Notification Preferences State
   const [overdueNotifications, setOverdueNotifications] = useState(true);
   const [dueDateReminders, setDueDateReminders] = useState(true);
-  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [emailNotifications, setEmailNotifications] = useState(false);
+
+  // 1. Ambil data preferensi dari database saat komponen dimuat
+  useEffect(() => {
+    const fetchUserPreferences = async () => {
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select(
+          "overdue_notifications, due_date_reminders, email_notifications",
+        )
+        .eq("id", user.id)
+        .single();
+
+      if (data) {
+        setOverdueNotifications(data.overdue_notifications ?? true);
+        setDueDateReminders(data.due_date_reminders ?? true);
+        setEmailNotifications(data.email_notifications ?? false);
+      }
+    };
+
+    fetchUserPreferences();
+  }, [user]);
+
+  // 2. Fungsi Simpan Preferensi Notifikasi
+  const handleSaveNotificationPreferences = async () => {
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          overdue_notifications: overdueNotifications,
+          due_date_reminders: dueDateReminders,
+          email_notifications: emailNotifications,
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
+      toast.success("Preferensi Notifikasi Berhasil Disimpan!", {
+        description: "Pengaturan notifikasi Anda telah diperbarui.",
+      });
+    } catch (err) {
+      toast.error("Gagal menyimpan preferensi", {
+        description: err.message,
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // 3. Fungsi Simpan Konfigurasi Perpustakaan (Opsional)
+  const handleSaveLibraryConfig = () => {
+    toast.success("Konfigurasi Perpustakaan Disimpan!", {
+      description: `Durasi: ${loanDuration} hari, Maks: ${maxBooks} buku.`,
+    });
+  };
 
   const handleOpenDialog = (user = null) => {
     setEditingUser(user);
@@ -41,7 +105,6 @@ const Settings = () => {
     if (success) {
       toast.success("Berhasil Simpan!", {
         description: `User ${formData.full_name} sudah masuk sistem.`,
-        className: "!text-white",
       });
     } else {
       toast.error("Gagal Menyimpan user Yang Sudah Ada");
@@ -87,20 +150,16 @@ const Settings = () => {
           </p>
         </div>
 
-        {/* Settings Tabs */}
         <Tabs defaultValue="users" className="space-y-6">
           <TabsList className="bg-muted/50 ">
             <TabsTrigger value="users" className="gap-2 cursor-pointer">
-              <User className="h-4 w-4" />
-              Pengguna
+              <User className="h-4 w-4" /> Pengguna
             </TabsTrigger>
             <TabsTrigger value="library" className="gap-2 cursor-pointer">
-              <Database className="h-4 w-4" />
-              Perpustakaan
+              <Database className="h-4 w-4" /> Perpustakaan
             </TabsTrigger>
             <TabsTrigger value="notifications" className="gap-2 cursor-pointer">
-              <Bell className="h-4 w-4" />
-              Notifikasi
+              <Bell className="h-4 w-4" /> Notifikasi
             </TabsTrigger>
           </TabsList>
 
@@ -115,19 +174,16 @@ const Settings = () => {
                   onClick={() => handleOpenDialog()}
                   className="font-bold cursor-pointer"
                 >
-                  <Plus className="h-4 w-4" />
-                  Tambah User
+                  <Plus className="h-4 w-4" /> Tambah User
                 </Button>
               </div>
             </div>
-
             <SettingDialog
               open={dialogOpen}
               onOpenChange={setDialogOpen}
               user={editingUser}
               onSubmit={handleSubmit}
             />
-
             <SettingTable
               setting={users}
               onEdit={handleOpenDialog}
@@ -141,11 +197,9 @@ const Settings = () => {
               <h2 className="text-lg font-semibold text-foreground">
                 Konfigurasi Perpustakaan
               </h2>
-              <div className="grid gap-6 sm:grid-cols-2 ">
+              <div className="grid gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="loanDuration">
-                    Jangka Waktu Pinjaman Gagal Bayar (hari)
-                  </Label>
+                  <Label>Jangka Waktu Pinjaman (hari)</Label>
                   <Select value={loanDuration} onValueChange={setLoanDuration}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
@@ -160,9 +214,7 @@ const Settings = () => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="maxBooks">
-                    Jumlah Buku Maksimal per Siswa
-                  </Label>
+                  <Label>Jumlah Buku Maksimal per Siswa</Label>
                   <Select value={maxBooks} onValueChange={setMaxBooks}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
@@ -177,7 +229,12 @@ const Settings = () => {
                 </div>
               </div>
               <div className="flex justify-end">
-                <Button>Simpan Perubahan</Button>
+                <Button
+                  onClick={handleSaveLibraryConfig}
+                  className="cursor-pointer"
+                >
+                  Simpan Perubahan
+                </Button>
               </div>
             </div>
           </TabsContent>
@@ -187,17 +244,17 @@ const Settings = () => {
             <div className="data-table rounded-lg border border-border bg-card p-7 space-y-5">
               <div className="space-y-6">
                 <h2 className="text-lg font-semibold text-foreground">
-                  Notifikasi Preferensi{" "}
+                  Notifikasi Preferensi
                 </h2>
-
                 <div className="space-y-4">
+                  {/* Item Notifikasi */}
                   <div className="flex items-center justify-between rounded-lg border border-border p-4">
                     <div>
                       <p className="font-medium text-foreground">
                         Overdue Notifications
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Send notifications when books are overdue
+                        Kirim notifikasi saat buku terlambat dikembalikan
                       </p>
                     </div>
                     <Switch
@@ -213,7 +270,7 @@ const Settings = () => {
                         Due Date Reminders
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Send reminders before books are due
+                        Kirim pengingat sebelum tanggal jatuh tempo
                       </p>
                     </div>
                     <Switch
@@ -229,7 +286,7 @@ const Settings = () => {
                         Email Notifications
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Receive notifications via email
+                        Terima notifikasi via email
                       </p>
                     </div>
                     <Switch
@@ -240,7 +297,13 @@ const Settings = () => {
                   </div>
                 </div>
                 <div className="flex justify-end">
-                  <Button>Simpan Preferensi</Button>
+                  <Button
+                    onClick={handleSaveNotificationPreferences}
+                    disabled={isSaving}
+                    className="cursor-pointer"
+                  >
+                    {isSaving ? "Menyimpan..." : "Simpan Preferensi"}
+                  </Button>
                 </div>
               </div>
             </div>
