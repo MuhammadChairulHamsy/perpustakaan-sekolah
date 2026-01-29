@@ -1,2 +1,3 @@
+1. Laporan (Reports): Membuat fitur cetak daftar buku yang paling sering dipinjam atau daftar denda yang belum dibayar.
 
-1. validation zod and react-hook-form
+2. Manajemen Buku: Menambahkan fitur scan barcode (menggunakan kamera laptop/HP) untuk mempermudah petugas saat meminjamkan buku.

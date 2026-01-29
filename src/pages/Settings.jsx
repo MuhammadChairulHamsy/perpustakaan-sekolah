@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { Bell, Database, Plus, User } from "lucide-react";
-import supabase from "../lib/supabase/client";
-import { useAuth } from "../context/AuthContext";
 import { useSettings } from "../hooks/useSetting";
+import { useState, useEffect } from "react";
+import { Bell, Database, Plus, User } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { SettingTable } from "../components/settings/SettingTable";
 import { SettingDialog } from "../components/settings";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "../components/ui/label";
+import supabase from "../lib/supabase/client";
+import { useAuth } from "../context/AuthContext";
 import {
   Select,
   SelectContent,
@@ -34,14 +34,13 @@ const Settings = () => {
   // Notification Preferences State
   const [overdueNotifications, setOverdueNotifications] = useState(true);
   const [dueDateReminders, setDueDateReminders] = useState(true);
-  const [emailNotifications, setEmailNotifications] = useState(false);
+  const [emailNotifications, setEmailNotifications] = useState(true);
 
-  // 1. Ambil data preferensi dari database saat komponen dimuat
+  // 1. Ambil data preferensi user dari tabel profiles saat load
   useEffect(() => {
-    const fetchUserPreferences = async () => {
+    const fetchPrefs = async () => {
       if (!user) return;
-
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("profiles")
         .select(
           "overdue_notifications, due_date_reminders, email_notifications",
@@ -52,15 +51,14 @@ const Settings = () => {
       if (data) {
         setOverdueNotifications(data.overdue_notifications ?? true);
         setDueDateReminders(data.due_date_reminders ?? true);
-        setEmailNotifications(data.email_notifications ?? false);
+        setEmailNotifications(data.email_notifications ?? true);
       }
     };
-
-    fetchUserPreferences();
+    fetchPrefs();
   }, [user]);
 
-  // 2. Fungsi Simpan Preferensi Notifikasi
-  const handleSaveNotificationPreferences = async () => {
+  // 2. Fungsi Simpan Khusus Notifikasi
+  const handleSaveNotificationPrefs = async () => {
     setIsSaving(true);
     try {
       const { error } = await supabase
@@ -73,24 +71,20 @@ const Settings = () => {
         .eq("id", user.id);
 
       if (error) throw error;
-
-      toast.success("Preferensi Notifikasi Berhasil Disimpan!", {
-        description: "Pengaturan notifikasi Anda telah diperbarui.",
-      });
+      toast.success("Preferensi Notifikasi Berhasil Disimpan!");
     } catch (err) {
-      toast.error("Gagal menyimpan preferensi", {
-        description: err.message,
-      });
+      toast.error("Gagal menyimpan: " + err.message);
     } finally {
       setIsSaving(false);
     }
   };
 
-  // 3. Fungsi Simpan Konfigurasi Perpustakaan (Opsional)
-  const handleSaveLibraryConfig = () => {
-    toast.success("Konfigurasi Perpustakaan Disimpan!", {
+  // 3. Fungsi Simpan Khusus Konfigurasi Perpustakaan
+  const handleSaveLibraryConfig = async () => {
+    toast.success("Konfigurasi Perpustakaan diperbarui!", {
       description: `Durasi: ${loanDuration} hari, Maks: ${maxBooks} buku.`,
     });
+    // Jika Anda punya tabel global config, eksekusi query-nya di sini.
   };
 
   const handleOpenDialog = (user = null) => {
@@ -105,6 +99,7 @@ const Settings = () => {
     if (success) {
       toast.success("Berhasil Simpan!", {
         description: `User ${formData.full_name} sudah masuk sistem.`,
+        className: "!text-white",
       });
     } else {
       toast.error("Gagal Menyimpan user Yang Sudah Ada");
@@ -163,7 +158,6 @@ const Settings = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* Users Tab */}
           <TabsContent value="users" className="space-y-3">
             <div className="flex flex-col justify-between lg:flex lg:flex-row lg:items-center ">
               <div className="lg:flex justify-between lg:w-full space-y-3">
@@ -191,7 +185,6 @@ const Settings = () => {
             />
           </TabsContent>
 
-          {/* Library Settings Tab */}
           <TabsContent value="library" className="space-y-6">
             <div className="data-table rounded-lg border border-border bg-card p-7 space-y-5">
               <h2 className="text-lg font-semibold text-foreground">
@@ -199,7 +192,9 @@ const Settings = () => {
               </h2>
               <div className="grid gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label>Jangka Waktu Pinjaman (hari)</Label>
+                  <Label htmlFor="loanDuration">
+                    Jangka Waktu Pinjaman (hari)
+                  </Label>
                   <Select value={loanDuration} onValueChange={setLoanDuration}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
@@ -212,9 +207,10 @@ const Settings = () => {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div className="space-y-2">
-                  <Label>Jumlah Buku Maksimal per Siswa</Label>
+                  <Label htmlFor="maxBooks">
+                    Jumlah Buku Maksimal per Siswa
+                  </Label>
                   <Select value={maxBooks} onValueChange={setMaxBooks}>
                     <SelectTrigger className="w-full">
                       <SelectValue />
@@ -239,7 +235,6 @@ const Settings = () => {
             </div>
           </TabsContent>
 
-          {/* Notifications Tab */}
           <TabsContent value="notifications" className="space-y-6">
             <div className="data-table rounded-lg border border-border bg-card p-7 space-y-5">
               <div className="space-y-6">
@@ -247,11 +242,10 @@ const Settings = () => {
                   Notifikasi Preferensi
                 </h2>
                 <div className="space-y-4">
-                  {/* Item Notifikasi */}
                   <div className="flex items-center justify-between rounded-lg border border-border p-4">
                     <div>
                       <p className="font-medium text-foreground">
-                        Overdue Notifications
+                        Notifikasi Keterlambatan
                       </p>
                       <p className="text-sm text-muted-foreground">
                         Kirim notifikasi saat buku terlambat dikembalikan
@@ -263,14 +257,13 @@ const Settings = () => {
                       className="cursor-pointer"
                     />
                   </div>
-
                   <div className="flex items-center justify-between rounded-lg border border-border p-4">
                     <div>
                       <p className="font-medium text-foreground">
-                        Due Date Reminders
+                        Pengingat Tanggal Jatuh Tempo
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Kirim pengingat sebelum tanggal jatuh tempo
+                        Kirim pengingat sebelum buku jatuh tempo.
                       </p>
                     </div>
                     <Switch
@@ -279,14 +272,13 @@ const Settings = () => {
                       className="cursor-pointer"
                     />
                   </div>
-
                   <div className="flex items-center justify-between rounded-lg border border-border p-4">
                     <div>
                       <p className="font-medium text-foreground">
                         Email Notifications
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        Terima notifikasi via email
+                        Terima pemberitahuan melalui email
                       </p>
                     </div>
                     <Switch
@@ -298,7 +290,7 @@ const Settings = () => {
                 </div>
                 <div className="flex justify-end">
                   <Button
-                    onClick={handleSaveNotificationPreferences}
+                    onClick={handleSaveNotificationPrefs}
                     disabled={isSaving}
                     className="cursor-pointer"
                   >

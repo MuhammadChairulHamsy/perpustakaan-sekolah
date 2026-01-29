@@ -7,7 +7,7 @@ const App = () => {
   return (
     <AuthProvider>
       <RouterProvider router={router} />
-      <Toaster position="top-center" richColors />
+      {/* <Toaster position="top-center" richColors /> */}
     </AuthProvider>
   );
 };
