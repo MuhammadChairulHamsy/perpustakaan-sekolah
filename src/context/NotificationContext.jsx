@@ -40,7 +40,7 @@ export const NotificationProvider = ({ children }) => {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
-          const audio = new Audio("/notification.mp3");
+          const audio = new Audio("/audio/notification.mp3");
           audio
             .play()
             .catch((err) => console.log("Audio play blocked by browser"));

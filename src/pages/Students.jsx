@@ -72,7 +72,7 @@ const Students = () => {
       <div className="mb-6 w-full flex flex-col gap-4">
         <div className="flex flex-col justify-between items-start lg:flex lg:flex-row">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-bold text-foreground mb-2">Siswa</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">Semua Siswa</h1>
             <p className="text-muted-foreground">
               Kelola anggota perpustakaan terdaftar
             </p>

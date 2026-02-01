@@ -74,7 +74,7 @@ const Books = () => {
       <div className="mb-6 w-full flex flex-col gap-4">
         <div className="flex flex-col justify-between items-start lg:flex lg:flex-row">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-bold text-foreground">Buku</h1>
+            <h1 className="text-2xl font-bold text-foreground">Semua Buku</h1>
             <p className="text-muted-foreground">
               Kelola koleksi buku perpustakaan Anda
             </p>

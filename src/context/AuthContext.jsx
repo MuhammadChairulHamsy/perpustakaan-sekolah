@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         email,
         password,
         options: {
-          data: { full_name: name, role: "admin" }, // Default admin saat signup manual
+          data: { full_name: name, role: "admin" },
         },
       });
       if (error) throw error;
