@@ -13,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import supabase from "../../lib/supabase/client";
+import  {supabase}  from "../../lib/supabase/client";
 import { useEffect, useState } from "react";
 
 export const LoanDialog = ({ open, onOpenChange, onSubmit }) => {

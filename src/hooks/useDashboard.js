@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import supabase from "../lib/supabase/client";
+import { supabase } from "../lib/supabase/client";
 
 export const useDashboard = () => {
   const [stats, setStats] = useState({
@@ -46,11 +46,10 @@ export const useDashboard = () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      const { data: borrowedTodayData, error: borrowedError } =
-        await supabase
-          .from("peminjaman")
-          .select("id, loan_date")
-          .gte("loan_date", today.toISOString());
+      const { data: borrowedTodayData, error: borrowedError } = await supabase
+        .from("peminjaman")
+        .select("id, loan_date")
+        .gte("loan_date", today.toISOString());
 
       if (borrowedError) throw borrowedError;
 
@@ -70,14 +69,16 @@ export const useDashboard = () => {
        ========================== */
       const { data: activities, error: activityError } = await supabase
         .from("peminjaman")
-        .select(`
+        .select(
+          `
           id,
           status,
           due_date,
           created_at,
           siswa:student_id (name),
           buku:book_id (title)
-        `)
+        `,
+        )
         .order("created_at", { ascending: false })
         .limit(5);
 

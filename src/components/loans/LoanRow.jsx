@@ -62,9 +62,9 @@ export const LoanRow = ({ loan, onDelete, onReturn, onPrint }) => {
           {statusInfo.label}
         </span>
       </TableCell>
-      <TableCell className="px-4 py-3">
+      <TableCell className="py-3">
         <div className="flex justify-end gap-2">
-          {loan.status !== "returned" && (
+          {loan.status !== "returned" ? (
             <Button
               variant="ghost"
               size="sm"
@@ -74,7 +74,15 @@ export const LoanRow = ({ loan, onDelete, onReturn, onPrint }) => {
               <CheckCircle className="h-4 w-4 mr-1" />
               Kembalikan
             </Button>
+          ) : (
+            <span className="text-md mx-auto text-muted-foreground ml-3 italic">
+              Selesai
+            </span>
           )}
+        </div>
+      </TableCell>
+      <TableCell className=" py-3 text-right">
+        <div className="flex justify-end gap-2">
           <Button
             variant="outline"
             size="icon"

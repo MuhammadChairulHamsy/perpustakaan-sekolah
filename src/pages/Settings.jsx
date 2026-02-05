@@ -7,7 +7,7 @@ import { SettingDialog } from "../components/settings";
 import { toast } from "sonner";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "../components/ui/label";
-import supabase from "../lib/supabase/client";
+import  {supabase}  from "../lib/supabase/client";
 import { useAuth } from "../context/AuthContext";
 import {
   Select,

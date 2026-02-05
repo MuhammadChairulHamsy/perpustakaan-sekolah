@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import supabase from "../lib/supabase/client";
+import { supabase } from "../lib/supabase/client";
 import { useAuth } from "./AuthContext";
 import { toast } from "sonner";
 

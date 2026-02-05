@@ -28,12 +28,22 @@ export function NavUser() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate("/login");
-  };
+ const handleLogout = async () => {
+  try {
+    await logout(); 
+  } catch (error) {
+    console.error("Gagal logout:", error);
+  } finally {
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    localStorage.clear();
+    navigate("/login", { replace: true });
+  }
+};
 
-//   Jika user belum ada (masih loading), return null
   if (!user) {
     return null;
   }

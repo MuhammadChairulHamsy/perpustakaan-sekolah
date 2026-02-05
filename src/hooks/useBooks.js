@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import supabase from "../lib/supabase/client";
+import {supabase} from "../lib/supabase/client";
 
 export const useBooks = () => {
   const [books, setBooks] = useState([]);

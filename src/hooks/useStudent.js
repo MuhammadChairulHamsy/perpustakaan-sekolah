@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import supabase from "../lib/supabase/client";
+import { supabase } from "../lib/supabase/client";
 
 export const useStudents = () => {
   const [students, setStudents] = useState([]);
@@ -20,7 +20,7 @@ export const useStudents = () => {
         (student) =>
           student.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           student.class?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          student.email?.toLowerCase().includes(searchQuery.toLowerCase())
+          student.email?.toLowerCase().includes(searchQuery.toLowerCase()),
       );
       setFilteredStudents(filtered);
     }
@@ -75,8 +75,8 @@ export const useStudents = () => {
       // Update state lokal
       setStudents((prevStudent) =>
         prevStudent.map((student) =>
-          student.id === id ? { ...student, ...updatedData } : student
-        )
+          student.id === id ? { ...student, ...updatedData } : student,
+        ),
       );
 
       return true;

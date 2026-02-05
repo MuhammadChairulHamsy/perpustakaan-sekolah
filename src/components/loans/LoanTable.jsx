@@ -34,7 +34,10 @@ export const LoanTable = ({ loans, onDelete, onReturn, onPrint }) => {
               <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
                 Status
               </TableHead>
-              <TableHead className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-left center-sm font-medium text-muted-foreground">
+                Konfirmasi
+              </TableHead>
+              <TableHead className="py-4 px-3 text-right text-sm font-medium text-muted-foreground">
                 Aksi
               </TableHead>
             </TableRow>
@@ -43,7 +46,7 @@ export const LoanTable = ({ loans, onDelete, onReturn, onPrint }) => {
             {loans.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   className="h-24 text-center text-muted-foreground"
                 >
                   Tidak ada data peminjaman

@@ -1,6 +1,6 @@
 // src/hooks/useLoans.js
 import { useEffect, useState } from "react";
-import supabase from "../lib/supabase/client";
+import {supabase} from "../lib/supabase/client";
 
 export const useLoans = () => {
 
