@@ -99,9 +99,9 @@ const data = {
 export function AppSidebar({ ...props }) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
+      <SidebarHeader >
+        <SidebarMenu >
+          <SidebarMenuItem >
             <SidebarMenuButton
               asChild
               size="lg"

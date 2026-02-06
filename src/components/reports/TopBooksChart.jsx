@@ -1,37 +1,76 @@
+"use client"
+
+import { Bar, BarChart, XAxis, YAxis, LabelList } from "recharts"
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
+
+const chartConfig = {
+  total: {
+    label: "Total Pinjam",
+    color: "#43B7EC",
+  },
+}
 
 const TopBooksChart = ({ data }) => {
-  return (
-    <div className="dashboard-card">
-      <h3 className="mb-4 text-lg font-semibold">
-        Buku Paling Sering Dipinjam
-      </h3>
+  const sortedData = [...data].sort((a, b) => b.total - a.total).slice(0, 5);
 
-      <div className="h-72">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} layout="vertical">
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis type="number" />
-            <YAxis dataKey="title" type="category" width={150} />
-            <Tooltip />
+  return (
+    <Card className="border-none shadow-none bg-transparent">
+      <CardHeader>
+        <CardTitle>Buku Paling Sering Dipinjam</CardTitle>
+        <CardDescription>Top 5 koleksi literasi paling populer</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+          <BarChart
+            accessibilityLayer
+            data={sortedData}
+            layout="vertical"
+            margin={{
+              left: 30,
+            }}
+          >
+            <XAxis type="number" dataKey="total" hide />
+            <YAxis
+              dataKey="title"
+              type="category"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
             <Bar
               dataKey="total"
-              fill="#0DA2E7"
-              radius={[0, 4, 4, 0]}
-            />
+              fill="var(--color-total)"
+              layout="vertical"
+              radius={5}
+            >
+              <LabelList
+                dataKey="total"
+                position="right"
+                offset={8}
+                className="fill-foreground font-semibold"
+                fontSize={12}
+              />
+            </Bar>
           </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-};
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  )
+}
 
-export default TopBooksChart;
+export default TopBooksChart

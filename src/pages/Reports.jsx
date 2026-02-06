@@ -17,6 +17,7 @@ const Reports = () => {
       icon: TrendingUp,
       color: "text-blue-400",
       bgColor: "bg-blue-100",
+      description: "Total sirkulasi buku yang tercatat.",
     },
     {
       title: "Pinjaman Hari Ini",
@@ -24,13 +25,15 @@ const Reports = () => {
       icon: BookOpen,
       color: "text-green-400",
       bgColor: "bg-green-100",
+      description: "Aktivitas peminjaman hari ini.",
     },
     {
       title: "Tingkat Keterlambatan (%)",
-      value: summary.overdueRate,
+      value: `${summary.overdueRate}%`,
       icon: AlertTriangle,
       color: "text-orange-400",
       bgColor: "bg-orange-100",
+      description: "Persentase buku yang belum kembali.",
     },
     {
       title: "Peminjam Aktif",
@@ -38,6 +41,7 @@ const Reports = () => {
       icon: Users,
       color: "text-purple-400",
       bgColor: "bg-purple-100",
+      description: "Siswa yang aktif meminjam buku.",
     },
   ];
 

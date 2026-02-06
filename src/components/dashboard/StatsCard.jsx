@@ -1,21 +1,39 @@
 // src/components/dashboard/StatsCard.jsx
-export const StatsCard = ({ title, value, icon: Icon, color, bgColor }) => {
+export const StatsCard = ({
+  title,
+  value,
+  icon: Icon,
+  color,
+  bgColor,
+  description,
+}) => {
   return (
-    <div className="bg-card border border-border rounded-xl p-5  shadow-sm  transition-all duration-200 hover:shadow-lg">
-      <div className="flex items-center justify-between space-x-3">
-        <div className={`p-2 rounded-lg ${bgColor}`}>
-          <Icon className={`h-7 w-7 ${color}`} />
-        </div>
+   <div className="group relative overflow-hidden bg-white/50 backdrop-blur-md border border-white/20 rounded-2xl p-6 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+      {/* Efek Gradient Glow saat Hover */}
+      <div className={`absolute -right-4 -top-4 h-24 w-24 rounded-full opacity-10 blur-2xl transition-opacity group-hover:opacity-30 ${bgColor}`} />
       
-      <div className="flex-1">
-        <h2 className="font-medium text-muted-foreground">
-          {title}
-        </h2>
-        <p className="text-xl font-bold text-foreground">
-          {(value ?? 0).toLocaleString()}
-        </p>
+      <div className="relative flex items-center justify-between">
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+            {title}
+          </p>
+          <div className="flex items-baseline gap-2">
+            <h3 className="text-2xl font-bold tracking-tight text-foreground">
+              {(value ?? 0).toLocaleString()}
+            </h3>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed max-w-[150px]">
+            {description}
+          </p>
+        </div>
+
+        <div className={`relative flex h-14 w-14 items-center justify-center rounded-2xl ${bgColor} shadow-inner transition-transform duration-500 group-hover:rotate-[10deg] group-hover:scale-110`}>
+          <Icon className={`h-8 w-8 ${color}`} />
+        </div>
       </div>
-      </div>
+
+      {/* Garis Dekoratif di Bawah */}
+      <div className={`absolute bottom-0 left-0 h-1 w-0 transition-all duration-500 group-hover:w-full ${bgColor.replace('bg-', 'bg-opacity-50 bg-')}`} />
     </div>
   );
 };
