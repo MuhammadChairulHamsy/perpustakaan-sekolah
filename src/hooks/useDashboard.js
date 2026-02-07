@@ -64,6 +64,27 @@ export const useDashboard = () => {
 
       if (overdueError) throw overdueError;
 
+/** =========================
+       * TOTAL DIKEMBALIKAN (Returned) - TAMBAHAN BARU
+       ========================== */
+      const { count: totalReturned, error: returnedError } = await supabase
+        .from("peminjaman")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "returned");
+
+      if (returnedError) throw returnedError;
+
+      /** =========================
+       * TOTAL DIPINJAM (Sedang Berjalan/Aktif) - TAMBAHAN BARU
+       ========================== */
+      const { count: totalBorrowed, error: activeLoanError } = await supabase
+        .from("peminjaman")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "borrowed")
+        .gte("due_date", new Date().toISOString()); // Belum jatuh tempo
+
+      if (activeLoanError) throw activeLoanError;
+
       /** =========================
        *  AKTIVITAS TERBARU
        ========================== */
@@ -92,6 +113,8 @@ export const useDashboard = () => {
         totalStudents: totalStudents || 0,
         borrowedToday: borrowedTodayData?.length || 0,
         overdueLoan: overdueData?.length || 0,
+        totalReturned: totalReturned || 0,
+        totalActiveBorrowed: totalBorrowed || 0,
       });
 
       setLatestActivities(activities || []);

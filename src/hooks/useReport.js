@@ -1,6 +1,6 @@
 // src/hooks/useReportData.js
 import { useEffect, useState } from "react";
-import {supabase} from "../lib/supabase/client";
+import { supabase } from "../lib/supabase/client";
 
 export const useReport = () => {
   const [summary, setSummary] = useState({
@@ -58,16 +58,40 @@ export const useReport = () => {
         .from("report_monthly_loans")
         .select("*");
 
-      const { data: status } = await supabase
+      const { data: rawStatus } = await supabase
         .from("report_loan_status_distribution")
         .select("*");
+      const { count: realOverdueCount } = await supabase
+        .from("peminjaman")
+        .select("id", { count: "exact", head: true })
+        .lt("due_date", new Date().toISOString())
+        .neq("status", "returned");
+
+      const mappedStatus =
+        rawStatus?.map((item) => {
+          if (item.status === "overdue") {
+            return { ...item, total: realOverdueCount || item.total };
+          }
+          
+          if (item.status === "borrowed") {
+            return {
+              ...item,
+              total: Math.max(0, item.total - (realOverdueCount || 0)),
+            };
+          }
+          return item;
+        }) || [];
+
+      if (!mappedStatus.find((s) => s.status === "overdue")) {
+        mappedStatus.push({ status: "overdue", total: realOverdueCount || 0 });
+      }
 
       const { data: books } = await supabase
         .from("report_top_books")
         .select("*");
 
+      setLoanStatus(mappedStatus);
       setMonthlyLoans(monthly || []);
-      setLoanStatus(status || []);
       setTopBooks(books || []);
     } finally {
       setLoading(false);

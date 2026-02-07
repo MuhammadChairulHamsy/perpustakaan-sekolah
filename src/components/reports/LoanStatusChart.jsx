@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Pie, PieChart, Cell, Label } from "recharts"
+import { Pie, PieChart, Label } from "recharts"
 import {
   Card,
   CardContent,
@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/chart"
 
 const COLORS = {
-  borrowed: "#0DA2E7", // Biru
-  returned: "#21C45D", // Hijau
-  overdue: "#f59e0b",  // Oranye
+  borrowed: "#0DA2E7",
+  returned: "#21C45D", 
+  overdue: "#f59e0b", 
 };
 
 const chartConfig = {
@@ -108,7 +108,7 @@ const LoanStatusChart = ({ data }) => {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground text-xs uppercase tracking-wider"
                         >
-                          Total Buku
+                          Total Peminjam
                         </tspan>
                       </text>
                     )
