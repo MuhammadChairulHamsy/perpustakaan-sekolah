@@ -14,13 +14,13 @@ export const StatsCard = ({
       
       <div className="relative flex items-center justify-between">
         <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+          <h1 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
             {title}
-          </p>
+          </h1>
           <div className="flex items-baseline gap-2">
-            <h3 className="text-2xl font-bold tracking-tight text-foreground">
+            <p className="text-2xl font-bold tracking-tight text-foreground">
               {(value ?? 0).toLocaleString()}
-            </h3>
+            </p>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-[150px]">
             {description}

@@ -4,6 +4,7 @@ import SignupPage from "../pages/auth/signup/Page";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import { Dashboard } from "../pages/Dashboard";
 import Books from "../pages/Books";
+import Catalog from "../pages/Catalog";
 import Students from "../pages/Students";
 import Loans from "../pages/Loans";
 import Reports from "../pages/Reports";
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { path: "dashboard", element: <Dashboard /> },
       { path: "buku", element: <Books /> },
       { path: "pinjaman", element: <Loans /> },
+      { path: "katalog", element: <Catalog /> },
 
       // KHUSUS STAF (Admin, Pustakawan, Asisten)
       { 

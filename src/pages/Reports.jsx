@@ -1,6 +1,4 @@
-// src/pages/Reports.jsx
 import { TrendingUp, BookOpen, AlertTriangle, Users } from "lucide-react";
-
 import { StatsCard } from "../components/dashboard/StatsCard";
 import { useReport } from "../hooks/useReport";
 import MonthlyLoanChart from "../components/reports/MonthlyLoanChart";
@@ -70,16 +68,16 @@ const Reports = () => {
       </div>
 
       {/* GRAFIK */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:grid-cols-2">
+        <div className="bg-card rounded-xl border border-border p-1 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-1">
           <MonthlyLoanChart data={monthlyLoans} />
         </div>
-        <div className="bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-2">
+        <div className="bg-card rounded-xl border border-border p-1 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-2">
           <LoanStatusChart data={loanStatus} />
         </div>
       </div>
 
-      <div className="mt-6 bg-card rounded-xl border border-border p-6 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-3">
+      <div className="mt-6 bg-card rounded-xl border border-border p-1 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-3">
         <TopBooksChart data={topBooks} />
       </div>
     </div>

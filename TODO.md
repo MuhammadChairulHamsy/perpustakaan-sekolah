@@ -2,6 +2,3 @@
 
 2. Manajemen Buku: Menambahkan fitur scan barcode (menggunakan kamera laptop/HP) untuk mempermudah petugas saat meminjamkan buku.
 
-3. Update ui dashboard seperti shadcn ui
-
-4. responsive mobile pada halaman laporan

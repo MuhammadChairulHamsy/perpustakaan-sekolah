@@ -41,6 +41,11 @@ const data = {
       icon: BookOpen,
     },
     {
+      title: "E-katalog",
+      url: "/katalog",
+      icon: BookOpen,
+    },
+    {
       title: "Siswa",
       url: "/siswa",
       icon: User,

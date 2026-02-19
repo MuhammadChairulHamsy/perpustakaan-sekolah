@@ -120,7 +120,7 @@ const LoanStatusChart = ({ data }) => {
         </ChartContainer>
       </CardContent>
       {/* Legend Manual yang lebih cantik */}
-      <div className="flex flex-wrap justify-center gap-4 py-4 text-sm">
+      <div className="flex flex-wrap  justify-center gap-4 py-4 text-sm">
         {formattedData.map((item) => (
           <div key={item.status} className="flex items-center gap-1.5 text-muted-foreground">
             <div 
