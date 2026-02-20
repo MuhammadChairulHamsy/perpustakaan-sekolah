@@ -4,6 +4,7 @@ import {
   Library,
   LayoutDashboard,
   BookOpen,
+  BookOpenText,
   User,
   FileText,
   ChartBar,
@@ -43,11 +44,11 @@ const data = {
     {
       title: "E-katalog",
       url: "/katalog",
-      icon: BookOpen,
+      icon: BookOpenText,
     },
     {
-      title: "Siswa",
       url: "/siswa",
+      title: "Siswa",
       icon: User,
     },
     {

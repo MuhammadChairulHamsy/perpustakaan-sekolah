@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import CatalogDialog from "../components/catalog/catalogDialog";
 import { useCatalog } from "../hooks/useCatalog";
-
+import { Button } from "../components/ui/button";
 
 const RatingStars = ({ rating }) => (
   <div className="flex items-center gap-1">
@@ -25,16 +25,25 @@ const RatingStars = ({ rating }) => (
         }`}
       />
     ))}
-    <span className="ml-1 text-xs font-medium text-muted-foreground">{rating || "0"}</span>
+    <span className="ml-1 text-xs font-medium text-muted-foreground">
+      {rating || "0"}
+    </span>
   </div>
 );
 
-
 const Catalog = () => {
   const [selectedBook, setSelectedBook] = useState(null);
-  const {books, isLoading, searchQuery, setSearchQuery, selectedGenre, setSelectedGenre, genres} = useCatalog();
-  
-   if (isLoading) {
+  const {
+    books,
+    isLoading,
+    searchQuery,
+    setSearchQuery,
+    selectedGenre,
+    setSelectedGenre,
+    genres,
+  } = useCatalog();
+
+  if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
@@ -85,11 +94,12 @@ const Catalog = () => {
       {/* Book Grid */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
         {books.map((book) => (
-          <button
+          <div
             key={book.id}
             onClick={() => setSelectedBook(book)}
-            className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card text-left transition-all hover:shadow-lg hover:-translate-y-1"
+            className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card text-left transition-all hover:shadow-lg hover:-translate-y-1 "
           >
+            {/* Container Gambar */}
             <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
               <img
                 src={book.cover}
@@ -97,35 +107,52 @@ const Catalog = () => {
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
               />
+
+              {/* Overlay Jika Stok Kosong */}
               {book.available === 0 && (
-                <div className="absolute inset-0 flex items-center justify-center bg-foreground/60">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/60">
                   <Badge variant="destructive" className="text-xs">
-                    Unavailable
+                    Buku Habis
                   </Badge>
                 </div>
               )}
+              <div className="absolute inset-0 flex items-end justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent p-4">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="w-full text-xs shadow-md cursor-pointer"
+                >
+                  Lihat Detail
+                </Button>
+              </div>
             </div>
+
+            {/* Info Buku */}
             <div className="flex flex-1 flex-col gap-1 p-3">
-              <h3 className="line-clamp-2 text-sm font-semibold leading-tight text-foreground">
+              <h3 className="line-clamp-2 text-sm font-semibold leading-tight text-foreground group-hover:text-primary transition-colors">
                 {book.title}
               </h3>
               <p className="text-xs text-muted-foreground">{book.author}</p>
+
               <div className="mt-auto pt-2">
                 <RatingStars rating={book.rating} />
               </div>
+
               <Badge variant="secondary" className="mt-1 w-fit text-[10px]">
                 {book.genre}
               </Badge>
             </div>
-          </button>
+          </div>
         ))}
       </div>
 
       {books.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <BookOpen className="h-12 w-12 text-muted-foreground/50 mb-3" />
-         <h3 className="text-lg font-medium">Buku tidak ditemukan</h3>
-          <p className="text-muted-foreground">Coba gunakan kata kunci pencarian lain.</p>
+          <h3 className="text-lg font-medium">Buku tidak ditemukan</h3>
+          <p className="text-muted-foreground">
+            Coba gunakan kata kunci pencarian lain.
+          </p>
         </div>
       )}
 

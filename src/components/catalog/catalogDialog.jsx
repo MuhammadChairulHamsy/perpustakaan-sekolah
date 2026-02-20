@@ -26,6 +26,10 @@ const RatingStars = ({ rating }) => (
 );
 
 const CatalogDialog = ({ book, onClose }) => {
+  if (!book) return null; // Safety check
+
+  // Tambahkan ini untuk tes darurat
+  console.log("Variabel available di dalam dialog:", book.available);
   return (
     <Dialog open={!!book} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
@@ -63,12 +67,18 @@ const CatalogDialog = ({ book, onClose }) => {
                   {book.description || "Tidak ada deskripsi untuk buku ini."}
                 </DialogDescription>
                 <div className="mt-auto pt-3">
-                  {book.stock > 0 ? (
-                    <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
-                      {book.stock} copies available
-                    </Badge>
+                  {Number(book.available) > 0 ? (
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      </span>
+                      {book.available} Teersedia
+                    </div>
                   ) : (
-                    <Badge variant="destructive">Currently unavailable</Badge>
+                    <div className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200">
+                      Habis
+                    </div>
                   )}
                 </div>
               </div>
