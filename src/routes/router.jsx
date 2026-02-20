@@ -12,6 +12,7 @@ import Settings from "../pages/Settings";
 import NotFound from "../pages/NotFound";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import AuthCallback from "../context/AuthCallback";
+import Finance from "../pages/Finance";
 
 // Definisi Role Staf agar tidak tulis ulang
 const staffRoles = ["Admin", "Pustakawan", "Asisten"];
@@ -42,6 +43,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={staffRoles}>
             <Students />
+          </ProtectedRoute>
+        ) 
+      },  
+      { 
+        path: "keuangan", 
+        element: (
+          <ProtectedRoute allowedRoles={staffRoles}>
+            <Finance />
           </ProtectedRoute>
         ) 
       },

@@ -52,9 +52,9 @@ const Catalog = () => {
   }
 
   return (
-    <div className="animate-fade-in space-y-6">
+    <div className="container min-h-screen space-y-6">
       {/* Header */}
-      <div className="page-header">
+      <div className="flex flex-col justify-between items-start lg:flex lg:flex-row">
         <div>
           <h1 className="text-2xl font-bold text-foreground">
             Digital Catalog
@@ -68,9 +68,9 @@ const Catalog = () => {
       {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground text-sm" />
           <Input
-            placeholder="Cari berdasarkan judul atau penulis..."
+            placeholder="Cari judul atau penulis..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -112,7 +112,7 @@ const Catalog = () => {
               {book.available === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/60">
                   <Badge variant="destructive" className="text-xs">
-                    Buku Habis
+                    Habis
                   </Badge>
                 </div>
               )}
