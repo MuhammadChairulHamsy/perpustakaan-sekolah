@@ -57,10 +57,19 @@ export const useCatalog = () => {
     return matchesSearch && matchesGenre;
   });
 
+
+    const addToWishlist = async (userId, bookId) => {
+    const { error } = await supabase
+      .from("wishlist")
+      .insert([{ user_id: userId, book_id: bookId }]);
+    return { error };
+  };
+
   const dynamicGenres = ["All", ...new Set(allBooks.map((book) => book.genre))];
 
   return {
     books: filteredBooks,
+    addToWishlist,
     isLoading,
     error,
     searchQuery,

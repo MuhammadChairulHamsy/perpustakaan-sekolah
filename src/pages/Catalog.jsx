@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { Search, BookOpen, Filter, Star } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
@@ -32,9 +33,11 @@ const RatingStars = ({ rating }) => (
 );
 
 const Catalog = () => {
+  const { user } = useAuth();
   const [selectedBook, setSelectedBook] = useState(null);
   const {
     books,
+    addToWishlist,
     isLoading,
     searchQuery,
     setSearchQuery,
@@ -42,6 +45,18 @@ const Catalog = () => {
     setSelectedGenre,
     genres,
   } = useCatalog();
+
+  const handleWishlist = async (book) => {
+    if (!user) return toast.error("Silakan login dahulu");
+
+    const { error } = await addToWishlist(user.id, book.id);
+
+    if (error) {
+      if (error.code === "23505") return toast.info("Sudah dalam antrean.");
+      return toast.error("Gagal mendaftar antrean");
+    }
+    toast.success(`Notifikasi aktif untuk buku ${book.title}`);
+  };
 
   if (isLoading) {
     return (
@@ -134,6 +149,21 @@ const Catalog = () => {
               </h3>
               <p className="text-xs text-muted-foreground">{book.author}</p>
 
+              {book.stock === 0 && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="mt-2 h-8 w-full border-amber-200 bg-amber-50 text-[10px] text-amber-700 hover:bg-amber-100"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Agar tidak memicu detail dialog
+                    handleWishlist(book);
+                  }}
+                >
+                  <Bell className="mr-1 h-3 w-3" />
+                  Beritahu Saya
+                </Button>
+              )}
+
               <div className="mt-auto pt-2">
                 <RatingStars rating={book.rating} />
               </div>
@@ -159,6 +189,7 @@ const Catalog = () => {
       <CatalogDialog
         book={selectedBook}
         onClose={() => setSelectedBook(null)}
+        onWishlist={handleWishlist}
       />
     </div>
   );

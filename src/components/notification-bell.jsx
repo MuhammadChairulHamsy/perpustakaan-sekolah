@@ -1,4 +1,4 @@
-import { Bell } from "lucide-react";
+import { Bell, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,12 +8,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "./ui/scroll-area";
+import { supabase } from "../lib/supabase/client";
 import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
 
 export const NotificationBell = () => {
   const { user } = useAuth();
-  const {notifications, setNotifications} = useNotifications();
+  const { notifications, setNotifications, deleteAllNotifications } = useNotifications();
   const unreadCount = notifications.filter((n) => !n.is_read).length;
 
   // Fungsi untuk menandai semua sudah dibaca
@@ -41,18 +42,33 @@ export const NotificationBell = () => {
           </span>
         )}
       </DropdownMenuTrigger>
-      
+
       <DropdownMenuContent align="end" className="w-80 p-0">
         <DropdownMenuLabel className="p-4 flex items-center justify-between font-semibold">
-          Notifikasi
-          {unreadCount > 0 && (
-            <span className="text-xs font-normal text-muted-foreground">
-              {unreadCount} pesan baru
-            </span>
+          <div className="flex items-center gap-2">
+            Notifikasi
+            {unreadCount > 0 && (
+              <span className="text-xs font-normal text-muted-foreground">
+                {unreadCount} pesan baru
+              </span>
+            )}
+          </div>
+          {notifications.length > 0 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation(); 
+                if (confirm("Hapus semua notifikasi?"))
+                  deleteAllNotifications();
+              }}
+              className="text-xs font-normal text-destructive hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              <Trash2 className="h-3 w-3" />
+              Hapus Semua
+            </button>
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="m-0" />
-        
+
         <ScrollArea className="h-[350px]">
           {notifications.length === 0 ? (
             <div className="p-8 text-center text-sm text-muted-foreground">
@@ -67,10 +83,14 @@ export const NotificationBell = () => {
                 }`}
               >
                 <div className="flex w-full justify-between items-center gap-2">
-                  <p className={`text-sm font-semibold ${!n.is_read ? "text-primary" : "text-foreground"}`}>
+                  <p
+                    className={`text-sm font-semibold ${!n.is_read ? "text-primary" : "text-foreground"}`}
+                  >
                     {n.title}
                   </p>
-                  {!n.is_read && <span className="h-2 w-2 rounded-full bg-primary" />}
+                  {!n.is_read && (
+                    <span className="h-2 w-2 rounded-full bg-primary" />
+                  )}
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
                   {n.message}
@@ -88,5 +108,4 @@ export const NotificationBell = () => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
-
+};

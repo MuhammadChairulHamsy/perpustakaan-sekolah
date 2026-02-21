@@ -43,14 +43,29 @@ export const NotificationProvider = ({ children }) => {
           const audio = new Audio("/audio/notification.mp3");
           audio
             .play()
-            .catch((err) => console.log("Audio play blocked by browser"));
+            .then(() => {
+              console.log("Audio notifikasi berhasil diputar");
+            })
+            .catch((err) => {
+              console.warn(
+                "Audio diblokir browser. User harus klik halaman dulu satu kali.",
+                err,
+              );
+            });
 
           // Update list untuk lonceng
-          setNotifications((prev) => [payload.new, ...prev].slice(0, 10));
+          setNotifications((prev) => {
+            if (prev.find((n) => n.id === payload.new.id)) return prev;
+            return [payload.new, ...prev].slice(0, 10);
+          });
 
           // Munculkan pop-up toast
           toast.info(payload.new.title, {
             description: payload.new.message,
+            action: {
+              label: "Tandai Baca",
+              onClick: () => console.log("Read from toast"),
+            },
           });
         },
       )
@@ -61,8 +76,34 @@ export const NotificationProvider = ({ children }) => {
     };
   }, [user]);
 
+  const deleteAllNotifications = async () => {
+    if (!user) return;
+
+    try {
+      // 1. Hapus di Database
+      const { error } = await supabase
+        .from("notifications")
+        .delete()
+        .eq("user_id", user.id);
+
+      if (error) {
+        console.error("Gagal hapus di DB:", error.message);
+        throw error;
+      }
+
+      // 2. Jika DB berhasil, baru kosongkan state UI
+      setNotifications([]);
+      toast.success("Semua notifikasi dihapus permanen");
+    } catch (err) {
+      toast.error("Gagal sinkronisasi dengan database");
+      console.error(err);
+    }
+  };
+
   return (
-    <NotificationContext.Provider value={{ notifications, setNotifications }}>
+    <NotificationContext.Provider
+      value={{ notifications, setNotifications, deleteAllNotifications }}
+    >
       {children}
     </NotificationContext.Provider>
   );

@@ -58,25 +58,19 @@ const Settings = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="users" className="w-full">
-        <TabsList className="w-full justify-start h-auto p-1 bg-transparent border-b rounded-none gap-6 mb-6">
-          <TabsTrigger
-            value="users"
-            className="data-[state=active]:border-primary border-b-2 border-transparent rounded-none bg-transparent px-2 pb-3 gap-2"
-          >
-            <User className="h-4 w-4" /> Manajemen Pengguna
+     <Tabs defaultValue="users" className="space-y-6">
+        <TabsList className="bg-muted/50">
+          <TabsTrigger value="users" className="gap-2">
+            <User className="h-4 w-4" />
+            Users
           </TabsTrigger>
-          <TabsTrigger
-            value="library"
-            className="data-[state=active]:border-primary border-b-2 border-transparent rounded-none bg-transparent px-2 pb-3 gap-2"
-          >
-            <Database className="h-4 w-4" /> Kebijakan Pustaka
+          <TabsTrigger value="library" className="gap-2">
+            <Database className="h-4 w-4" />
+            Library
           </TabsTrigger>
-          <TabsTrigger
-            value="notifications"
-            className="data-[state=active]:border-primary border-b-2 border-transparent rounded-none bg-transparent px-2 pb-3 gap-2"
-          >
-            <Bell className="h-4 w-4" /> Notifikasi
+          <TabsTrigger value="notifications" className="gap-2">
+            <Bell className="h-4 w-4" />
+            Notifications
           </TabsTrigger>
         </TabsList>
 

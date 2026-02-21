@@ -43,6 +43,7 @@ const Books = () => {
     return success;
   };
 
+  
   const handleDelete = async (id) => {
     const success = await deleteBook(id);
     if (success) {
