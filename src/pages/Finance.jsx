@@ -1,43 +1,70 @@
 import { AlertCircle, BookOpen, CheckCircle2, DollarSign } from "lucide-react";
 import { StatsCard } from "../components/dashboard/StatsCard";
-import { useDashboard } from "../hooks/useDashboard";
+import { useFinance } from "../hooks/useFinance";
 
 const Finance = () => {
-  const { stats } = useDashboard();
+  const { fine, loading, error } = useFinance();
   const statsCards = [
     {
       title: "Pendapatan Total",
-      value: stats.totalBooks,
+      value: new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(fine.totalRevenue),
       icon: DollarSign,
       color: "text-sky-400",
       bgColor: "bg-sky-100",
-      description: "Koleksi buku yang siap dipinjam.",
+      description: "Semua waktu yang dikumpulkan",
     },
     {
       title: "Denda yang Tertunda",
-      value: stats.borrowedToday,
+      value: fine.pendingFinance,
       icon: AlertCircle,
       color: "text-green-400",
       bgColor: "bg-green-100",
-      description: "Trend membaca hari ini meningkat.",
+      description: "5 transaksi yang belum dibayar.",
     },
     {
       title: "Denda yang Dikumpulkan",
-      value: stats.totalStudents,
+      value: new Intl.NumberFormat("id-ID", {
+        style: "currency",
+        currency: "IDR",
+        maximumFractionDigits: 0
+      }).format(fine.collectedFines),
       icon: CheckCircle2,
       color: "text-green-400",
       bgColor: "bg-green-100",
-      description: "Anggota perpustakaan yang terdaftar.",
+      description: "Pembayaran berhasil.",
     },
     {
       title: "Buku Terlambat Dikembalikan",
-      value: stats.overdueLoan,
+      value: fine.overdueBooks,
       icon: BookOpen,
       color: "text-orange-400",
       bgColor: "bg-orange-100",
-      description: "Segera tindak lanjuti keterlambatan.",
+      description: "Saat ini sudah jatuh tempo.",
     },
   ];
+
+    if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
+      </div>
+    );
+  }
+  
+    if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-destructive font-semibold mb-2">Error</p>
+          <p className="text-muted-foreground">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container min-h-screen">
@@ -53,6 +80,7 @@ const Finance = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
           <StatsCard key={index} {...stat} />
+          
         ))}
       </div>
     </div>
