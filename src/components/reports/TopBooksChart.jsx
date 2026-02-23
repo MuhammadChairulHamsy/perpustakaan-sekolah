@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { Bar, BarChart, XAxis, YAxis, LabelList } from "recharts"
+import { Bar, BarChart, XAxis, YAxis, LabelList } from "recharts";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 const chartConfig = {
   total: {
     label: "Total Pinjam",
     color: "#43B7EC",
   },
-}
+};
 
 const TopBooksChart = ({ data }) => {
   const sortedData = [...data].sort((a, b) => b.total - a.total).slice(0, 5);
@@ -70,7 +70,7 @@ const TopBooksChart = ({ data }) => {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default TopBooksChart
+export default TopBooksChart;

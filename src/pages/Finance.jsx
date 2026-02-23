@@ -1,16 +1,17 @@
 import { AlertCircle, BookOpen, CheckCircle2, DollarSign } from "lucide-react";
 import { StatsCard } from "../components/dashboard/StatsCard";
 import { useFinance } from "../hooks/useFinance";
+import { FineCollectionTrend } from "../components/Finance/FineCollectionTrend";
 
 const Finance = () => {
-  const { fine, loading, error } = useFinance();
+  const { fine, loading, error, collectedData } = useFinance();
   const statsCards = [
     {
       title: "Pendapatan Total",
       value: new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
-        maximumFractionDigits: 0
+        maximumFractionDigits: 0,
       }).format(fine.totalRevenue),
       icon: DollarSign,
       color: "text-sky-400",
@@ -30,7 +31,7 @@ const Finance = () => {
       value: new Intl.NumberFormat("id-ID", {
         style: "currency",
         currency: "IDR",
-        maximumFractionDigits: 0
+        maximumFractionDigits: 0,
       }).format(fine.collectedFines),
       icon: CheckCircle2,
       color: "text-green-400",
@@ -47,15 +48,15 @@ const Finance = () => {
     },
   ];
 
-    if (loading) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
       </div>
     );
   }
-  
-    if (error) {
+
+  if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
@@ -67,7 +68,7 @@ const Finance = () => {
   }
 
   return (
-    <div className="container min-h-screen">
+    <div className="container min-h-screen space-y-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold">Keuangan & Denda</h1>
@@ -80,8 +81,13 @@ const Finance = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
           <StatsCard key={index} {...stat} />
-          
         ))}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+        <div className="flex-1 bg-white border rounded-xl overflow-hidden shadow-sm">
+          <FineCollectionTrend data={collectedData} />
+        </div>
       </div>
     </div>
   );
