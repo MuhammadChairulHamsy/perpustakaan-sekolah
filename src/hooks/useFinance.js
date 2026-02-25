@@ -48,11 +48,21 @@ export const useFinance = () => {
         .gte("return_date", sevenDaysAgo.toISOString());
 
       const grouped = chartRaw?.reduce((acc, curr) => {
-        const date = new Date(curr.created_at).toLocaleDateString("id-ID", {
-          weekday: "short",
+        const dateStr = curr.return_date || curr.created_at;
+
+        if (!dateStr) return acc; 
+
+        const dateObj = new Date(dateStr);
+
+      
+        if (isNaN(dateObj.getTime())) return acc;
+
+        const dateLabel = dateObj.toLocaleDateString("id-ID", {
           day: "numeric",
+          month: "short",
         });
-        acc[date] = (acc[date] || 0) + (Number(curr.fine) || 0);
+
+        acc[dateLabel] = (acc[dateLabel] || 0) + (Number(curr.fine || 0));
         return acc;
       }, {});
       console.log("Isi chartRaw:", chartRaw);

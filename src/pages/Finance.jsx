@@ -85,7 +85,7 @@ const Finance = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-        <div className="flex-1 bg-white border rounded-xl overflow-hidden shadow-sm">
+        <div className=" bg-white border rounded-xl overflow-hidden shadow-sm">
           <FineCollectionTrend data={collectedData} />
         </div>
       </div>

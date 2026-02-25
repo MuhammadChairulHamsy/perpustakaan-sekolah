@@ -11,7 +11,6 @@ import { Button } from "../ui/button";
 import { getActivityStatus, getTimeAgo } from "../../utils/statusUtils";
 
 export const LatestActivityTable = ({ activities }) => {
-  // Batasi hanya 5-6 data agar tinggi tabel konsisten dengan grafik di sampingnya
   const displayActivities = activities.slice(0, 5);
 
   return (

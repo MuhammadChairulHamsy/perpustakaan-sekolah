@@ -1,69 +1,70 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
-import { Bar, BarChart, XAxis, YAxis, LabelList } from "recharts";
+import { Bar, BarChart, XAxis, YAxis, CartesianGrid } from "recharts";
 
-export const FineCollectionTrend = ({data}) => {
+export const FineCollectionTrend = ({ data }) => {
   const chartConfig = {
-   amount: {
+    amount: {
       label: "Pendapatan",
-      color: "#43B7EC",
+      color: "hsl(var(--primary))", // Menggunakan variabel tema agar konsisten
     },
   };
 
   return (
-   <div className="flex flex-col h-full bg-card">
-      <Card className="border-none shadow-none bg-transparent">
-        <CardHeader>
-          <CardTitle>Tren Koleksi Terbaik</CardTitle>
-          <CardDescription>Pendapatan 7 hari terakhir</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px] w-full">
-            <BarChart
-              accessibilityLayer
-              data={data}
-              layout="vertical"
-              margin={{ left: 40, right: 60 }}
-            >
-              <XAxis type="number" dataKey="amount" hide />
-              <YAxis
-                dataKey="date"
-                type="category"
-                tickLine={false}
-                axisLine={false}
-                fontSize={12}
-              />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent />}
-              />
-              <Bar
-                dataKey="amount"
-                fill="var(--color-amount)"
-                layout="vertical"
-                radius={5}
-                barSize={20}
-              >
-                <LabelList
-                  dataKey="amount"
-                  position="right"
-                  formatter={(value) => `Rp ${value.toLocaleString()}`}
-                  className="fill-foreground font-medium"
-                  fontSize={10}
-                />
-              </Bar>
-            </BarChart>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-    </div>
+    <Card className="border-none shadow-sm bg-white dark:bg-slate-950">
+      <CardHeader className="pb-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg font-semibold tracking-tight">Tren Pendapatan Denda</CardTitle>
+            <CardDescription>Performa denda dalam 7 hari terakhir</CardDescription>
+          </div>
+          <div className="h-8 w-24 bg-primary/10 rounded-full flex items-center justify-center">
+            <span className="text-xs font-medium text-primary">Live Data</span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[320px] w-full">
+          <BarChart
+            data={data}
+            margin={{ top: 20, right: 300, left: -10, bottom: 0 }}
+          >
+            {/* Garis bantu horizontal yang halus */}
+            <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#e2e8f0" />
+            
+            <XAxis 
+              dataKey="date" 
+              tickLine={false}
+              axisLine={false}
+              tickMargin={12}
+              className="text-muted-foreground font-medium"
+            />
+            
+            <YAxis 
+              tickLine={false}
+              axisLine={false}
+              fontSize={11}
+              tickFormatter={(value) => `Rp${value / 1000}k`}
+              className="text-muted-foreground"
+            />
+
+            <ChartTooltip 
+              cursor={{ fill: '#f8fafc' }} 
+              content={<ChartTooltipContent indicator="dot" />} 
+            />
+            
+            <Bar
+              dataKey="amount"
+              fill="currentColor"
+              className="fill-primary"
+              radius={[6, 6, 0, 0]}
+              barSize={35}
+            />
+          </BarChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 };
