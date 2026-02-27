@@ -10,3 +10,5 @@ Nama Halaman	Fungsi Utama	Target User
 4. Keuangan/Denda	Rekapitulasi denda keterlambatan.	Bendahara/Admin
 
 5. E-Resource	Link ke PDF atau jurnal digital (Open Access).	Semua
+
+6. fitur "Export ke Excel/PDF" sehingga admin bisa mendownload laporan denda mingguan

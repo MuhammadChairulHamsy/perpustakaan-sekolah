@@ -8,7 +8,7 @@ export const FineCollectionTrend = ({ data }) => {
   const chartConfig = {
     amount: {
       label: "Pendapatan",
-      color: "hsl(var(--primary))", // Menggunakan variabel tema agar konsisten
+      color: "hsl(var(--primary))", 
     },
   };
 

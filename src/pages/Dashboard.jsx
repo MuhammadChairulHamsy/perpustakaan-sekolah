@@ -5,8 +5,12 @@ import { LatestActivityTable } from "../components/dashboard/LatestActivityTable
 import { useDashboard } from "../hooks/useDashboard";
 import LoanStatusChart from "../components/reports/LoanStatusChart";
 
+
 export const Dashboard = () => {
-  const { stats, latestActivities, loading, error } = useDashboard();
+  const { data, isLoading, error } = useDashboard();
+
+  const stats = data?.stats || {};
+  const latestActivities = data?.latestActivities || [];
 
   const statsCards = [
     {
@@ -43,7 +47,6 @@ export const Dashboard = () => {
     },
   ];
 
-  // Data Dummy untuk Chart (Sambil menunggu data asli dari hook)
   const chartStatusData = [
     {
       status: "borrowed",
@@ -64,20 +67,32 @@ export const Dashboard = () => {
     0,
   );
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
+      <div className="container space-y-8 animate-pulse">
+        <div className="h-10 w-48 bg-gray-200 rounded-md" />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-32 bg-gray-100 rounded-xl border" />
+          ))}
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 h-64 bg-gray-100 rounded-xl" />
+          <div className="h-64 bg-gray-100 rounded-xl" />
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-[400px] items-center justify-center border-2 border-dashed rounded-xl m-8">
         <div className="text-center">
-          <p className="text-destructive font-semibold mb-2">Error</p>
-          <p className="text-muted-foreground">{error}</p>
+          <div className="bg-red-50 p-3 rounded-full inline-block mb-4">
+            <AlertTriangle className="text-red-500 w-8 h-8" />
+          </div>
+          <p className="text-red-600 font-bold mb-1">Gagal Memuat Data</p>
+          <p className="text-muted-foreground text-sm">{error.message}</p>
         </div>
       </div>
     );

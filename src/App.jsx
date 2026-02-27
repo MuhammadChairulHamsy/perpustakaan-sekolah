@@ -1,14 +1,19 @@
 import { RouterProvider } from "react-router-dom";
 import router from "./routes/router";
 import { AuthProvider } from "./context/AuthContext";
-import { Toaster } from "sonner";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 
 const App = () => {
+  const queryClient = new QueryClient()
   return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-      {/* <Toaster position="top-center" richColors /> */}
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false}/>
+    </QueryClientProvider>
   );
 };
 

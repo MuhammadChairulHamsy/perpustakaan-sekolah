@@ -86,12 +86,12 @@ export function AppSidebar({ ...props }) {
           asChild
           isActive={isActive}
           tooltip={item.title}
-          className={`transition-all duration-200 hover:bg-primary/10 group ${
+          className={`transition-all duration-200 hover:bg-primary/10 ${
             isActive ? "bg-primary/10 text-primary font-semibold" : "text-sidebar-foreground/70"
           }`}
         >
           <Link to={item.url} className="flex items-center gap-3">
-            <item.icon className={`${isActive ? "text-primary" : "group-hover:text-primary"} transition-colors`} size={18} />
+            <item.icon className={`${isActive ? "text-primary" : "hover:text-primary"} transition-colors`} size={18} />
             <span>{item.title}</span>
           </Link>
         </SidebarMenuButton>
@@ -105,7 +105,7 @@ export function AppSidebar({ ...props }) {
       <SidebarHeader className="py-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild className="hover:bg-transparent">
+            <SidebarMenuButton size="lg" asChild className=" hover:bg-transparent">
               <Link to="/dashboard" className="flex items-center gap-3">
                 <div className="bg-primary shadow-lg shadow-primary/20 h-9 w-9 rounded-xl flex items-center justify-center shrink-0">
                   <Library className="text-primary-foreground" size={20} />
