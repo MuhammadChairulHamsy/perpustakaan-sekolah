@@ -13,6 +13,7 @@ import {
 import CatalogDialog from "../components/catalog/catalogDialog";
 import { useCatalog } from "../hooks/useCatalog";
 import { Button } from "../components/ui/button";
+import { Skeleton } from "../components/ui/skeleton";
 
 const RatingStars = ({ rating }) => (
   <div className="flex items-center gap-1">
@@ -37,31 +38,41 @@ const Catalog = () => {
   const [selectedBook, setSelectedBook] = useState(null);
   const {
     books,
-    addToWishlist,
     isLoading,
     searchQuery,
     setSearchQuery,
+    addToWishlist,
+    genres,
     selectedGenre,
     setSelectedGenre,
-    genres,
   } = useCatalog();
 
   const handleWishlist = async (book) => {
     if (!user) return toast.error("Silakan login dahulu");
 
-    const { error } = await addToWishlist(user.id, book.id);
-
-    if (error) {
-      if (error.code === "23505") return toast.info("Sudah dalam antrean.");
-      return toast.error("Gagal mendaftar antrean");
-    }
-    toast.success(`Notifikasi aktif untuk buku ${book.title}`);
+    addToWishlist(user.id, book.id);
   };
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
+      <div className="container space-y-8 p-6 animate-pulse">
+        <div className="flex w-full max-w-xs flex-col gap-2">
+          <Skeleton className="h-4 w-40 bg-gray-200" />
+          <Skeleton className="h-4 w-full bg-gray-200" />
+        </div>
+        <div className="flex flex-row gap-3">
+          <Skeleton className="h-8 w-[40%] bg-gray-200" />
+          <Skeleton className="h-8 w-[10%] bg-gray-200" />
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+          {[...Array(10)].map((_, i) => (
+            <div key={i} className="space-y-3">
+              <Skeleton className="h-70 w-full rounded-xl bg-gray-200" />
+              <Skeleton className="h-4 w-[90%] bg-gray-200" />
+              <Skeleton className="h-4 w-[60%] bg-gray-200" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -92,7 +103,7 @@ const Catalog = () => {
           />
         </div>
         <Select value={selectedGenre} onValueChange={setSelectedGenre}>
-          <SelectTrigger className="w-[160px]">
+          <SelectTrigger className="w-40">
             <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
             <SelectValue />
           </SelectTrigger>
@@ -115,7 +126,7 @@ const Catalog = () => {
             className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card text-left transition-all hover:shadow-lg hover:-translate-y-1 "
           >
             {/* Container Gambar */}
-            <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
+            <div className="relative aspect-3/4 w-full overflow-hidden bg-muted">
               <img
                 src={book.cover}
                 alt={book.title}
@@ -131,7 +142,7 @@ const Catalog = () => {
                   </Badge>
                 </div>
               )}
-              <div className="absolute inset-0 flex items-end justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-t from-black/50 to-transparent p-4">
+              <div className="absolute inset-0 flex items-end justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-linear-to-t from-black/50 to-transparent p-4">
                 <Button
                   variant="secondary"
                   size="sm"

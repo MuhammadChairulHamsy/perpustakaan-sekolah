@@ -4,7 +4,7 @@ import { StatsCard } from "../components/dashboard/StatsCard";
 import { LatestActivityTable } from "../components/dashboard/LatestActivityTable";
 import { useDashboard } from "../hooks/useDashboard";
 import LoanStatusChart from "../components/reports/LoanStatusChart";
-
+import { DashboardSkeleton } from "../components/dashboard/DashboardSkeleton";
 
 export const Dashboard = () => {
   const { data, isLoading, error } = useDashboard();
@@ -68,25 +68,12 @@ export const Dashboard = () => {
   );
 
   if (isLoading) {
-    return (
-      <div className="container space-y-8 animate-pulse">
-        <div className="h-10 w-48 bg-gray-200 rounded-md" />
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-32 bg-gray-100 rounded-xl border" />
-          ))}
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 h-64 bg-gray-100 rounded-xl" />
-          <div className="h-64 bg-gray-100 rounded-xl" />
-        </div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (error) {
     return (
-      <div className="flex min-h-[400px] items-center justify-center border-2 border-dashed rounded-xl m-8">
+      <div className="flex min-h-chart-large items-center justify-center border-2 border-dashed rounded-xl m-8">
         <div className="text-center">
           <div className="bg-red-50 p-3 rounded-full inline-block mb-4">
             <AlertTriangle className="text-red-500 w-8 h-8" />
