@@ -6,6 +6,7 @@ import { SearchBar } from "../components/search-bar";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
+import BookSkeleton from "../components/books/BookSkeleton";
 
 const Books = () => {
   const {
@@ -52,11 +53,7 @@ const Books = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
-      </div>
-    );
+    return <BookSkeleton/>
   }
 
   if (error) {

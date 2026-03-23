@@ -87,7 +87,7 @@ export const Dashboard = () => {
 
   return (
     <div className="container space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row     md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Dashboard
@@ -107,14 +107,12 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* STATS CARDS SECTION */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
           <StatsCard key={index} {...stat} />
         ))}
       </div>
 
-      {/* MAIN CONTENT: TABLE & CHART (Penyesuaian Layout) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10 items-stretch">
         <div className="lg:col-span-2 flex flex-col space-y-4">
           <div className="flex items-center justify-between">

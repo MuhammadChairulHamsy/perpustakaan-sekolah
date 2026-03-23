@@ -2,10 +2,15 @@ import { Skeleton } from "../ui/skeleton";
 
 export const DashboardSkeleton = () => {
   return (
-    <div className="container space-y-8 p-6 animate-pulse">
-      <div className="flex w-full max-w-xs flex-col gap-2">
-        <Skeleton className="h-4 w-40 bg-gray-200" />
-        <Skeleton className="h-4 w-full bg-gray-200" />
+    <div className="container space-y-8 animate-pulse">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <Skeleton className="h-3 w-48 bg-gray-200" />
+          <Skeleton className="h-4 w-80 bg-gray-200" />
+        </div>
+        <div>
+          <Skeleton className="h-8 w-40 bg-gray-200" />
+        </div>
       </div>
 
       {/* Stats Cards Skeleton (4 Kolom) */}
