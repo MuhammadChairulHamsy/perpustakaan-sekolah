@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Search, BookOpen, Filter, Star } from "lucide-react";
+import { Search, BookOpen, Filter } from "lucide-react";
 import { Input } from "../components/ui/input";
 import { Badge } from "../components/ui/badge";
 import {
@@ -14,24 +14,7 @@ import CatalogDialog from "../components/catalog/catalogDialog";
 import { useCatalog } from "../hooks/useCatalog";
 import { Button } from "../components/ui/button";
 import { Skeleton } from "../components/ui/skeleton";
-
-const RatingStars = ({ rating }) => (
-  <div className="flex items-center gap-1">
-    {[1, 2, 3, 4, 5].map((star) => (
-      <Star
-        key={star}
-        className={`h-3.5 w-3.5 ${
-          star <= Math.round(rating || 0)
-            ? "fill-amber-400 text-amber-400"
-            : "text-muted-foreground/30"
-        }`}
-      />
-    ))}
-    <span className="ml-1 text-xs font-medium text-muted-foreground">
-      {rating || "0"}
-    </span>
-  </div>
-);
+import { RatingStars } from "../components/catalog/RatingCatalogStars";
 
 const Catalog = () => {
   const { user } = useAuth();
@@ -55,21 +38,35 @@ const Catalog = () => {
 
   if (isLoading) {
     return (
-      <div className="container space-y-8 p-6 animate-pulse">
-        <div className="flex w-full max-w-xs flex-col gap-2">
-          <Skeleton className="h-4 w-40 bg-gray-200" />
-          <Skeleton className="h-4 w-full bg-gray-200" />
+      <div className="container space-y-6 p-6 animate-pulse">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48 bg-gray-200" />
+          <Skeleton className="h-4 w-80 bg-gray-200" />
         </div>
-        <div className="flex flex-row gap-3">
-          <Skeleton className="h-8 w-[40%] bg-gray-200" />
-          <Skeleton className="h-8 w-[10%] bg-gray-200" />
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Skeleton className="h-8 flex-1 max-w-md bg-gray-200 rounded-md" />
+          <Skeleton className="h-8 w-40 bg-gray-200 rounded-md" />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {[...Array(10)].map((_, i) => (
-            <div key={i} className="space-y-3">
-              <Skeleton className="h-70 w-full rounded-xl bg-gray-200" />
-              <Skeleton className="h-4 w-[90%] bg-gray-200" />
-              <Skeleton className="h-4 w-[60%] bg-gray-200" />
+
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
+          {[...Array(10)].map((_, item) => (
+            <div
+              key={item}
+              className="flex flex-col overflow-hidden rounded-xl border border-gray-100 bg-white"
+            >
+              <Skeleton className="aspect-3/4 w-full bg-gray-200 rounded-none" />
+
+              <div className="space-y-3 p-3">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-full bg-gray-200" />
+                </div>
+                <Skeleton className="h-3 w-[50%] bg-gray-200" />
+                <div className="flex flex-col gap-2 pt-7">
+                  <Skeleton className="h-3 w-20 bg-gray-200" />
+                  <Skeleton className="h-3 w-16 bg-gray-200 rounded-full" />
+                </div>
+              </div>
             </div>
           ))}
         </div>
@@ -155,9 +152,9 @@ const Catalog = () => {
 
             {/* Info Buku */}
             <div className="flex flex-1 flex-col gap-1 p-3">
-              <h3 className="line-clamp-2 text-sm font-semibold leading-tight text-foreground group-hover:text-primary transition-colors">
+              <h2 className="line-clamp-2 text-sm font-semibold leading-tight text-foreground group-hover:text-primary transition-colors">
                 {book.title}
-              </h3>
+              </h2>
               <p className="text-xs text-muted-foreground">{book.author}</p>
 
               {book.stock === 0 && (
@@ -166,7 +163,7 @@ const Catalog = () => {
                   variant="outline"
                   className="mt-2 h-8 w-full border-amber-200 bg-amber-50 text-[10px] text-amber-700 hover:bg-amber-100"
                   onClick={(e) => {
-                    e.stopPropagation(); // Agar tidak memicu detail dialog
+                    e.stopPropagation();
                     handleWishlist(book);
                   }}
                 >

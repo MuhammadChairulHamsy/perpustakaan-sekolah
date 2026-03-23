@@ -11,6 +11,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { supabase } from "../lib/supabase/client";
 import { useAuth } from "../context/AuthContext";
 import { useNotifications } from "../context/NotificationContext";
+import { Button } from "./ui/button";
 
 export const NotificationBell = () => {
   const { user } = useAuth();
@@ -54,7 +55,8 @@ export const NotificationBell = () => {
             )}
           </div>
           {notifications.length > 0 && (
-            <button
+            <Button
+            variant="outline"
               onClick={(e) => {
                 e.stopPropagation(); 
                 if (confirm("Hapus semua notifikasi?"))
@@ -64,7 +66,7 @@ export const NotificationBell = () => {
             >
               <Trash2 className="h-3 w-3" />
               Hapus Semua
-            </button>
+            </Button>
           )}
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="m-0" />

@@ -16,9 +16,9 @@ import {
 } from "@/components/ui/chart"
 
 const COLORS = {
-  borrowed: "#0DA2E7",
-  returned: "#21C45D", 
-  overdue: "#f59e0b", 
+  borrowed: "#00BCFF",
+  returned: "#05DF72", 
+  overdue: "#FF8904", 
 };
 
 const chartConfig = {

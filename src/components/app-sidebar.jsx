@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   Library,
   LayoutDashboard,
@@ -25,6 +25,7 @@ import {
   SidebarGroupContent,
 } from "@/components/ui/sidebar";
 import { NavUser } from "@/components/nav-user";
+import { MenuItem } from "./menu-item";
 
 const navigationData = {
   main: [
@@ -76,29 +77,6 @@ const navigationData = {
 };
 
 export function AppSidebar({ ...props }) {
-  const location = useLocation();
-
-  const MenuItem = ({ item }) => {
-    const isActive = location.pathname === item.url;
-    return (
-      <SidebarMenuItem>
-        <SidebarMenuButton
-          asChild
-          isActive={isActive}
-          tooltip={item.title}
-          className={`transition-all duration-200 hover:bg-primary/10 ${
-            isActive ? "bg-primary/10 text-primary font-semibold" : "text-sidebar-foreground/70"
-          }`}
-        >
-          <Link to={item.url} className="flex items-center gap-3">
-            <item.icon className={`${isActive ? "text-primary" : "hover:text-primary"} transition-colors`} size={18} />
-            <span>{item.title}</span>
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    );
-  };
-
   return (
     <Sidebar collapsible="icon" className="border-r border-border/50" {...props}>
       {/* Header: Logo Perpustakaan */}
@@ -114,7 +92,7 @@ export function AppSidebar({ ...props }) {
                   <span className="font-bold text-sidebar-foreground text-base leading-none">
                     Pusat <span className="text-primary">Perpustakaan</span>
                   </span>
-                  <span className="text-[10px] uppercase tracking-wider font-medium text-muted-foreground/80">
+                  <span className="text-[10px] uppercase tracking-wider font-medium text-slate-300">
                     Perpustakaan Sekolah
                   </span>
                 </div>
@@ -124,10 +102,10 @@ export function AppSidebar({ ...props }) {
         </SidebarMenu>
       </SidebarHeader>
 
-      <SidebarContent className="px-2">
+      <SidebarContent className="px-2 overflow-hidden">
         {/* Group 1: Overview */}
         <SidebarGroup>
-          <SidebarGroupLabel className="px-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-2">
+          <SidebarGroupLabel className="px-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/300 mb-2">
             Ringkasan
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -141,7 +119,7 @@ export function AppSidebar({ ...props }) {
 
         {/* Group 2: Management */}
         <SidebarGroup>
-          <SidebarGroupLabel className="px-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-2 mt-2">
+          <SidebarGroupLabel className="px-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/300 mb-2 mt-2">
             Manajemen Operasional
           </SidebarGroupLabel>
           <SidebarGroupContent>
@@ -155,7 +133,7 @@ export function AppSidebar({ ...props }) {
 
         {/* Group 3: System */}
         <SidebarGroup className="mt-auto">
-          <SidebarGroupLabel className="px-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/60 mb-2">
+          <SidebarGroupLabel className="px-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground/300 mb-2">
             Sistem
           </SidebarGroupLabel>
           <SidebarGroupContent>
