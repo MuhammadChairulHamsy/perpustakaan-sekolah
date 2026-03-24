@@ -13,11 +13,11 @@ const Books = () => {
     books,
     searchQuery,
     setSearchQuery,
-    loading,
+    isLoading,
     error,
+    addBook,
     editBook,
     deleteBook,
-    addBook,
   } = useBooks();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
@@ -27,33 +27,34 @@ const Books = () => {
     setDialogOpen(true);
   };
 
-  const handleSubmit = async (formData) => {
-    const success = await (editingBook
-      ? editBook(editingBook.id, formData)
-      : addBook(formData));
-    if (success) {
-      toast.success("Berhasil Simpan!", {
-        description: `Buku ${formData.title} sudah masuk sistem.`,
-        className: "!text-white",
-      });
-    } else {
-      toast.error("Gagal Menyimpan Buku", {
-        description: "ISBN tidak boleh sama dengan buku yang sudah ada.",
-      });
-    }
-    return success;
-  };
-
-  
-  const handleDelete = async (id) => {
-    const success = await deleteBook(id);
-    if (success) {
-      toast.success("Data buku dihapus");
+ const handleSubmit = async (formData) => {
+    try {
+      if (editingBook && editingBook.id) {
+        await editBook.mutateAsync({
+          id: editingBook.id,
+          updatedData: formData,
+        });
+      } else {
+        await addBook.mutateAsync(formData);
+      }
+      setDialogOpen(false);
+      return true;
+    } catch (err) { 
+      console.error("Submit Error:", err);
+      return false;
     }
   };
 
-  if (loading) {
-    return <BookSkeleton/>
+ const handleDelete = async (id) => {
+    try {
+      await deleteBook.mutateAsync(id);
+    } catch (err) {
+      console.error("Delete Error:", err);
+    }
+  };
+
+  if (isLoading) {
+    return <BookSkeleton />;
   }
 
   if (error) {

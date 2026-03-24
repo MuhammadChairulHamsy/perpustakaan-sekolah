@@ -28,16 +28,16 @@ export const useCatalog = () => {
       return data.map((book) => ({
         id: book.id,
         title: book.title,
-        author: book.author || "Unknown Author",
+        author: book.author || "Penulis Tidak Dikenal",
         cover:
           book.cover_url ||
           "https://images.unsplash.com/photo-1543004471-24b94d873f24?q=80&w=1000&auto=format&fit=crop",
-        genre: book.category || "General",
+        genre: book.category || "Umum",
         rating: book.rating || 4.5,
         pages: book.pages || 0,
         year: book.year || new Date().getFullYear(),
         description:
-          book.description || "No description available for this book.",
+          book.description || "Tidak ada deskripsi yang tersedia untuk buku ini.",
         available: book.stock || 0,
       }));
     },

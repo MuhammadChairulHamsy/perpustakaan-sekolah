@@ -1,145 +1,109 @@
 import { useState, useEffect } from "react";
-import {supabase} from "../lib/supabase/client";
+import { supabase } from "../lib/supabase/client";
 import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const useBooks = () => {
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
-  // const [filteredBooks, setFilteredBooks] = useState([]);
-  // const [books, setBooks] = useState([]);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
 
-  // useEffect(() => {
-  //   fetchBooks();
-
-  //   const channel = supabase
-  //     .channel("perubahan-stok")
-  //     .on(
-  //       "postgres_changes",
-  //       { event: "UPDATE", schema: "public", table: "buku" },
-  //       (payload) => {
-  //         // Jika ada stok berubah di DB, update state lokal secara otomatis
-  //         setBooks((currentBooks) =>
-  //           currentBooks.map((b) =>
-  //             b.id === payload.new.id ? payload.new : b,
-  //           ),
-  //         );
-  //       },
-  //     )
-  //     .subscribe();
-
-  //   return () => {
-  //     supabase.removeChannel(channel);
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   if (searchQuery === "") {
-  //     setFilteredBooks(books);
-  //   } else {
-  //     const filtered = books.filter(
-  //       (book) =>
-  //         book.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         book.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         book.isbn?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-  //         book.category?.toLowerCase().includes(searchQuery.toLowerCase()),
-  //     );
-  //     setFilteredBooks(filtered);
-  //   }
-  // }, [searchQuery, books]);
-
-  const  {data: allBooks = [], isLoading, error, refetch} = useQuery({
-    queryKey: [""]
-  });
-  
-  const filteredBooks = useMemo(() => {
-    return
-  })
-
-  const fetchBooks = async () => {
-    try {
-      const { data, error } = await supabase.from("buku").select("*");
-
-      if (error) {
-        console.error("Supabase Error:", error);
-        setError(error);
-      } else {
-        setBooks(data || []);
-        setFilteredBooks(data || []);
-      }
-    } catch (err) {
-      console.error("Catch Error:", err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const addBook = async (bookData) => {
-    try {
-      const { data, error } = await supabase
+  const {
+    data: allBooks = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["data-books"],
+    queryFn: async () => {
+      const { data, error: dbError } = await supabase
         .from("buku")
-        .insert([bookData])
-        .select();
+        .select("id, title, author, isbn, category, stock, created_at")
+        .order("created_at", { ascending: false });
+      console.log("Data books dari supabase:", data);
+
+      if (dbError) throw dbError;
+
+      return data.map((book) => ({
+        ...book,
+        available: book.stock || 0,
+      }));
+    },
+
+    staleTime: 100 * 60 * 10,
+  });
+
+  const filteredBooks = useMemo(() => {
+    return allBooks.filter((book) => {
+      const search = searchQuery.toLowerCase();
+      return (
+        book.title?.toLowerCase().includes(search) ||
+        book.author?.toLowerCase().includes(search) ||
+        book.isbn?.toLowerCase().includes(search) ||
+        book.category?.toLowerCase().includes(search)
+      );
+    });
+  }, [allBooks, searchQuery]);
+
+  const addBook = useMutation({
+    mutationFn: async (bookData) => {
+      const { error } = await supabase.from("buku").insert([bookData]);
 
       if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["data-books"] });
+      toast.success("Buku berhasil di tambahkan");
+    },
+    onError: () => {
+      toast.error(`Gagal: ${error.message}`);
+    },
+  });
 
-      // Tambahkan buku baru ke state
-      setBooks((prevBooks) => [...prevBooks, ...data]);
-      return true;
-    } catch (err) {
-      console.error("Error adding book:", err);
-      return false;
-    }
-  };
+  const editBook = useMutation({
+    // PERBAIKAN: Gunakan single object destructuring { id, updatedData }
+    mutationFn: async ({ id, updatedData }) => {
+      if (!id) throw new Error("ID Buku tidak ditemukan!");
 
-  const editBook = async (id, updatedData) => {
-    try {
       const { error } = await supabase
         .from("buku")
         .update(updatedData)
         .eq("id", id);
-
+      
       if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["data-books"] });
+      toast.success("Buku berhasil diperbarui");
+    },
+    onError: (err) => {
+      toast.error(`Gagal: ${err.message || "Terjadi kesalahan sistem"}`);
+    },
+  });
 
-      // Update state lokal
-      setBooks((prevBooks) =>
-        prevBooks.map((book) =>
-          book.id === id ? { ...book, ...updatedData } : book,
-        ),
-      );
-
-      return true;
-    } catch (err) {
-      console.error("Error editing:", err);
-      return false;
-    }
-  };
-
-  const deleteBook = async (id) => {
-    try {
+ const deleteBook = useMutation({
+    mutationFn: async (id) => {
       const { error } = await supabase.from("buku").delete().eq("id", id);
-
       if (error) throw error;
-
-      setBooks(books.filter((book) => book.id !== id));
-      return true;
-    } catch (err) {
-      console.error("Error deleting:", err);
-      return false;
-    }
-  };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["data-books"] });
+      toast.success("Buku berhasil dihapus");
+    },
+    onError: (err) => {
+      toast.error(`Gagal: ${err.message}`);
+    },
+  });
 
   return {
     books: filteredBooks,
     searchQuery,
     setSearchQuery,
-    loading,
-    error,
+    isLoading,
+    error: error?.message,
     addBook,
     editBook,
     deleteBook,
-    refetch: fetchBooks,
+    refetch,
   };
 };
