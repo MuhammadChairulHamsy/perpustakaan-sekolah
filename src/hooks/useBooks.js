@@ -1,51 +1,61 @@
 import { useState, useEffect } from "react";
 import {supabase} from "../lib/supabase/client";
+import { useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export const useBooks = () => {
-  const [books, setBooks] = useState([]);
-  const [filteredBooks, setFilteredBooks] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [filteredBooks, setFilteredBooks] = useState([]);
+  // const [books, setBooks] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchBooks();
+  // useEffect(() => {
+  //   fetchBooks();
 
-    const channel = supabase
-      .channel("perubahan-stok")
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "buku" },
-        (payload) => {
-          // Jika ada stok berubah di DB, update state lokal secara otomatis
-          setBooks((currentBooks) =>
-            currentBooks.map((b) =>
-              b.id === payload.new.id ? payload.new : b,
-            ),
-          );
-        },
-      )
-      .subscribe();
+  //   const channel = supabase
+  //     .channel("perubahan-stok")
+  //     .on(
+  //       "postgres_changes",
+  //       { event: "UPDATE", schema: "public", table: "buku" },
+  //       (payload) => {
+  //         // Jika ada stok berubah di DB, update state lokal secara otomatis
+  //         setBooks((currentBooks) =>
+  //           currentBooks.map((b) =>
+  //             b.id === payload.new.id ? payload.new : b,
+  //           ),
+  //         );
+  //       },
+  //     )
+  //     .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  //   return () => {
+  //     supabase.removeChannel(channel);
+  //   };
+  // }, []);
 
-  useEffect(() => {
-    if (searchQuery === "") {
-      setFilteredBooks(books);
-    } else {
-      const filtered = books.filter(
-        (book) =>
-          book.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.isbn?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          book.category?.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
-      setFilteredBooks(filtered);
-    }
-  }, [searchQuery, books]);
+  // useEffect(() => {
+  //   if (searchQuery === "") {
+  //     setFilteredBooks(books);
+  //   } else {
+  //     const filtered = books.filter(
+  //       (book) =>
+  //         book.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         book.author?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         book.isbn?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //         book.category?.toLowerCase().includes(searchQuery.toLowerCase()),
+  //     );
+  //     setFilteredBooks(filtered);
+  //   }
+  // }, [searchQuery, books]);
+
+  const  {data: allBooks = [], isLoading, error, refetch} = useQuery({
+    queryKey: [""]
+  });
+  
+  const filteredBooks = useMemo(() => {
+    return
+  })
 
   const fetchBooks = async () => {
     try {

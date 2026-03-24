@@ -9,7 +9,7 @@ export const useCatalog = () => {
 
   const {
     data: allBooks = [],
-    isLoading,
+  isLoading,
     error,
     refetch,
   } = useQuery({

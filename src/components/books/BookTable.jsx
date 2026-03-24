@@ -11,11 +11,11 @@ import { BookRow } from "./BookRow";
 
 export const BookTable = ({ books, onEdit, onDelete }) => {
   return (
-    <div className="data-table rounded-lg border border-border bg-card">
+    <div className="rounded-lg border bg-card">
       <div className="overflow-x-auto">
         <Table className="w-full">
           <TableHeader>
-            <TableRow className="border-b border-border bg-muted/30 hover:bg-muted/30">
+            <TableRow className="border-b bg-muted/30 hover:bg-muted/30">
               <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
                 Judul
               </TableHead>
