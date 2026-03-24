@@ -35,10 +35,42 @@ export const DashboardSkeleton = () => {
         {/* Aktivitas Terkini */}
         <div className="lg:col-span-2 space-y-4">
           <Skeleton className="h-6 w-36 bg-gray-200" />
-          <div className="border rounded-xl p-4 space-y-4">
-            {[...Array(5)].map((_, item) => (
-              <Skeleton key={item} className="h-12 w-full bg-gray-200" />
-            ))}
+          <div className="border rounded-xl">
+            {/* Card Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b px-4 py-3">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-24 bg-gray-200" />
+                <Skeleton className="h-4 w-44 bg-gray-200" />
+              </div>
+              <div>
+                <Skeleton className="h-4 w-24 bg-gray-200" />
+              </div>
+            </div>
+
+            {/* Table Header */}
+            <div className="grid grid-cols-5 gap-4 border-b px-3 py-3">
+              <Skeleton className="h-4 w-16 bg-gray-200" />
+              <Skeleton className="h-4 w-20 bg-gray-200" />
+              <Skeleton className="h-4 w-16 bg-gray-200" />
+              <Skeleton className="h-4 w-20 bg-gray-200" />
+              <Skeleton className="h-4 w-16 bg-gray-200" />
+            </div>
+
+            {/* Table Rows */}
+            <div className="divide-y">
+              {[...Array(5)].map((_, item) => (
+                <div
+                  key={item}
+                  className="grid grid-cols-5 items-center px-4 py-3"
+                >
+                  <Skeleton className="h-4 w-16 bg-gray-200" />
+                  <Skeleton className="h-4 w-16 bg-gray-200" />
+                  <Skeleton className="h-4 w-16 bg-gray-200" />
+                  <Skeleton className="h-4 w-16 bg-gray-200" />
+                  <Skeleton className="h-4 w-16 bg-gray-200" />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 

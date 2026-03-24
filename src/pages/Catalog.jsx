@@ -13,7 +13,6 @@ import {
 import CatalogDialog from "../components/catalog/catalogDialog";
 import { useCatalog } from "../hooks/useCatalog";
 import { Button } from "../components/ui/button";
-import { Skeleton } from "../components/ui/skeleton";
 import { RatingStars } from "../components/catalog/RatingCatalogStars";
 import CatalogSkeleton from "../components/catalog/CatalogSkeleton";
 

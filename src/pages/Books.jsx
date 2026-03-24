@@ -5,7 +5,6 @@ import { useBooks } from "../hooks/useBooks";
 import { SearchBar } from "../components/search-bar";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
-import { toast } from "sonner";
 import BookSkeleton from "../components/books/BookSkeleton";
 
 const Books = () => {
