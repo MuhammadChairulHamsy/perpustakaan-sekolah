@@ -12,3 +12,7 @@ Nama Halaman	Fungsi Utama	Target User
 5. E-Resource	Link ke PDF atau jurnal digital (Open Access).	Semua
 
 6. fitur "Export ke Excel/PDF" sehingga admin bisa mendownload laporan denda mingguan
+
+7. Tambah tombol upload buku baru di halaman katalog
+
+8. Perbaikin bug ketika peminjaman data di hapus seharusnya keuntungan di keuangan tidak berkurang 

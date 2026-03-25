@@ -76,7 +76,7 @@ export const LatestActivityTable = ({ activities }) => {
                       </p>
                     </TableCell>
                     <TableCell className="py-4">
-                      <p className="text-sm text-muted-foreground truncate max-w-[150px]">
+                      <p className="text-sm text-muted-foreground truncate max-w-40">
                         {activity.buku?.title || "Buku Tidak Dikenal"}
                       </p>
                     </TableCell>

@@ -1,162 +1,122 @@
 // src/hooks/useLoans.js
 import { useEffect, useState } from "react";
-import {supabase} from "../lib/supabase/client";
+import { supabase } from "../lib/supabase/client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { toast } from "sonner";
 
 export const useLoans = () => {
-
+  const queryClient = useQueryClient();
   const [loans, setLoans] = useState([]);
-  const [filteredLoans, setFilteredLoans] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const [selectedLoan, setSelectedLoan] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    fetchLoans();
-  }, []);
-
-  useEffect(() => {
-    if (searchQuery === "") {
-      setFilteredLoans(loans);
-    } else {
-      const filtered = loans.filter(
-        (loan) =>
-          loan.siswa.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          loan.buku.title?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setFilteredLoans(filtered);
-      console.log("data", filtered);
-    }
-  }, [searchQuery, loans]);
-
-  
-
-  const fetchLoans = async () => {
-    try {
-      const { data, error } = await supabase
+  const {
+    data: allLoans = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["data-loans"],
+    queryFn: async () => {
+      const { data, error: dbError } = await supabase
         .from("peminjaman")
         .select(
           `
-            *,
-            siswa:student_id (name, class),
-            buku:book_id (title, author)
-          `
-        )
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Supabase Error:", error);
-        setError(error);
-      } else {
-        setLoans(data || []);
-        setFilteredLoans(data || []);
-      }
-    } catch (err) {
-      console.error("Catch Error:", err);
-      setError(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
- const addLoan = async ({ student_id, book_id }) => {
-  try {
-    // 1. insert dulu
-    const { error: insertError } = await supabase
-      .from("peminjaman")
-      .insert([{ student_id, book_id }]);
-
-    if (insertError) throw insertError;
-
-    // 2. ambil ulang data TERAKHIR + JOIN
-    const { data, error } = await supabase
-      .from("peminjaman")
-      .select(`
         id,
         loan_date,
         due_date,
         return_date,
         status,
         fine,
-        siswa:student_id (
-          id,
-          name,
-          class
-        ),
-        buku:book_id (
-          id,
-          title,
-          author
+            siswa:student_id (name, class),
+            buku:book_id (title, author)
+          `,
         )
-      `)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .single();
+        .order("created_at", { ascending: false });
+      console.log("Data loans dari supabase", data);
 
-      
+      if (dbError) throw dbError;
+
+      return data.map((loan) => ({
+        ...loan,
+      }));
+    },
+
+    staleTime: 100 * 60 * 10,
+  });
+
+  const filteredLoans = useMemo(() => {
+    return allLoans.filter((loan) => {
+      const search = searchQuery.toLowerCase();
+      return (
+        loan.siswa?.name?.toLowerCase().includes(search) ||
+        loan.buku?.title?.toLowerCase().includes(search)
+      );
+    });
+  }, [allLoans, searchQuery]);
+
+  const addLoan = useMutation({
+    mutationFn: async ({ student_id, book_id }) => {
+      const { error } = await supabase
+        .from("peminjaman")
+        .insert([{ student_id, book_id }]);
+
       if (error) throw error;
-      
-      setLoans((prev) => [data, ...prev]);
-      return true;
-  } catch (err) {
-    console.error("addLoan error:", err);
-    return { success: false, message: err.message };
-  }
-};
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["data-loans"] });
+      toast.success("Peminjaman Berhasil!", {
+        description: "Data peminjaman telah dicatat dan stok buku berkurang.",
+      });
+    },
+    onError: () => {
+      toast.error(`Gagal: ${error.message}`);
+    },
+  });
 
+  const returnLoanMutation = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase
+        .from("peminjaman")
+        .update({
+          status: "returned",
+          return_date: new Date().toISOString().split("T")[0],
+        })
+        .eq("id", id);
 
- const returnLoan = async (loan) => {
-  try {
-    const { error } = await supabase
-      .from("peminjaman")
-      .update({
-        status: "returned",
-        return_date: new Date().toISOString().split("T")[0],
-      })
-      .eq("id", loan.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["data-loans"] });
+    },
+  });
 
-    if (error) throw error;
-
-    setLoans((prev) =>
-      prev.map((l) =>
-        l.id === loan.id
-          ? { ...l, status: "returned", return_date: new Date() }
-          : l
-      )
-    );
-    return true;
-  } catch (err) {
-    console.error(err);
-    return false;
-  }
-};
-
-
-  const deleteLoan = async (id) => {
-    try {
+  const deleteLoan = useMutation({
+    mutationFn: async (id) => {
       const { error } = await supabase.from("peminjaman").delete().eq("id", id);
-
       if (error) throw error;
-
-      setLoans((prevLoans) => prevLoans.filter((loan) => loan.id !== id));
-      return true;
-    } catch (err) {
-      console.error("Error deleting:", err);
-      return false;
-    }
-  };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["data-loans"] });
+      toast.success("Data pinjaman berhasil dihapus");
+    },
+    onError: () => {
+      toast.error(`Gagal: ${error.message}`);
+    },
+  });
 
   return {
     loans: filteredLoans,
     searchQuery,
     setSearchQuery,
-    selectedLoan,
     setSelectedLoan,
-    loading,
-    error,
+    selectedLoan,
+    isLoading,
+    error: error?.message,
     addLoan,
-    returnLoan,
+    returnLoan: returnLoanMutation.mutateAsync,
     deleteLoan,
-    refetch: fetchLoans,
+    refetch,
   };
 };

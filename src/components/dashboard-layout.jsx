@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
-import { NotificationProvider } from "../../context/NotificationContext";
+import { NotificationProvider } from "../context/NotificationContext";
 
 export default function DashboardLayout() {
   return (

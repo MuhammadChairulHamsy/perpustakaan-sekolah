@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import LoginPage from "../pages/auth/login/Page";
 import SignupPage from "../pages/auth/signup/Page";
-import DashboardLayout from "../components/dashboard/DashboardLayout";
+import DashboardLayout from "../components/dashboard-layout";
 import { Dashboard } from "../pages/Dashboard";
 import Books from "../pages/Books";
 import Catalog from "../pages/Catalog";
@@ -38,43 +38,43 @@ const router = createBrowserRouter([
       { path: "katalog", element: <Catalog /> },
 
       // KHUSUS STAF (Admin, Pustakawan, Asisten)
-      { 
-        path: "siswa", 
+      {
+        path: "siswa",
         element: (
           <ProtectedRoute allowedRoles={staffRoles}>
             <Students />
           </ProtectedRoute>
-        ) 
-      },  
-      { 
-        path: "keuangan", 
+        ),
+      },
+      {
+        path: "keuangan",
         element: (
           <ProtectedRoute allowedRoles={staffRoles}>
             <Finance />
           </ProtectedRoute>
-        ) 
+        ),
       },
-      { 
-        path: "laporan", 
+      {
+        path: "laporan",
         element: (
           <ProtectedRoute allowedRoles={staffRoles}>
             <Reports />
           </ProtectedRoute>
-        ) 
+        ),
       },
-      { 
-        path: "pengaturan", 
+      {
+        path: "pengaturan",
         element: (
           <ProtectedRoute allowedRoles={staffRoles}>
             <Settings />
           </ProtectedRoute>
-        ) 
+        ),
       },
 
       { path: "*", element: <NotFound /> },
     ],
   },
-  
+
   { path: "*", element: <NotFound /> },
 ]);
 

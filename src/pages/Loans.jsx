@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
 import { useLoans } from "../hooks/useLoans";
 import { SearchBar } from "../components/search-bar";
-import { LoanDialog, LoanTable, PrintPreviewDialog } from "../components/loans";
+import { LoanDialog, LoanSkeleton, LoanTable, PrintPreviewDialog } from "../components/loans";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -13,7 +13,7 @@ const Loans = () => {
     setSearchQuery,
     selectedLoan,
     setSelectedLoan,
-    loading,
+    isLoading,
     error,
     addLoan,
     returnLoan,
@@ -28,39 +28,32 @@ const Loans = () => {
   };
 
   const handleSubmit = async (formData) => {
-    const success = await addLoan(formData);
-
-    if (success) {
-      toast.success("Peminjaman Berhasil!", {
-        description: "Data peminjaman telah dicatat dan stok buku berkurang.",
-        className: "!text-white",
-      });
-    } else {
-      toast.error("Gagal Meminjam Buku", {
-        description: result.message || "Pastikan stok tersedia.",
-      });
+    try {
+      await addLoan.mutateAsync(formData)
+      setDialogOpen(false);
+      return true;
+    } catch (err) {
+      console.error("Submit Error:", err)
+      return false;
     }
-    return success;
   };
 
   const handleDelete = async (id) => {
-    const success = await deleteLoan(id);
-    if (success) {
-      toast.success("Data pinjaman dihapus", {
-        className: "!text-white",
-      });
+    try {
+      await deleteLoan.mutateAsync(id);
+    } catch (err) {
+      console.error("Delete Error:", err);
     }
   };
 
   const handleReturn = async (loanId) => {
-    const success = await returnLoan(loanId);
-
-    if (success) {
+    try {
+      await returnLoan(loanId);
       toast.success("Buku Telah Dikembalikan", {
         description: "Status pinjaman diperbarui dan stok buku bertambah.",
         className: "!text-white",
       });
-    } else {
+    } catch (error) {
       toast.error("Gagal memproses pengembalian");
     }
   };
@@ -70,12 +63,9 @@ const Loans = () => {
     setPreviewOpen(true);
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
-      </div>
-    );
+  if (isLoading) {
+    return <LoanSkeleton/>
+     
   }
 
   if (error) {

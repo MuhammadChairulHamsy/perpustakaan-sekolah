@@ -1,10 +1,12 @@
 // src/pages/Dashboard.jsx
 import { BookOpen, Users, BookMarked, AlertTriangle } from "lucide-react";
-import { StatsCard } from "../components/dashboard/StatsCard";
-import { LatestActivityTable } from "../components/dashboard/LatestActivityTable";
+import {
+  StatsCard,
+  LatestActivityTable,
+  DashboardSkeleton,
+} from "../components/dashboard";
 import { useDashboard } from "../hooks/useDashboard";
 import LoanStatusChart from "../components/reports/LoanStatusChart";
-import { DashboardSkeleton } from "../components/dashboard/DashboardSkeleton";
 
 export const Dashboard = () => {
   const { data, isLoading, error } = useDashboard();
