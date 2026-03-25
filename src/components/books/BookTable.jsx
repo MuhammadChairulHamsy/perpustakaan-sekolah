@@ -1,4 +1,3 @@
-// src/components/books/BookTable.jsx
 import {
   Table,
   TableBody,
@@ -9,7 +8,7 @@ import {
 } from "../ui/table";
 import { BookRow } from "./BookRow";
 
-export const BookTable = ({ books, onEdit, onDelete }) => {
+export const BookTable = ({ books, searchQuery, onEdit, onDelete }) => {
   return (
     <div className="rounded-lg border bg-card">
       <div className="overflow-x-auto">
@@ -46,7 +45,11 @@ export const BookTable = ({ books, onEdit, onDelete }) => {
                   colSpan={7}
                   className="h-24 text-center text-muted-foreground"
                 >
-                  Tidak ada data buku
+                  {searchQuery ? (
+                    <span>Tidak ada data buku <b>"{searchQuery}"</b></span>
+                  ): (
+                    "Tidak ada data buku tersedia"
+                  )}
                 </TableCell>
               </TableRow>
             ) : (

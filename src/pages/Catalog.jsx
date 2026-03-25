@@ -10,11 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import CatalogDialog from "../components/catalog/catalogDialog";
 import { useCatalog } from "../hooks/useCatalog";
 import { Button } from "../components/ui/button";
-import { RatingStars } from "../components/catalog/RatingCatalogStars";
-import CatalogSkeleton from "../components/catalog/CatalogSkeleton";
+import {CatalogDialog,  CatalogSkeleton, RatingCatalogStars } from "../components/catalog";
 
 const Catalog = () => {
   const { user } = useAuth();
@@ -139,7 +137,7 @@ const Catalog = () => {
               )}
 
               <div className="mt-auto pt-2">
-                <RatingStars rating={book.rating} />
+                <RatingCatalogStars rating={book.rating} />
               </div>
 
               <Badge variant="secondary" className="mt-1 w-fit text-[10px]">

@@ -1,4 +1,3 @@
-// src/components/books/BookDialog.jsx
 import {
   Dialog,
   DialogContent,

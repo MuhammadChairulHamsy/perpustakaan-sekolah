@@ -1,7 +1,6 @@
 import { Star } from "lucide-react";
 
-
-export const RatingStars = ({ rating }) => (
+export const RatingCatalogStars = ({ rating }) => (
   <div className="flex items-center gap-1">
     {[1, 2, 3, 4, 5].map((star) => (
       <Star
@@ -18,3 +17,4 @@ export const RatingStars = ({ rating }) => (
     </span>
   </div>
 );
+

@@ -61,7 +61,6 @@ export const useBooks = () => {
   });
 
   const editBook = useMutation({
-    // PERBAIKAN: Gunakan single object destructuring { id, updatedData }
     mutationFn: async ({ id, updatedData }) => {
       if (!id) throw new Error("ID Buku tidak ditemukan!");
 

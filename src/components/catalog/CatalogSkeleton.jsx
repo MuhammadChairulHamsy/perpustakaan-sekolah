@@ -1,6 +1,6 @@
 import { Skeleton } from "../ui/skeleton"
 
-const CatalogSkeleton = () => {
+export const CatalogSkeleton = () => {
   return (
     <div className="container space-y-6 p-6 animate-pulse">
         <div className="space-y-2">
@@ -38,4 +38,3 @@ const CatalogSkeleton = () => {
   )
 }
 
-export default CatalogSkeleton

@@ -1,18 +1,21 @@
 import { useStudents } from "../hooks/useStudent";
-import { StudentTable } from "../components/student/StudentTable";
+import {
+  StudentTable,
+  StudentDialog,
+  StudentSkeleton,
+} from "../components/student";
 import { SearchBar } from "../components/search-bar";
 import { Button } from "../components/ui/button";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import { StudentDialog } from "../components/student/StudentDialog";
-import { toast } from "sonner";
+
 
 const Students = () => {
   const {
     students,
     searchQuery,
     setSearchQuery,
-    loading,
+    isLoading,
     error,
     addStudent,
     editStudent,
@@ -27,33 +30,33 @@ const Students = () => {
   };
 
   const handleSubmit = async (formData) => {
-    const success = await (editingStudent
-      ? editStudent(editingStudent.id, formData)
-      : addStudent(formData));
-    if (success) {
-      toast.success("Berhasil Simpan!", {
-        description: `Siswa ${formData.name} sudah masuk sistem.`,
-        className: "!text-white",
-      });
-    } else {
-      toast.error("Gagal Menyimpan Siswa Yang Sudah Ada");
+    try {
+      if (editingStudent && editingStudent.id) {
+        await editStudent.mutateAsync({
+          id: editingStudent.id,
+          updatedData: formData,
+        });
+      } else {
+        await addStudent.mutateAsync(formData);
+      }
+      setDialogOpen(false);
+      return true;
+    } catch (err) {
+      console.error("Submit Error:", err);
+      return false;
     }
-    return success;
   };
 
   const handleDelete = async (id) => {
-    const success = await deleteStudent(id);
-    if (success) {
-      toast.success("Data siswa dihapus");
+    try {
+      await deleteStudent.mutateAsync(id);
+    } catch (err) {
+      console.error("Delete Error:", err);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
-      </div>
-    );
+  if (isLoading) {
+    return <StudentSkeleton />;
   }
 
   if (error) {
@@ -72,7 +75,9 @@ const Students = () => {
       <div className="mb-6 w-full flex flex-col gap-4">
         <div className="flex flex-col justify-between items-start lg:flex lg:flex-row">
           <div className="flex flex-col">
-            <h1 className="text-2xl font-bold text-foreground mb-2">Semua Siswa</h1>
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              Semua Siswa
+            </h1>
             <p className="text-muted-foreground">
               Kelola anggota perpustakaan terdaftar
             </p>
@@ -104,6 +109,7 @@ const Students = () => {
 
         <StudentTable
           students={students}
+          searchQuery={searchQuery}
           onEdit={handleOpenDialog}
           onDelete={handleDelete}
         />

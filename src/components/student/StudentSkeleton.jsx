@@ -1,6 +1,6 @@
 import { Skeleton } from "../ui/skeleton";
 
-export const BookSkeleton = () => {
+export const StudentSkeleton = () => {
   return (
     <div className="container space-y-6 animate-pulse">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -19,27 +19,23 @@ export const BookSkeleton = () => {
 
       <div className="flex w-full rounded-lg border flex-col">
         {/* Table Header */}
-        <div className="grid grid-cols-7 gap-4 border-b px-4 py-3">
+        <div className="grid grid-cols-5 gap-4 border-b px-4 py-3">
           <Skeleton className="h-4 w-16 bg-gray-200" />
           <Skeleton className="h-4 w-20 bg-gray-200" />
           <Skeleton className="h-4 w-16 bg-gray-200" />
           <Skeleton className="h-4 w-20 bg-gray-200" />
           <Skeleton className="h-4 w-16 bg-gray-200" />
-          <Skeleton className="h-4 w-20 bg-gray-200" />
-          <Skeleton className="h-4 w-20 bg-gray-200" />
         </div>
 
         {/* Table Rows */}
         <div className="divide-y">
           {Array.from({ length: 7 }).map((_, i) => (
-            <div key={i} className="grid grid-cols-7 items-center gap-4 px-4 py-3">
+            <div key={i} className="grid grid-cols-5 items-center gap-4 px-4 py-3">
               <Skeleton className="h-4 w-16 bg-gray-200" />
               <Skeleton className="h-4 w-20 bg-gray-200" />
               <Skeleton className="h-4 w-16 bg-gray-200" />
               <Skeleton className="h-4 w-20 bg-gray-200" />
               <Skeleton className="h-4 w-16 bg-gray-200" />
-              <Skeleton className="h-4 w-20 bg-gray-200" />
-              <Skeleton className="h-4 w-20 bg-gray-200" />
             </div>
           ))}
         </div>

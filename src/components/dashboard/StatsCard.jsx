@@ -1,4 +1,3 @@
-// src/components/dashboard/StatsCard.jsx
 export const StatsCard = ({
   title,
   value,
@@ -22,12 +21,12 @@ export const StatsCard = ({
               {(value ?? 0).toLocaleString()}
             </p>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed max-w-[150px]">
+          <p className="text-xs text-muted-foreground leading-relaxed max-w-40">
             {description}
           </p>
         </div>
 
-        <div className={`relative flex h-14 w-14 items-center justify-center rounded-2xl ${bgColor} shadow-inner transition-transform duration-500 group-hover:rotate-[10deg] group-hover:scale-110`}>
+        <div className={`relative flex h-14 w-14 items-center justify-center rounded-2xl ${bgColor} shadow-inner transition-transform duration-500 group-hover:rotate-10 group-hover:scale-110`}>
           <Icon className={`h-8 w-8 ${color}`} />
         </div>
       </div>

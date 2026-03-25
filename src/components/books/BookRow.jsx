@@ -105,3 +105,4 @@ export const BookRow = ({ book, onEdit, onDelete }) => {
     </TableRow>
   );
 };
+

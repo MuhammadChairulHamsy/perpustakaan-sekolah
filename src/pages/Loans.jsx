@@ -1,11 +1,10 @@
 import { Plus } from "lucide-react";
 import { useLoans } from "../hooks/useLoans";
 import { SearchBar } from "../components/search-bar";
-import { LoanDialog, LoanTable } from "../components/loans";
+import { LoanDialog, LoanTable, PrintPreviewDialog } from "../components/loans";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
-import { PrintPreviewDialog } from "../components/loans/PrintPreviewDialog";
 
 const Loans = () => {
   const {

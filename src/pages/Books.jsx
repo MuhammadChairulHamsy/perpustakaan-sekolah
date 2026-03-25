@@ -1,11 +1,11 @@
-// src/pages/Books.jsx
-import { BookTable, BookDialog } from "../components/books";
+import { BookTable, BookSkeleton } from "../components/books";
 import { Plus } from "lucide-react";
 import { useBooks } from "../hooks/useBooks";
 import { SearchBar } from "../components/search-bar";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
-import BookSkeleton from "../components/books/BookSkeleton";
+import { BookDialog } from "../components/books/BookDialog";
+
 
 const Books = () => {
   const {
@@ -26,7 +26,7 @@ const Books = () => {
     setDialogOpen(true);
   };
 
- const handleSubmit = async (formData) => {
+  const handleSubmit = async (formData) => {
     try {
       if (editingBook && editingBook.id) {
         await editBook.mutateAsync({
@@ -38,13 +38,13 @@ const Books = () => {
       }
       setDialogOpen(false);
       return true;
-    } catch (err) { 
+    } catch (err) {
       console.error("Submit Error:", err);
       return false;
     }
   };
 
- const handleDelete = async (id) => {
+  const handleDelete = async (id) => {
     try {
       await deleteBook.mutateAsync(id);
     } catch (err) {
@@ -98,6 +98,7 @@ const Books = () => {
 
         <BookTable
           books={books}
+          searchQuery={searchQuery}
           onEdit={handleOpenDialog}
           onDelete={handleDelete}
         />

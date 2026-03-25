@@ -48,7 +48,7 @@ export const DashboardSkeleton = () => {
             </div>
 
             {/* Table Header */}
-            <div className="grid grid-cols-5 gap-4 border-b px-3 py-3">
+            <div className="grid grid-cols-5 gap-4 border-b px-4 py-3">
               <Skeleton className="h-4 w-16 bg-gray-200" />
               <Skeleton className="h-4 w-20 bg-gray-200" />
               <Skeleton className="h-4 w-16 bg-gray-200" />

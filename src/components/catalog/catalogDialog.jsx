@@ -1,6 +1,6 @@
-import { Star, BellRing } from "lucide-react"; // Tambahkan BellRing
-import { Badge } from "../ui/badge"; // Pastikan import Badge benar (bukan lucide)
-import { Button } from "../ui/button"; // Import Button shadcn
+import { BellRing } from "lucide-react";
+import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,27 +9,9 @@ import {
   DialogDescription,
 } from "../ui/dialog";
 import { Link } from "react-router-dom";
+import { RatingCatalogStars } from "./RatingCatalogStars";
 
-const RatingStars = ({ rating }) => (
-  <div className="flex items-center gap-1">
-    {[1, 2, 3, 4, 5].map((star) => (
-      <Star
-        key={star}
-        className={`h-3.5 w-3.5 ${
-          star <= Math.round(rating || 0)
-            ? "fill-amber-400 text-amber-400"
-            : "text-muted-foreground/30"
-        }`}
-      />
-    ))}
-    <span className="ml-1 text-xs font-medium text-muted-foreground">
-      {rating || "0"}
-    </span>
-  </div>
-);
-
-// Tambahkan onWishlist ke props
-const CatalogDialog = ({ book, onClose, onWishlist }) => {
+export const CatalogDialog = ({ book, onClose, onWishlist }) => {
   if (!book) return null;
 
   const isAvailable = Number(book.available) > 0;
@@ -48,14 +30,14 @@ const CatalogDialog = ({ book, onClose, onWishlist }) => {
               "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1000&auto=format&fit=crop"
             }
             alt={book.title}
-            className="h-52 w-36 mx-auto sm:mx-0 flex-shrink-0 rounded-lg object-cover shadow-md"
+            className="h-52 w-36 mx-auto sm:mx-0 shrink-0 rounded-lg object-cover shadow-md"
           />
           <div className="flex flex-col gap-2 flex-1">
             <p className="text-sm text-muted-foreground">
               by{" "}
               <span className="font-medium text-foreground">{book.author}</span>
             </p>
-            <RatingStars rating={book.rating} />
+            <RatingCatalogStars rating={book.rating} />
             <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
               <Badge variant="secondary">
                 {book.genre || book.category || "General"}
@@ -113,5 +95,3 @@ const CatalogDialog = ({ book, onClose, onWishlist }) => {
     </Dialog>
   );
 };
-
-export default CatalogDialog;

@@ -1,4 +1,3 @@
-// src/components/books/BookDialog.jsx
 import {
   Dialog,
   DialogContent,
@@ -138,3 +137,4 @@ export const BookDialog = ({ open, onOpenChange, book, onSubmit }) => {
     </Dialog>
   );
 };
+
