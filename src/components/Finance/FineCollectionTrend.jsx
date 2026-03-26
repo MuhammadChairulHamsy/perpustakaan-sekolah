@@ -26,7 +26,7 @@ export const FineCollectionTrend = ({ data }) => {
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[320px] w-full">
+        <ChartContainer config={chartConfig} className="h-80 w-full">
           <BarChart
             data={data}
             margin={{ top: 20, right: 300, left: -10, bottom: 0 }}

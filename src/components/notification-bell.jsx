@@ -71,7 +71,7 @@ export const NotificationBell = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="m-0" />
 
-        <ScrollArea className="h-[350px]">
+        <ScrollArea className="h-96">
           {notifications.length === 0 ? (
             <div className="p-8 text-center text-sm text-muted-foreground">
               Belum ada notifikasi.

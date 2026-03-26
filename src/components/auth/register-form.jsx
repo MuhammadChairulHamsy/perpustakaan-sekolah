@@ -6,7 +6,7 @@ import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 
-export function SignupForm({
+export function RegisterForm({
   register,
   handleSubmit,
   onSubmit,

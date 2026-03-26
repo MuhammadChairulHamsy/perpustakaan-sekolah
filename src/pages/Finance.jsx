@@ -1,7 +1,7 @@
 import { AlertCircle, BookOpen, CheckCircle2, DollarSign } from "lucide-react";
 import { StatsCard } from "../components/dashboard/StatsCard";
 import { useFinance } from "../hooks/useFinance";
-import { FineCollectionTrend } from "../components/Finance/FineCollectionTrend";
+import { FineCollectionTrend } from "../components/finance/FineCollectionTrend";
 
 const Finance = () => {
   const { fine, loading, error, collectedData } = useFinance();

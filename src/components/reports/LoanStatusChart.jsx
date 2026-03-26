@@ -1,24 +1,22 @@
-"use client"
-
-import * as React from "react"
-import { Pie, PieChart, Label } from "recharts"
+import * as React from "react";
+import { Pie, PieChart, Label } from "recharts";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 const COLORS = {
   borrowed: "#00BCFF",
-  returned: "#05DF72", 
-  overdue: "#FF8904", 
+  returned: "#05DF72",
+  overdue: "#FF8904",
 };
 
 const chartConfig = {
@@ -37,7 +35,7 @@ const chartConfig = {
     label: "Terlambat",
     color: COLORS.overdue,
   },
-}
+};
 
 const LoanStatusChart = ({ data }) => {
   // Format data dan hitung total untuk angka di tengah
@@ -56,22 +54,24 @@ const LoanStatusChart = ({ data }) => {
 
   if (!formattedData || formattedData.length === 0) {
     return (
-      <Card className="flex h-[400px] items-center justify-center border-none shadow-none bg-transparent">
-        <p className="text-muted-foreground text-sm italic">Memuat data statistik...</p>
+      <Card className="flex h-chart-large items-center justify-center border-none shadow-none bg-transparent">
+        <p className="text-muted-foreground text-sm italic">
+          Memuat data statistik...
+        </p>
       </Card>
     );
   }
 
   return (
     <Card className="flex flex-col border-none shadow-none bg-transparent">
-      <CardHeader className="items-center pb-0">
+      <CardHeader className="items-center">
         <CardTitle>Status Peminjaman</CardTitle>
         <CardDescription>Persentase sirkulasi buku saat ini</CardDescription>
       </CardHeader>
-      <CardContent className="flex-1 pb-0">
+      <CardContent className="flex-1">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[300px]"
+          className="mx-auto aspect-square max-h-chart-main"
         >
           <PieChart>
             <ChartTooltip
@@ -85,6 +85,7 @@ const LoanStatusChart = ({ data }) => {
               innerRadius={65}
               strokeWidth={5}
               paddingAngle={2}
+              isAnimationActive={false}
             >
               <Label
                 content={({ viewBox }) => {
@@ -111,7 +112,7 @@ const LoanStatusChart = ({ data }) => {
                           Total Peminjam
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
@@ -120,11 +121,14 @@ const LoanStatusChart = ({ data }) => {
         </ChartContainer>
       </CardContent>
       {/* Legend Manual yang lebih cantik */}
-      <div className="flex flex-wrap  justify-center gap-4 py-4 text-sm">
+      <div className="flex flex-wrap justify-center gap-4 text-sm">
         {formattedData.map((item) => (
-          <div key={item.status} className="flex items-center gap-1.5 text-muted-foreground">
-            <div 
-              className="h-2 w-2 rounded-full" 
+          <div
+            key={item.status}
+            className="flex items-center gap-1.5 text-muted-foreground"
+          >
+            <div
+              className="h-2 w-2 rounded-full"
               style={{ backgroundColor: item.fill }}
             />
             <span>{chartConfig[item.status]?.label || item.status}</span>

@@ -17,4 +17,3 @@ export const RatingCatalogStars = ({ rating }) => (
     </span>
   </div>
 );
-

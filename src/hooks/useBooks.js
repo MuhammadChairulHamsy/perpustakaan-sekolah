@@ -66,7 +66,7 @@ export const useBooks = () => {
 
       const { error } = await supabase
         .from("buku")
-        .update(updatedData)
+        .update(updatedData)   
         .eq("id", id);
       
       if (error) throw error;

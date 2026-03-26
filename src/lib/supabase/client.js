@@ -1,8 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 
-// const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-// const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
 const cookieStorage = {
   getItem: (key) => {
     const arr = document.cookie.split("; ");
@@ -24,7 +21,6 @@ const cookieStorage = {
   },
 };
 
-// 2. Gunakan di dalam createClient
 export const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL,
   import.meta.env.VITE_SUPABASE_ANON_KEY,

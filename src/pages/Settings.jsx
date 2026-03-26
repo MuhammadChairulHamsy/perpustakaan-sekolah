@@ -44,8 +44,8 @@ const Settings = () => {
 
   if (loading)
     return (
-      <div className="flex h-[450px] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-current border-r-transparent" />
       </div>
     );
 
@@ -58,7 +58,7 @@ const Settings = () => {
         </p>
       </div>
 
-     <Tabs defaultValue="users" className="space-y-6">
+      <Tabs defaultValue="users" className="space-y-6">
         <TabsList className="bg-muted/50">
           <TabsTrigger value="users" className="gap-2">
             <User className="h-4 w-4" />
@@ -120,7 +120,10 @@ const Settings = () => {
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="space-y-3">
                 <Label>Durasi Pinjam Default</Label>
-                <Select value={loanDuration} onValueChange={(value) => setLoanDuration(value)}>
+                <Select
+                  value={loanDuration}
+                  onValueChange={(value) => setLoanDuration(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih durasi" />
                   </SelectTrigger>
@@ -132,7 +135,10 @@ const Settings = () => {
               </div>
               <div className="space-y-3">
                 <Label>Limit Buku per Siswa</Label>
-                <Select value={maxBooks} onValueChange={(value) => setMaxBooks(value)}>
+                <Select
+                  value={maxBooks}
+                  onValueChange={(value) => setMaxBooks(value)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih limit" />
                   </SelectTrigger>

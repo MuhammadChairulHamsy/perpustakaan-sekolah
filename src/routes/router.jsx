@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import LoginPage from "../pages/auth/login/Page";
-import SignupPage from "../pages/auth/signup/Page";
+import LoginPage from "../pages/auth/login/LoginPage";
+import RegisterPage from "../pages/auth/register/RegisterPage";
 import DashboardLayout from "../components/dashboard-layout";
 import { Dashboard } from "../pages/Dashboard";
 import Books from "../pages/Books";
@@ -19,7 +19,7 @@ const staffRoles = ["Admin", "Pustakawan", "Asisten"];
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },
-  { path: "/register", element: <SignupPage /> },
+  { path: "/register", element: <RegisterPage /> },
   { path: "/auth/callback", element: <AuthCallback /> },
   { path: "/", element: <Navigate to="/dashboard" replace /> },
 

@@ -1,4 +1,3 @@
-// src/pages/Dashboard.jsx
 import { BookOpen, Users, BookMarked, AlertTriangle } from "lucide-react";
 import {
   StatsCard,
@@ -6,8 +5,12 @@ import {
   DashboardSkeleton,
 } from "../components/dashboard";
 import { useDashboard } from "../hooks/useDashboard";
-import LoanStatusChart from "../components/reports/LoanStatusChart";
+import { lazy, Suspense } from "react";
+import { useMemo } from "react";
 
+const LoanStatusChart = lazy(
+  () => import("../components/reports/LoanStatusChart"),
+);
 export const Dashboard = () => {
   const { data, isLoading, error } = useDashboard();
 
@@ -49,20 +52,23 @@ export const Dashboard = () => {
     },
   ];
 
-  const chartStatusData = [
-    {
-      status: "borrowed",
-      total: stats.totalActiveBorrowed || 0,
-    },
-    {
-      status: "returned",
-      total: stats.totalReturned || 0,
-    },
-    {
-      status: "overdue",
-      total: stats.overdueLoan || 0,
-    },
-  ];
+  const chartStatusData = useMemo(
+    () => [
+      {
+        status: "borrowed",
+        total: stats.totalActiveBorrowed || 0,
+      },
+      {
+        status: "returned",
+        total: stats.totalReturned || 0,
+      },
+      {
+        status: "overdue",
+        total: stats.overdueLoan || 0,
+      },
+    ],
+    [stats],
+  );
 
   const totalAllLoans = chartStatusData.reduce(
     (acc, curr) => acc + curr.total,
@@ -115,14 +121,14 @@ export const Dashboard = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 pb-10 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 pb-10 items-stretch">
         <div className="lg:col-span-2 flex flex-col space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold tracking-tight">
               Aktivitas Terkini
             </h2>
           </div>
-          <div className="flex-1 bg-white border rounded-xl overflow-hidden shadow-sm">
+          <div className="flex-1 bg-slate-50 border rounded-xl overflow-hidden shadow-sm">
             <LatestActivityTable activities={latestActivities} />
           </div>
         </div>
@@ -131,8 +137,10 @@ export const Dashboard = () => {
           <h2 className="text-lg font-semibold tracking-tight">
             Statistik Status
           </h2>
-          <div className="bg-white border rounded-xl shadow-sm h-full  flex items-center justify-center">
-            <LoanStatusChart data={chartStatusData} />
+          <div className="bg-slate-50 border rounded-xl shadow-sm h-full flex items-center justify-center">
+            <Suspense fallback={<div>Loading chart...</div>}>
+              <LoanStatusChart data={chartStatusData} />
+            </Suspense>
           </div>
         </div>
       </div>
