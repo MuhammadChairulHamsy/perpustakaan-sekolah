@@ -1,5 +1,3 @@
-"use client";
-
 import React from "react";
 import { ArrowRight, History } from "lucide-react";
 import {

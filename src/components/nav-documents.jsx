@@ -1,5 +1,3 @@
-"use client"
-
 import { IconDots, IconFolder, IconShare3, IconTrash } from "@tabler/icons-react";
 
 import {
