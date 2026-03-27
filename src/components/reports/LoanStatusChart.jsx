@@ -38,7 +38,6 @@ const chartConfig = {
 };
 
 const LoanStatusChart = ({ data }) => {
-  // Format data dan hitung total untuk angka di tengah
   const { formattedData, totalLoans } = React.useMemo(() => {
     let total = 0;
     const formatted = data.map((item) => {
