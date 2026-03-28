@@ -46,9 +46,9 @@ const Loans = () => {
     }
   };
 
-  const handleReturn = async (loanId) => {
+  const handleReturn = async (loan) => {
     try {
-      await returnLoan(loanId);
+      await returnLoan(loan.id);
       toast.success("Buku Telah Dikembalikan", {
         description: "Status pinjaman diperbarui dan stok buku bertambah.",
         className: "!text-white",

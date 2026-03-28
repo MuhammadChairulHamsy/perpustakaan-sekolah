@@ -19,7 +19,7 @@ const chartConfig = {
   },
 };
 
-const TopBooksChart = ({ data }) => {
+export const TopBooksChart = ({ data }) => {
   const sortedData = [...data].sort((a, b) => b.total - a.total).slice(0, 5);
 
   return (
@@ -29,7 +29,7 @@ const TopBooksChart = ({ data }) => {
         <CardDescription>Top 5 koleksi literasi paling populer</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="h-[300px] w-full">
+        <ChartContainer config={chartConfig} className="h-chart-main w-full">
           <BarChart
             accessibilityLayer
             data={sortedData}
@@ -71,4 +71,3 @@ const TopBooksChart = ({ data }) => {
   );
 };
 
-export default TopBooksChart;

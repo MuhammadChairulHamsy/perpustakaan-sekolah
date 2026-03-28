@@ -31,23 +31,20 @@ const chartConfig = {
   },
 }
 
-const MonthlyLoanChart = ({ data }) => {
+export const MonthlyLoanChart = ({ data }) => {
   const [timeRange, setTimeRange] = React.useState("90d")
 
-  // Format data agar sesuai dengan kebutuhan grafik
   const formattedData = React.useMemo(() => {
     return data.map((item) => ({
-      // Mengasumsikan item.month berformat "YYYY-MM"
       date: item.month + "-01",
       borrowed: Number(item.borrowed || 0),
       returned: Number(item.returned || 0),
     }))
   }, [data])
 
-  // Filter data berdasarkan range waktu (Opsional, jika data kamu banyak)
   const filteredData = formattedData.filter((item) => {
     const date = new Date(item.date)
-    const referenceDate = new Date() // Menggunakan waktu sekarang sebagai acuan
+    const referenceDate = new Date()
     let daysToSubtract = 90
     if (timeRange === "30d") daysToSubtract = 30
     if (timeRange === "7d") daysToSubtract = 7
@@ -68,7 +65,7 @@ const MonthlyLoanChart = ({ data }) => {
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
           <SelectTrigger
-            className="w-[160px] rounded-lg sm:ml-auto"
+            className="w-40 rounded-lg sm:ml-auto"
             aria-label="Pilih rentang waktu"
           >
             <SelectValue placeholder="3 Bulan Terakhir" />
@@ -89,7 +86,7 @@ const MonthlyLoanChart = ({ data }) => {
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[350px] w-full"
+          className="aspect-auto h-96 w-full"
         >
           <AreaChart data={filteredData}>
             <defs>
@@ -174,5 +171,3 @@ const MonthlyLoanChart = ({ data }) => {
     </Card>
   )
 }
-
-export default MonthlyLoanChart

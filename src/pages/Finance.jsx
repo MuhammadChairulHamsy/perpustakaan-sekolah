@@ -2,9 +2,10 @@ import { AlertCircle, BookOpen, CheckCircle2, DollarSign } from "lucide-react";
 import { StatsCard } from "../components/dashboard/StatsCard";
 import { useFinance } from "../hooks/useFinance";
 import { FineCollectionTrend } from "../components/finance/FineCollectionTrend";
+import { FineSkeleton } from "../components/finance/FineSkeleton";
 
 const Finance = () => {
-  const { fine, loading, error, collectedData } = useFinance();
+  const { finance, isLoading, error, collectedData } = useFinance();
   const statsCards = [
     {
       title: "Pendapatan Total",
@@ -12,7 +13,7 @@ const Finance = () => {
         style: "currency",
         currency: "IDR",
         maximumFractionDigits: 0,
-      }).format(fine.totalRevenue),
+      }).format(finance.totalRevenue),
       icon: DollarSign,
       color: "text-sky-400",
       bgColor: "bg-sky-100",
@@ -20,7 +21,7 @@ const Finance = () => {
     },
     {
       title: "Denda yang Tertunda",
-      value: fine.pendingFinance,
+      value: finance.pendingFinance,
       icon: AlertCircle,
       color: "text-green-400",
       bgColor: "bg-green-100",
@@ -32,7 +33,7 @@ const Finance = () => {
         style: "currency",
         currency: "IDR",
         maximumFractionDigits: 0,
-      }).format(fine.collectedFines),
+      }).format(finance.collectedFines),
       icon: CheckCircle2,
       color: "text-green-400",
       bgColor: "bg-green-100",
@@ -40,7 +41,7 @@ const Finance = () => {
     },
     {
       title: "Buku Terlambat Dikembalikan",
-      value: fine.overdueBooks,
+      value: finance.overdueBooks,
       icon: BookOpen,
       color: "text-orange-400",
       bgColor: "bg-orange-100",
@@ -48,12 +49,8 @@ const Finance = () => {
     },
   ];
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent"></div>
-      </div>
-    );
+  if (isLoading) {
+    return <FineSkeleton/>
   }
 
   if (error) {

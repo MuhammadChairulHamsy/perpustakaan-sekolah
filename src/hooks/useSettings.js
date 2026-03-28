@@ -1,39 +1,16 @@
-import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export const useSettings = (currentUser) => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState(null);
+  const queryClient = useQueryClient();
 
-  const [loanDuration, setLoanDuration] = useState("7");
-  const [maxBooks, setMaxBooks] = useState("5");
+  // --- QUERIES ---
 
-  // State untuk Preferensi Notifikasi
-  const [notifications, setNotifications] = useState({
-    overdue: true,
-    reminders: true,
-    email: true,
-  });
-
-  const toggleNotification = (key) => {
-    setNotifications((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
-  };
-
-  useEffect(() => {
-    fetchAllSettings();
-  }, [currentUser]);
-
-  // 1. Fetch Semua Data (Users & Preferences)
-  const fetchAllSettings = async () => {
-    setLoading(true);
-    try {
-      // Menjalankan fetch secara paralel agar lebih cepat
+  // 1. Fetch Semua Data (Users, Preferences, & Config)
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["settings-data", currentUser?.id],
+    queryFn: async () => {
       const [usersRes, prefRes, configRes] = await Promise.all([
         supabase
           .from("profiles")
@@ -43,65 +20,62 @@ export const useSettings = (currentUser) => {
         currentUser
           ? supabase
               .from("profiles")
-              .select(
-                "overdue_notifications, due_date_reminders, email_notifications",
-              )
+              .select("overdue_notifications, due_date_reminders, email_notifications")
               .eq("id", currentUser.id)
               .single()
           : Promise.resolve({ data: null }),
+
         supabase.from("library_settings").select("*"),
       ]);
+
       if (usersRes.error) throw usersRes.error;
-      setUsers(usersRes.data || []);
 
-      if (prefRes.data) {
-        setNotifications({
-          overdue: prefRes.data.overdue_notifications ?? true,
-          reminders: prefRes.data.due_date_reminders ?? true,
-          email: prefRes.data.email_notifications ?? true,
-        });
-      }
+      // Parsing Library Settings
+      const settingsMap = {};
+      configRes.data?.forEach((item) => {
+        settingsMap[item.key] = item.value;
+      });
 
-      if (configRes.data) {
-        const duration = configRes.data.find((c) => c.key === "loan_duration");
-        const max = configRes.data.find((c) => c.key === "max_books");
-        if (duration) setLoanDuration(duration.value);
-        if (max) setMaxBooks(max.value);
-      }
-    } catch (err) {
-      console.error("Fetch Error:", err.message);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+      return {
+        users: usersRes.data || [],
+        notifications: {
+          overdue: prefRes.data?.overdue_notifications ?? true,
+          reminders: prefRes.data?.due_date_reminders ?? true,
+          email: prefRes.data?.email_notifications ?? true,
+        },
+        config: {
+          loanDuration: settingsMap["loan_duration"] || "7",
+          maxBooks: settingsMap["max_books"] || "5",
+        },
+      };
+    },
+    enabled: !!currentUser, // Hanya jalan jika user login
+  });
 
-  // Fungsi untuk menyimpan konfigurasi perpustakaan
-  const updateLibraryConfig = async () => {
-    setIsSaving(true);
-    try {
+  // --- MUTATIONS ---
+
+  // 2. Update Library Config (upsert)
+  const updateConfig = useMutation({
+    mutationFn: async ({ loanDuration, maxBooks }) => {
       const { error } = await supabase.from("library_settings").upsert(
         [
           { key: "loan_duration", value: loanDuration },
           { key: "max_books", value: maxBooks },
         ],
-        { onConflict: "key" },
+        { onConflict: "key" }
       );
-
       if (error) throw error;
-      toast.success("Konfigurasi perpustakaan berhasil disimpan!");
-    } catch (err) {
-      toast.error("Gagal menyimpan config: " + err.message);
-    } finally {
-      setIsSaving(false);
-    }
-  };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["settings-data"] });
+      toast.success("Konfigurasi perpustakaan disimpan!");
+    },
+    onError: (err) => toast.error("Gagal: " + err.message),
+  });
 
-  // 2. Fungsi Simpan Notifikasi (Logic moved from UI)
-  const updateNotifications = async (newPrefs) => {
-    if (!currentUser) return false;
-    setIsSaving(true);
-    try {
+  // 3. Update Notifications
+  const updateNotifications = useMutation({
+    mutationFn: async (newPrefs) => {
       const { error } = await supabase
         .from("profiles")
         .update({
@@ -110,103 +84,56 @@ export const useSettings = (currentUser) => {
           email_notifications: newPrefs.email,
         })
         .eq("id", currentUser.id);
-
       if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["settings-data"] });
+      toast.success("Preferensi disimpan");
+    },
+  });
 
-      setNotifications(newPrefs);
-      toast.success("Preferensi berhasil disimpan");
-      return true;
-    } catch (err) {
-      toast.error("Gagal menyimpan: " + err.message);
-      return false;
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  // 4. CRUD Users (Delete sebagai contoh)
+  const deleteUser = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase.from("profiles").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["settings-data"] });
+      toast.success("User berhasil dihapus");
+    },
+  });
 
-  // 3. CRUD Users (Profil Admin/Petugas)
+  // --- HELPER FUNCTIONS ---
+  // Fungsi addUsers (Sign Up) sebaiknya tetap async karena melibatkan Auth
   const addUsers = async (formData) => {
-    setIsSaving(true);
     try {
       const { error } = await supabase.auth.signUp({
         email: formData.email,
         password: "PasswordDefault123!",
-        options: {
-          data: {
-            full_name: formData.full_name,
-            role: formData.role,
-          },
-        },
+        options: { data: { full_name: formData.full_name, role: formData.role } },
       });
-
       if (error) throw error;
-      await fetchAllSettings(); // Refresh list
-      toast.success("User berhasil ditambahkan");
+      queryClient.invalidateQueries({ queryKey: ["settings-data"] });
+      toast.success("User ditambahkan");
       return true;
     } catch (err) {
-      toast.error("Error menambah user: " + err.message);
-      return false;
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
- const editUser = async (id, updatedData) => {
-  setIsSaving(true);
-  try {
-    const { data, error } = await supabase
-      .from("profiles")
-      .update({
-        full_name: updatedData.full_name,
-        role: updatedData.role,
-      })
-      .eq("id", id)
-      .select();
-    if (error) throw error;
-    if (data.length === 0) {
-      console.error("Tidak ada baris yang diupdate. Periksa apakah ID sesuai.");
-    }
-
-    await fetchAllSettings();
-    toast.success("Profil diperbarui");
-    return true;
-  } catch (err) {
-    toast.error("Error mengedit: " + err.message);
-    return false;
-  } finally {
-    setIsSaving(false);
-  }
-};
-
-  const deleteUser = async (id) => {
-    try {
-      const { error } = await supabase.from("profiles").delete().eq("id", id);
-      if (error) throw error;
-
-      setUsers((prev) => prev.filter((u) => u.id !== id));
-      toast.success("User berhasil dihapus");
-      return true;
-    } catch (err) {
-      toast.error("Gagal menghapus: " + err.message);
+      toast.error(err.message);
       return false;
     }
   };
 
   return {
-    users,
-    notifications,
-    setNotifications,
-    toggleNotification,
-    updateLibraryConfig,
-    setLoanDuration,
-    setMaxBooks,
-    loading,
-    isSaving,
-    error,
+    users: data?.users || [],
+    notifications: data?.notifications || { overdue: true, reminders: true, email: true },
+    config: data?.config || { loanDuration: "7", maxBooks: "5" },
+    isLoading,
+    isSaving: updateConfig.isPending || updateNotifications.isPending || deleteUser.isPending,
+    error: error?.message,
+    updateConfig: updateConfig.mutateAsync,
+    updateNotifications: updateNotifications.mutateAsync,
+    deleteUser: deleteUser.mutateAsync,
     addUsers,
-    editUser,
-    deleteUser,
-    updateNotifications,
-    refetch: fetchAllSettings,
+    refetch,
   };
 };

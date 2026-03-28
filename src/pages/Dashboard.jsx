@@ -8,8 +8,10 @@ import { useDashboard } from "../hooks/useDashboard";
 import { lazy, Suspense } from "react";
 import { useMemo } from "react";
 
-const LoanStatusChart = lazy(
-  () => import("../components/reports/LoanStatusChart"),
+const LoanStatusChart = lazy(() => 
+  import("../components/reports/LoanStatusChart").then(module => ({ 
+    default: module.LoanStatusChart 
+  }))
 );
 export const Dashboard = () => {
   const { data, isLoading, error } = useDashboard();
@@ -17,10 +19,16 @@ export const Dashboard = () => {
   const stats = data?.stats || {};
   const latestActivities = data?.latestActivities || [];
 
+  if (data) {
+    console.log("DEBUG DASHBOARD DATA:", data);
+    console.log("DEBUG STATS:", data.stats);
+    console.log("DEBUG ACTIVITIES:", data.latestActivities);
+  }
+
   const statsCards = [
     {
       title: "Total Buku",
-      value: stats.totalBooks,
+      value: Number(stats.totalBooks || 0), 
       icon: BookOpen,
       color: "text-sky-400",
       bgColor: "bg-sky-100",
@@ -28,7 +36,7 @@ export const Dashboard = () => {
     },
     {
       title: "Dipinjam Hari Ini",
-      value: stats.borrowedToday,
+      value: Number(stats.borrowedToday || 0),
       icon: BookMarked,
       color: "text-green-400",
       bgColor: "bg-green-100",
@@ -36,7 +44,7 @@ export const Dashboard = () => {
     },
     {
       title: "Total Siswa",
-      value: stats.totalStudents,
+      value: Number(stats.totalStudents || 0),
       icon: Users,
       color: "text-green-400",
       bgColor: "bg-green-100",
@@ -44,7 +52,7 @@ export const Dashboard = () => {
     },
     {
       title: "Pinjaman Tertunggak",
-      value: stats.overdueLoan,
+      value: Number(stats.overdueLoan || 0),
       icon: AlertTriangle,
       color: "text-orange-400",
       bgColor: "bg-orange-100",
@@ -52,28 +60,27 @@ export const Dashboard = () => {
     },
   ];
 
-  const chartStatusData = useMemo(
-    () => [
-      {
-        status: "borrowed",
-        total: stats.totalActiveBorrowed || 0,
-      },
-      {
-        status: "returned",
-        total: stats.totalReturned || 0,
-      },
-      {
-        status: "overdue",
-        total: stats.overdueLoan || 0,
-      },
-    ],
-    [stats],
-  );
+ const chartStatusData = useMemo(
+  () => [
+    {
+     status: "borrowed", 
+      total: Number(stats.totalActiveBorrowed || 0), 
+    },
+    {
+     status: "returned",
+      total: Number(stats.totalReturned || 0),
+    },
+    {
+     status: "overdue",
+      total: Number(stats.overdueLoan || 0),
+    },
+  ],
+  [stats]
+);
 
-  const totalAllLoans = chartStatusData.reduce(
-    (acc, curr) => acc + curr.total,
-    0,
-  );
+ const totalAllLoans = useMemo(() => {
+  return chartStatusData.reduce((acc, curr) => acc + (Number(curr.total) || 0), 0);
+}, [chartStatusData]);
 
   if (isLoading) {
     return <DashboardSkeleton />;
@@ -87,7 +94,11 @@ export const Dashboard = () => {
             <AlertTriangle className="text-red-500 w-8 h-8" />
           </div>
           <p className="text-red-600 font-bold mb-1">Gagal Memuat Data</p>
-          <p className="text-muted-foreground text-sm">{error.message}</p>
+          <p className="text-muted-foreground text-sm">
+            {typeof error === "object"
+              ? error.message || "Terjadi kesalahan sistem"
+              : String(error)}
+          </p>
         </div>
       </div>
     );
@@ -117,7 +128,15 @@ export const Dashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsCards.map((stat, index) => (
-          <StatsCard key={index} {...stat} />
+          <StatsCard
+            key={index}
+            {...stat}
+            value={
+              stat.value !== undefined && stat.value !== null
+                ? String(stat.value)
+                : "0"
+            }
+          />
         ))}
       </div>
 

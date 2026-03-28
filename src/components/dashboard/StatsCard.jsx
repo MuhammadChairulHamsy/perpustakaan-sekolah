@@ -1,14 +1,13 @@
-
 import React from "react";
 
 export const StatsCard = React.memo(
   ({ title, value, icon: Icon, color, bgColor, description }) => {
-    const formattedValue = React.useMemo(() => {
-      return (value ?? 0).toLocaleString();
-    }, [value]);
-
+    const formattedValue = value;
     const borderColor = React.useMemo(() => {
-      return bgColor.replace("bg-", "bg-opacity-50 bg-");
+      if (!bgColor || typeof bgColor !== "string") return "";
+      return bgColor.includes("bg-")
+        ? bgColor.replace("bg-", "bg-opacity-50 bg-")
+        : "";
     }, [bgColor]);
 
     return (
@@ -44,5 +43,5 @@ export const StatsCard = React.memo(
         />
       </div>
     );
-  }
+  },
 );

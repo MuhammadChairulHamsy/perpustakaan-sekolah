@@ -1,12 +1,16 @@
 import { TrendingUp, BookOpen, AlertTriangle, Users } from "lucide-react";
 import { StatsCard } from "../components/dashboard/StatsCard";
 import { useReport } from "../hooks/useReport";
-import MonthlyLoanChart from "../components/reports/MonthlyLoanChart";
-import LoanStatusChart from "../components/reports/LoanStatusChart";
-import TopBooksChart from "../components/reports/TopBooksChart";
+import {
+  MonthlyLoanChart,
+  LoanStatusChart,
+  TopBooksChart,
+  ReportSkeleton,
+} from "../components/reports";
 
 const Reports = () => {
-  const { loading, summary, monthlyLoans, loanStatus, topBooks } = useReport();
+  const { isLoading, summary, monthlyLoans, loanStatus, topBooks, error } =
+    useReport();
 
   const summaryCards = [
     {
@@ -43,10 +47,17 @@ const Reports = () => {
     },
   ];
 
-  if (loading) {
+  if (isLoading) {
+    return <ReportSkeleton />;
+  }
+
+  if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-current border-r-transparent" />
+        <div className="text-center">
+          <p className="text-destructive font-semibold mb-2">Error</p>
+          <p className="text-muted-foreground">{error}</p>
+        </div>
       </div>
     );
   }

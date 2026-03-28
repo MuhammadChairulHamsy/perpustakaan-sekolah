@@ -10,7 +10,7 @@ import {
 
 export const SettingTable = ({ setting, onEdit, onDelete }) => {
   return (
-    <div className="data-table rounded-lg border border-border bg-card">
+    <div className="rounded-lg border border-border ">
       <div className="overflow-x-auto">
         <Table className="w-full">
           <TableHeader>

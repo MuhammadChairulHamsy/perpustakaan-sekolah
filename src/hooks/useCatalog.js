@@ -13,7 +13,7 @@ export const useCatalog = () => {
     error,
     refetch,
   } = useQuery({
-    queryKey: ["catalog-books"],
+    queryKey: ["data-catalog-books"],
     queryFn: async () => {
       const { data, error: dbError } = await supabase
         .from("buku")

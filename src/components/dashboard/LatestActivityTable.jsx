@@ -12,15 +12,19 @@ import { Button } from "../ui/button";
 import { getActivityStatus, getTimeAgo } from "../../utils/statusUtils";
 
 export const LatestActivityTable = React.memo(({ activities }) => {
-  // 🔥 Memo slice
   const displayActivities = React.useMemo(() => {
-    return activities.slice(0, 5);
+    return Array.isArray(activities) ? activities.slice(0, 5) : [];
   }, [activities]);
 
-  // 🔥 Preprocess data sekali saja
   const processedActivities = React.useMemo(() => {
     return displayActivities.map((activity) => {
-      const statusInfo = getActivityStatus(activity);
+      // Pastikan fungsi ini tidak return object untuk label/action
+      const statusInfo = getActivityStatus(activity) || {
+        label: "Unknown",
+        badge: "bg-gray-100",
+        action: "Proses",
+      };
+
       const timeAgo = activity.created_at
         ? getTimeAgo(activity.created_at)
         : "-";
@@ -61,7 +65,6 @@ export const LatestActivityTable = React.memo(({ activities }) => {
         </Button>
       </div>
 
-      {/* BODY */}
       <div className="flex-1 p-3 overflow-hidden">
         <Table>
           <TableHeader>
@@ -89,7 +92,7 @@ export const LatestActivityTable = React.memo(({ activities }) => {
               <TableRow>
                 <TableCell
                   colSpan={5}
-                  className="h-40 text-center text-muted-foreground italic"
+                  className="h-60 text-center text-muted-foreground italic"
                 >
                   Belum ada aktivitas sirkulasi hari ini.
                 </TableCell>
@@ -101,32 +104,38 @@ export const LatestActivityTable = React.memo(({ activities }) => {
                   className="hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0"
                 >
                   <TableCell className="py-4">
-                    <p className="font-semibold text-sm text-foreground leading-none">
-                      {activity.siswa?.name || "Siswa Tidak Dikenal"}
+                    <p className="font-semibold text-sm text-foreground">
+                      {typeof activity.siswa?.name === "string"
+                        ? activity.siswa.name
+                        : "Siswa Tidak Dikenal"}
                     </p>
                   </TableCell>
 
                   <TableCell className="py-4">
-                    <p className="text-sm text-muted-foreground truncate max-w-40">
+                    {/* Tambah title untuk aksesibilitas */}
+                    <p
+                      className="text-sm text-muted-foreground truncate max-w-[150px]"
+                      title={activity.buku?.title}
+                    >
                       {activity.buku?.title || "Buku Tidak Dikenal"}
                     </p>
                   </TableCell>
 
                   <TableCell className="py-4">
-                    <span className="text-xs font-medium text-muted-foreground">
-                      {activity.statusInfo.action}
+                    <span className="text-[11px] font-medium text-muted-foreground/80">
+                      {String(activity.statusInfo.action)}
                     </span>
                   </TableCell>
 
-                  <TableCell className="py-4 text-xs text-muted-foreground/80">
+                  <TableCell className="py-4 text-[11px] text-muted-foreground/70">
                     {activity.timeAgo}
                   </TableCell>
 
                   <TableCell className="py-4 text-right">
                     <span
-                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${activity.statusInfo.badge}`}
+                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase border ${activity.statusInfo.badge}`}
                     >
-                      {activity.statusInfo.label}
+                      {String(activity.statusInfo.label)}
                     </span>
                   </TableCell>
                 </TableRow>
