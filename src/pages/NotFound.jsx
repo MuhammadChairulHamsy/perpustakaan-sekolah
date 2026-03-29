@@ -2,7 +2,6 @@ const NotFound = () => {
   return (
     <div className="flex flex-col min-h-screen justify-center items-center bg-linear-to-br from-gray-50 to-gray-100 px-4">
       <div className="max-w-md w-full text-center">
-        {/* Icon/Visual Element */}
         <div className="mb-8">
           <div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-4">
             <svg
@@ -21,21 +20,18 @@ const NotFound = () => {
           </div>
         </div>
 
-        {/* Error Content */}
         <div className="space-y-4">
           <h1 className="text-4xl font-bold text-gray-800 mb-2">Oops!</h1>
           <p className="text-xl text-gray-600 font-medium leading-relaxed">
             Sorry, the page you're looking for doesn't exist.
           </p>
 
-          {/* Error Details */}
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-6">
             <p className="text-red-700 font-mono text-sm">
               404 - Page Not Found
             </p>
           </div>
 
-          {/* Action Button */}
           <div className="mt-8">
             <button
               onClick={() => (window.location.href = "/")}

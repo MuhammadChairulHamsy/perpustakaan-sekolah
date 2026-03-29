@@ -71,14 +71,12 @@ const Reports = () => {
         </p>
       </div>
 
-      {/* SUMMARY CARD */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {summaryCards.map((card, index) => (
           <StatsCard key={index} {...card} />
         ))}
       </div>
 
-      {/* GRAFIK */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:grid-cols-2">
         <div className="bg-card rounded-xl border border-border p-1 shadow-sm transition-all duration-200 hover:shadow-md animate-custom-fade delay-1">
           <MonthlyLoanChart data={monthlyLoans} />

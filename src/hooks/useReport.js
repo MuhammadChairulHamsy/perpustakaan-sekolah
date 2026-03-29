@@ -28,7 +28,6 @@ export const useReport = () => {
         supabase.from("peminjaman").select("id", { count: "exact", head: true }).lt("due_date", new Date().toISOString()).neq("status", "returned")
       ]);
 
-      // 2. Olah Data Summary
       const totalCount = totalRes.data?.total_loans || 0;
       const overdueData = overdueRateRes.data || { total_loans: 0, overdue_count: 0 };
       const realOverdueCount = realOverdueRes.count || 0;
@@ -37,7 +36,6 @@ export const useReport = () => {
         ? ((realOverdueCount / overdueData.total_loans) * 100).toFixed(1)
         : 0;
 
-      // 3. Mapping Status Distribution (Logika Overdue vs Borrowed)
       const rawStatus = statusRes.data || [];
       let mappedStatus = rawStatus.map((item) => {
         if (item.status === "overdue") return { ...item, total: realOverdueCount };

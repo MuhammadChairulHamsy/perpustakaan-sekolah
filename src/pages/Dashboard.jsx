@@ -19,12 +19,6 @@ export const Dashboard = () => {
   const stats = data?.stats || {};
   const latestActivities = data?.latestActivities || [];
 
-  if (data) {
-    console.log("DEBUG DASHBOARD DATA:", data);
-    console.log("DEBUG STATS:", data.stats);
-    console.log("DEBUG ACTIVITIES:", data.latestActivities);
-  }
-
   const statsCards = [
     {
       title: "Total Buku",
@@ -156,7 +150,7 @@ export const Dashboard = () => {
           <h2 className="text-lg font-semibold tracking-tight">
             Statistik Status
           </h2>
-          <div className="bg-slate-50 border rounded-xl shadow-sm h-full flex items-center justify-center">
+          <div className="bg-white border rounded-xl shadow-sm h-full flex items-center justify-center">
             <Suspense fallback={<div>Loading chart...</div>}>
               <LoanStatusChart data={chartStatusData} />
             </Suspense>

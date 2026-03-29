@@ -32,12 +32,11 @@ export const useLoans = () => {
     staleTime: 1000 * 60 * 10,
   });
 
-  // PERBAIKAN: Gunakan destructuring { student_id, book_id }
   const addLoan = useMutation({
     mutationFn: async ({ student_id, book_id }) => {
       const { error } = await supabase
         .from("peminjaman")
-        .insert([{ student_id, book_id }]); // Kirim sebagai array of object
+        .insert([{ student_id, book_id }]); 
 
       if (error) throw error;
     },
@@ -47,12 +46,11 @@ export const useLoans = () => {
         description: "Data peminjaman telah dicatat.",
       });
     },
-    onError: (err) => { // PERBAIKAN: Gunakan parameter 'err'
+    onError: (err) => { 
       toast.error(`Gagal: ${err.message || "Terjadi kesalahan"}`);
     },
   });
 
-  // PERBAIKAN: Typo "pemimjaman" -> "peminjaman"
   const deleteLoan = useMutation({
     mutationFn: async (id) => {
       const { error } = await supabase
@@ -70,7 +68,6 @@ export const useLoans = () => {
     },
   });
 
-  // Tips: Ubah returnLoan menjadi useMutation juga agar konsisten
   const returnLoanMutation = useMutation({
     mutationFn: async (id) => {
        const { error } = await supabase
@@ -106,7 +103,7 @@ export const useLoans = () => {
     isLoading,
     error: error?.message,
     addLoan,
-    returnLoan: returnLoanMutation.mutateAsync, // Ekspos fungsi mutasinya saja
+    returnLoan: returnLoanMutation.mutateAsync,
     deleteLoan,
     refetch
   };

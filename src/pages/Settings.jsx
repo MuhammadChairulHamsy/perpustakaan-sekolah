@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { Bell, Database, Plus, User, Loader2, Save } from "lucide-react";
 import { Button } from "../components/ui/button";
-import { SettingTable } from "../components/settings/SettingTable";
-import { SettingDialog } from "../components/settings";
-import { SettingSection, ToggleSetting } from "../components/settings/index";
+import {
+  SettingDialog,
+  SettingSection,
+  SettingSkeleton,
+  SettingTable,
+  ToggleSetting,
+} from "../components/settings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "../components/ui/label";
 import {
@@ -21,7 +25,7 @@ const Settings = () => {
   const {
     users,
     notifications: serverNotifications,
-    config: serverConfig,              
+    config: serverConfig,
     updateNotifications,
     updateConfig,
     isLoading,
@@ -31,10 +35,9 @@ const Settings = () => {
     deleteUser,
   } = useSettings(currentUser);
 
-  
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
-  
+
   const [localConfig, setLocalConfig] = useState({
     loanDuration: "7",
     maxBooks: "5",
@@ -63,7 +66,6 @@ const Settings = () => {
     }
   }, [serverNotifications?.overdue, serverNotifications?.email]);
 
-  // --- HANDLERS ---
   const handleSaveConfig = async () => {
     await updateConfig(localConfig);
   };
@@ -73,15 +75,11 @@ const Settings = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
+    return <SettingSkeleton />;
   }
 
   return (
-    <div className="container max-w-6xl space-y-8 animate-in fade-in duration-500">
+    <div className="container max-w-6xl space-y-6 animate-in fade-in duration-500">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">Pengaturan</h1>
         <p className="text-muted-foreground text-lg">
@@ -89,7 +87,7 @@ const Settings = () => {
         </p>
       </div>
 
-      <Tabs defaultValue="users" className="space-y-6">
+      <Tabs defaultValue="users">
         <TabsList className="bg-muted/50">
           <TabsTrigger value="users" className="gap-2">
             <User className="h-4 w-4" /> Users
@@ -102,7 +100,6 @@ const Settings = () => {
           </TabsTrigger>
         </TabsList>
 
-        {/* Tab 1: Users */}
         <TabsContent value="users">
           <SettingSection
             title="Daftar Pengguna"
@@ -129,7 +126,6 @@ const Settings = () => {
           </SettingSection>
         </TabsContent>
 
-        {/* Tab 2: Library Config */}
         <TabsContent value="library">
           <SettingSection
             title="Konfigurasi Global"
@@ -150,7 +146,9 @@ const Settings = () => {
                 <Label>Durasi Pinjam Default</Label>
                 <Select
                   value={localConfig.loanDuration}
-                  onValueChange={(val) => setLocalConfig(prev => ({ ...prev, loanDuration: val }))}
+                  onValueChange={(val) =>
+                    setLocalConfig((prev) => ({ ...prev, loanDuration: val }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih durasi" />
@@ -165,7 +163,9 @@ const Settings = () => {
                 <Label>Limit Buku per Siswa</Label>
                 <Select
                   value={localConfig.maxBooks}
-                  onValueChange={(val) => setLocalConfig(prev => ({ ...prev, maxBooks: val }))}
+                  onValueChange={(val) =>
+                    setLocalConfig((prev) => ({ ...prev, maxBooks: val }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Pilih limit" />
@@ -180,7 +180,6 @@ const Settings = () => {
           </SettingSection>
         </TabsContent>
 
-        {/* Tab 3: Notifications */}
         <TabsContent value="notifications">
           <SettingSection
             title="Notifikasi"
@@ -195,16 +194,16 @@ const Settings = () => {
               <ToggleSetting
                 title="Notifikasi Keterlambatan"
                 checked={localNotifications.overdue}
-                onCheckedChange={(val) => 
-                  setLocalNotifications(prev => ({ ...prev, overdue: val }))
+                onCheckedChange={(val) =>
+                  setLocalNotifications((prev) => ({ ...prev, overdue: val }))
                 }
               />
               <ToggleSetting
                 title="Email Digest"
                 description="Terima laporan harian aktivitas perpustakaan via email."
                 checked={localNotifications.email}
-                onCheckedChange={(val) => 
-                  setLocalNotifications(prev => ({ ...prev, email: val }))
+                onCheckedChange={(val) =>
+                  setLocalNotifications((prev) => ({ ...prev, email: val }))
                 }
               />
             </div>
@@ -212,7 +211,6 @@ const Settings = () => {
         </TabsContent>
       </Tabs>
 
-      {/* Dialog untuk Add/Edit User */}
       <SettingDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
@@ -221,7 +219,7 @@ const Settings = () => {
           const success = editingUser
             ? await editUser(editingUser.id, formData)
             : await addUsers(formData);
-          
+
           if (success) setDialogOpen(false);
           return success;
         }}

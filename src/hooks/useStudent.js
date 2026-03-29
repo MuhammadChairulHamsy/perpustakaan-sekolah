@@ -20,8 +20,7 @@ export const useStudents = () => {
         .from("siswa")
         .select("id, name, class, email, created_at")
         .order("created_at", { ascending: false });
-      console.log("Data students dari supabase:", data);
-
+    
       if (dbError) throw dbError;
 
       return data.map((student) => ({

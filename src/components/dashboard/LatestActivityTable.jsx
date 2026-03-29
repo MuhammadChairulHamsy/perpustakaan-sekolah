@@ -114,7 +114,7 @@ export const LatestActivityTable = React.memo(({ activities }) => {
                   <TableCell className="py-4">
                     {/* Tambah title untuk aksesibilitas */}
                     <p
-                      className="text-sm text-muted-foreground truncate max-w-[150px]"
+                      className="text-sm text-muted-foreground truncate max-w-36"
                       title={activity.buku?.title}
                     >
                       {activity.buku?.title || "Buku Tidak Dikenal"}
@@ -122,12 +122,12 @@ export const LatestActivityTable = React.memo(({ activities }) => {
                   </TableCell>
 
                   <TableCell className="py-4">
-                    <span className="text-[11px] font-medium text-muted-foreground/80">
+                    <span className="text-sm font-medium text-muted-foreground/80">
                       {String(activity.statusInfo.action)}
                     </span>
                   </TableCell>
 
-                  <TableCell className="py-4 text-[11px] text-muted-foreground/70">
+                  <TableCell className="py-4 text-sm text-muted-foreground/70">
                     {activity.timeAgo}
                   </TableCell>
 

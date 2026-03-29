@@ -40,7 +40,6 @@ const Catalog = () => {
 
   return (
     <div className="container min-h-screen space-y-6">
-      {/* Header */}
       <div className="flex flex-col justify-between items-start lg:flex lg:flex-row">
         <div>
           <h1 className="text-2xl font-bold text-foreground">
@@ -52,7 +51,6 @@ const Catalog = () => {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground text-sm" />
@@ -78,7 +76,6 @@ const Catalog = () => {
         </Select>
       </div>
 
-      {/* Book Grid */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5">
         {books.map((book) => (
           <div
@@ -86,7 +83,6 @@ const Catalog = () => {
             onClick={() => setSelectedBook(book)}
             className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card text-left transition-all hover:shadow-lg hover:-translate-y-1 "
           >
-            {/* Container Gambar */}
             <div className="relative aspect-3/4 w-full overflow-hidden bg-muted">
               <img
                 src={book.cover}
@@ -95,7 +91,6 @@ const Catalog = () => {
                 loading="lazy"
               />
 
-              {/* Overlay Jika Stok Kosong */}
               {book.available === 0 && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/60">
                   <Badge variant="destructive" className="text-xs">
@@ -114,7 +109,6 @@ const Catalog = () => {
               </div>
             </div>
 
-            {/* Info Buku */}
             <div className="flex flex-1 flex-col gap-1 p-3">
               <h2 className="line-clamp-2 text-sm font-semibold leading-tight text-foreground group-hover:text-primary transition-colors">
                 {book.title}

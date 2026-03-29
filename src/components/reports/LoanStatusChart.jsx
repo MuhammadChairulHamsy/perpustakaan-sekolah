@@ -46,10 +46,9 @@ export const LoanStatusChart = ({ data }) => {
     return { formattedData: formatted, totalLoans: total };
   }, [data]);
 
-  // 2. Loading State: Berikan tinggi minimal agar layout tidak melompat
   if (!formattedData || formattedData.length === 0) {
     return (
-      <div className="flex h-[350px] items-center justify-center">
+      <div className="flex h-96 items-center justify-center">
          <p className="text-muted-foreground text-sm animate-pulse">Menghitung statistik...</p>
       </div>
     );
@@ -64,7 +63,7 @@ export const LoanStatusChart = ({ data }) => {
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square max-h-64"
         >
           <PieChart>
             <ChartTooltip
@@ -110,13 +109,11 @@ export const LoanStatusChart = ({ data }) => {
         </ChartContainer>
       </CardContent>
 
-      {/* 3. Refactor Legend: Proteksi render string */}
       <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 px-4 pb-4 text-xs">
         {formattedData.map((item) => (
           <div key={item.status} className="flex items-center gap-1.5">
             <div className="h-2 w-2 rounded-full" style={{ backgroundColor: item.fill }} />
             <span className="text-muted-foreground">
-              {/* Amankan akses ke chartConfig */}
               {chartConfig[item.status]?.label || String(item.status)}
             </span>
             <span className="font-bold text-foreground">{item.total}</span>

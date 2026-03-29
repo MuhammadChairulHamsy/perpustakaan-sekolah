@@ -4,12 +4,8 @@ import { toast } from "sonner";
 
 export const useSettings = (currentUser) => {
   const queryClient = useQueryClient();
-
-  // --- QUERIES ---
-
-  // 1. Fetch Semua Data (Users, Preferences, & Config)
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["settings-data", currentUser?.id],
+    queryKey: ["settings-data"],
     queryFn: async () => {
       const [usersRes, prefRes, configRes] = await Promise.all([
         supabase
@@ -30,7 +26,6 @@ export const useSettings = (currentUser) => {
 
       if (usersRes.error) throw usersRes.error;
 
-      // Parsing Library Settings
       const settingsMap = {};
       configRes.data?.forEach((item) => {
         settingsMap[item.key] = item.value;
@@ -49,12 +44,9 @@ export const useSettings = (currentUser) => {
         },
       };
     },
-    enabled: !!currentUser, // Hanya jalan jika user login
+    enabled: !!currentUser, 
   });
 
-  // --- MUTATIONS ---
-
-  // 2. Update Library Config (upsert)
   const updateConfig = useMutation({
     mutationFn: async ({ loanDuration, maxBooks }) => {
       const { error } = await supabase.from("library_settings").upsert(
@@ -73,7 +65,6 @@ export const useSettings = (currentUser) => {
     onError: (err) => toast.error("Gagal: " + err.message),
   });
 
-  // 3. Update Notifications
   const updateNotifications = useMutation({
     mutationFn: async (newPrefs) => {
       const { error } = await supabase
@@ -92,7 +83,6 @@ export const useSettings = (currentUser) => {
     },
   });
 
-  // 4. CRUD Users (Delete sebagai contoh)
   const deleteUser = useMutation({
     mutationFn: async (id) => {
       const { error } = await supabase.from("profiles").delete().eq("id", id);
@@ -104,8 +94,6 @@ export const useSettings = (currentUser) => {
     },
   });
 
-  // --- HELPER FUNCTIONS ---
-  // Fungsi addUsers (Sign Up) sebaiknya tetap async karena melibatkan Auth
   const addUsers = async (formData) => {
     try {
       const { error } = await supabase.auth.signUp({
@@ -114,7 +102,7 @@ export const useSettings = (currentUser) => {
         options: { data: { full_name: formData.full_name, role: formData.role } },
       });
       if (error) throw error;
-      queryClient.invalidateQueries({ queryKey: ["settings-data"] });
+    queryClient.invalidateQueries({ queryKey: ["settings-data"] });
       toast.success("User ditambahkan");
       return true;
     } catch (err) {

@@ -21,7 +21,6 @@ export const useCatalog = () => {
           "id, title, author, cover_url, category, rating, pages, year, description, stock",
         )
         .order("created_at", { ascending: false });
-      console.log("Data dari Supabase:", data);
 
       if (dbError) throw dbError;
 

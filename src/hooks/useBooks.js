@@ -20,7 +20,6 @@ export const useBooks = () => {
         .from("buku")
         .select("id, title, author, isbn, category, stock, created_at")
         .order("created_at", { ascending: false });
-      console.log("Data books dari supabase:", data);
 
       if (dbError) throw dbError;
 

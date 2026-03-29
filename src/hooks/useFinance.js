@@ -5,15 +5,13 @@ export const useFinance = () => {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["data-finance"],
     queryFn: async () => {
-      // 1. Ambil semua data peminjaman yang ada dendanya
       const { data: loanData, error: dbError } = await supabase
         .from("peminjaman")
         .select("fine, status, return_date, created_at")
-       .not("fine", "is", null);
+        .not("fine", "is", null);
 
       if (dbError) throw dbError;
 
-      // 2. Ambil jumlah buku overdue (exact count)
       const { count: overdueCount, error: countError } = await supabase
         .from("peminjaman")
         .select("*", { count: "exact", head: true })
@@ -21,7 +19,6 @@ export const useFinance = () => {
 
       if (countError) throw countError;
 
-      // --- LOGIKA PERHITUNGAN RINGKASAN ---
       let collected = 0;
       let pending = 0;
 
@@ -34,19 +31,17 @@ export const useFinance = () => {
         }
       });
 
-      console.log("Total Terkumpul:", collected);
-  console.log("Data Loan:", loanData);
 
-      // --- LOGIKA PERHITUNGAN CHART (7 Hari Terakhir) ---
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       sevenDaysAgo.setHours(0, 0, 0, 0);
 
       const grouped = loanData
-        ?.filter(item => 
-          item.status === "returned" && 
-          item.return_date && 
-          new Date(item.return_date) >= sevenDaysAgo
+        ?.filter(
+          (item) =>
+            item.status === "returned" &&
+            item.return_date &&
+            new Date(item.return_date) >= sevenDaysAgo,
         )
         .reduce((acc, curr) => {
           const dateObj = new Date(curr.return_date);
@@ -64,7 +59,6 @@ export const useFinance = () => {
         amount: grouped[key],
       }));
 
-      // Return satu objek besar berisi semua data yang dibutuhkan UI
       return {
         summary: {
           totalRevenue: collected,
@@ -79,7 +73,12 @@ export const useFinance = () => {
   });
 
   return {
-    finance: data?.summary || { totalRevenue: 0, pendingFinance: 0, collectedFines: 0, overdueBooks: 0 },
+    finance: data?.summary || {
+      totalRevenue: 0,
+      pendingFinance: 0,
+      collectedFines: 0,
+      overdueBooks: 0,
+    },
     collectedData: data?.chartData || [],
     isLoading,
     error: error?.message,

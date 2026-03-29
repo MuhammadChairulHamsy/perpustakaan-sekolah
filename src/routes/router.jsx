@@ -14,7 +14,6 @@ import ProtectedRoute from "../components/auth/ProtectedRoute";
 import AuthCallback from "../context/AuthCallback";
 import Finance from "../pages/Finance";
 
-// Definisi Role Staf agar tidak tulis ulang
 const staffRoles = ["Admin", "Pustakawan", "Asisten"];
 
 const router = createBrowserRouter([
