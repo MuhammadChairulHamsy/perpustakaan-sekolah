@@ -11,7 +11,7 @@ export const FineCollectionTrend = ({ data }) => {
   };
 
   return (
-    <Card className="border-none shadow-sm bg-white dark:bg-slate-950">
+    <Card className=" border-none shadow-sm bg-white dark:bg-slate-950">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div>

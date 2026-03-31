@@ -10,6 +10,7 @@ import Loans from "../pages/Loans";
 import Reports from "../pages/Reports";
 import Settings from "../pages/Settings";
 import NotFound from "../pages/NotFound";
+import { Notification } from "../pages/Notification";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import AuthCallback from "../context/AuthCallback";
 import Finance from "../pages/Finance";
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
       { path: "buku", element: <Books /> },
       { path: "pinjaman", element: <Loans /> },
       { path: "katalog", element: <Catalog /> },
+      { path: "notifikasi", element: <Notification /> },
 
       // KHUSUS STAF (Admin, Pustakawan, Asisten)
       {

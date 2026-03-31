@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { Search, BookOpen, Filter } from "lucide-react";
-import { Input } from "../components/ui/input";
+import { BookOpen, Filter } from "lucide-react";
 import { Badge } from "../components/ui/badge";
 import {
   Select,
@@ -12,7 +11,12 @@ import {
 } from "@/components/ui/select";
 import { useCatalog } from "../hooks/useCatalog";
 import { Button } from "../components/ui/button";
-import {CatalogDialog,  CatalogSkeleton, RatingCatalogStars } from "../components/catalog";
+import {
+  CatalogDialog,
+  CatalogSkeleton,
+  RatingCatalogStars,
+} from "../components/catalog";
+import { SearchBar } from "../components/search-bar";
 
 const Catalog = () => {
   const { user } = useAuth();
@@ -35,7 +39,7 @@ const Catalog = () => {
   };
 
   if (isLoading) {
-    return <CatalogSkeleton/>
+    return <CatalogSkeleton />;
   }
 
   return (
@@ -53,12 +57,11 @@ const Catalog = () => {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground text-sm" />
-          <Input
-            placeholder="Cari judul atau penulis..."
+          <SearchBar
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            onChange={setSearchQuery}
+            placeholder="Cari judul atau penulis..."
+            className="max-w-md"
           />
         </div>
         <Select value={selectedGenre} onValueChange={setSelectedGenre}>
@@ -145,10 +148,15 @@ const Catalog = () => {
       {books.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <BookOpen className="h-12 w-12 text-muted-foreground/50 mb-3" />
-          <h3 className="text-lg font-medium">Buku tidak ditemukan</h3>
-          <p className="text-muted-foreground">
-            Coba gunakan kata kunci pencarian lain.
-          </p>
+          {searchQuery ? (
+            <span className="text-lg font-medium">
+              Buku tidak ditemukan <b>"{searchQuery}"</b>
+            </span>
+          ) : (
+            <span className="text-muted-foreground">
+              Coba gunakan kata kunci pencarian lain.
+            </span>
+          )}
         </div>
       )}
 

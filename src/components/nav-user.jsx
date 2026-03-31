@@ -1,11 +1,6 @@
-import {
-  MoreVertical,
-  LogOut,
-  Bell,
-  CircleUser,
-} from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"
+import { MoreVertical, LogOut, Bell, CircleUser } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -28,21 +23,21 @@ export function NavUser() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
- const handleLogout = async () => {
-  try {
-    await logout(); 
-  } catch (error) {
-    console.error("Gagal logout:", error);
-  } finally {
-    document.cookie.split(";").forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/, "")
-        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
-    });
-    localStorage.clear();
-    navigate("/login", { replace: true });
-  }
-};
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Gagal logout:", error);
+    } finally {
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+      localStorage.clear();
+      navigate("/login", { replace: true });
+    }
+  };
 
   if (!user) {
     return null;
@@ -101,8 +96,10 @@ export function NavUser() {
                 Account
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <Bell />
-                Notifications
+                <Link to="/notifikasi" className="flex gap-2 items-center">
+                  <Bell />
+                  Notifications
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />

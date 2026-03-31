@@ -1,7 +1,12 @@
 import { Plus } from "lucide-react";
 import { useLoans } from "../hooks/useLoans";
 import { SearchBar } from "../components/search-bar";
-import { LoanDialog, LoanSkeleton, LoanTable, PrintPreviewDialog } from "../components/loans";
+import {
+  LoanDialog,
+  LoanSkeleton,
+  LoanTable,
+  PrintPreviewDialog,
+} from "../components/loans";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -29,11 +34,11 @@ const Loans = () => {
 
   const handleSubmit = async (formData) => {
     try {
-      await addLoan.mutateAsync(formData)
+      await addLoan.mutateAsync(formData);
       setDialogOpen(false);
       return true;
     } catch (err) {
-      console.error("Submit Error:", err)
+      console.error("Submit Error:", err);
       return false;
     }
   };
@@ -59,13 +64,12 @@ const Loans = () => {
   };
 
   const handlePrint = async (loan) => {
-    setSelectedLoan(loan); 
+    setSelectedLoan(loan);
     setPreviewOpen(true);
   };
 
   if (isLoading) {
-    return <LoanSkeleton/>
-     
+    return <LoanSkeleton />;
   }
 
   if (error) {
@@ -118,6 +122,7 @@ const Loans = () => {
 
         <LoanTable
           loans={loans}
+          searchQuery={searchQuery}
           onDelete={handleDelete}
           onReturn={handleReturn}
           onPrint={handlePrint}

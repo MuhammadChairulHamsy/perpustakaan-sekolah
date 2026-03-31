@@ -1,6 +1,6 @@
 import { Skeleton } from "../ui/skeleton";
 
-export const FineSkeleton = () => {
+export const FinanceSkeleton = () => {
   return (
     <div className="container space-y-6 animate-pulse">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

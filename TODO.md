@@ -2,11 +2,11 @@
 
 2. Manajemen Buku: Menambahkan fitur scan barcode (menggunakan kamera laptop/HP) untuk mempermudah petugas saat meminjamkan buku.
 
-Nama Halaman	Fungsi Utama	Target User
+Nama Halaman Fungsi Utama Target User
 
 3. Inventaris	Stok fisik, label barcode, dan kondisi buku.Admin
 
-4. Keuangan/Denda	Rekapitulasi denda keterlambatan.	Bendahara/Admin
+4. Keuangan/Denda Rekapitulasi denda keterlambatan.	Bendahara/Admin
 
 5. E-Resource	Link ke PDF atau jurnal digital (Open Access).	Semua
 

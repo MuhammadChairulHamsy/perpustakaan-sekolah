@@ -1,4 +1,3 @@
-// src/components/loans/LoanTable.jsx
 import {
   Table,
   TableBody,
@@ -9,7 +8,13 @@ import {
 } from "../ui/table";
 import { LoanRow } from "./LoanRow";
 
-export const LoanTable = ({ loans, onDelete, onReturn, onPrint }) => {
+export const LoanTable = ({
+  loans,
+  searchQuery,
+  onDelete,
+  onReturn,
+  onPrint,
+}) => {
   return (
     <div className="data-table rounded-lg border border-border bg-card">
       <div className="overflow-x-auto">
@@ -49,7 +54,13 @@ export const LoanTable = ({ loans, onDelete, onReturn, onPrint }) => {
                   colSpan={8}
                   className="h-24 text-center text-muted-foreground"
                 >
-                  Tidak ada data peminjaman
+                  {searchQuery ? (
+                    <span>
+                      Tidak ada data pinjaman <b>"{searchQuery}"</b>
+                    </span>
+                  ) : (
+                    "Tidak ada data pinjaman tersedia"
+                  )}
                 </TableCell>
               </TableRow>
             ) : (
