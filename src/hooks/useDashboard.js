@@ -19,7 +19,6 @@ export const useDashboard = () => {
         supabase.from("peminjaman").select(`id, status, due_date, created_at, siswa:student_id (name), buku:book_id (title)` ).order("created_at", { ascending: false }).limit(5),
       ]);
 
-      // Cek apakah ada salah satu query yang error
       const firstError = results.find(res => res.error);
       if (firstError) throw firstError.error;
 

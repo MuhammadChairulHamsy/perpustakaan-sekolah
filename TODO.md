@@ -12,6 +12,4 @@ Nama Halaman	Fungsi Utama	Target User
 
 6. fitur "Export ke Excel/PDF" sehingga admin bisa mendownload laporan denda mingguan
 
-7. Tambah tombol upload buku baru di halaman katalog
-
-8. Perbaikin bug ketika peminjaman data di hapus seharusnya keuntungan di keuangan tidak berkurang 
+7. Perbaikin bug ketika peminjaman data di hapus seharusnya keuntungan di keuangan tidak berkurang 

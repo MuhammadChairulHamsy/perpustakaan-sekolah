@@ -13,7 +13,6 @@ export const SettingSkeleton = () => {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <Skeleton className="h-8 flex-1 max-w-sm bg-gray-200 rounded-md" />
       </div>
-
       <div className="space-y-4 px-6">
         <Skeleton className="h-4 w-40 bg-gray-200 rounded-xl" />
         <Skeleton className="h-4 w-64 bg-gray-200 rounded-xl" />

@@ -20,7 +20,7 @@
   --popover-foreground: oklch(0.2 0.015 247);
   
   /* Primary - Blue */
-  --primary: oklch(0.55 0.18 247); /* Rich blue */
+  --primary: oklch(0.55 0.18 247); 
   --primary-foreground: oklch(0.99 0 0);
   
   /* Secondary - Light blue */

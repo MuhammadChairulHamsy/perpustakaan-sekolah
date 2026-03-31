@@ -18,7 +18,7 @@ export const useBooks = () => {
     queryFn: async () => {
       const { data, error: dbError } = await supabase
         .from("buku")
-        .select("id, title, author, isbn, category, stock, created_at")
+        .select("id, title, author, isbn, cover_url, category, stock, created_at")
         .order("created_at", { ascending: false });
 
       if (dbError) throw dbError;
@@ -44,9 +44,34 @@ export const useBooks = () => {
     });
   }, [allBooks, searchQuery]);
 
+  const uploadImage = async (file) => {
+    if(!file) return null;
+
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const {error: uploadError, data} = await supabase.storage.from("book-covers").upload(filePath, file);
+
+   if (uploadError) {
+    console.error("Upload detail:", uploadError);
+    throw uploadError;
+  }
+
+    const {data: {publicUrl} } = supabase.storage.from("book-covers").getPublicUrl(filePath);
+
+    return publicUrl;
+  }
+
   const addBook = useMutation({
-    mutationFn: async (bookData) => {
-      const { error } = await supabase.from("buku").insert([bookData]);
+    mutationFn: async ({bookData, file}) => {
+      let coverUrl = null;
+
+      if(file) {
+        coverUrl = await uploadImage(file)
+      }
+
+      const { error } = await supabase.from("buku").insert([{...bookData, cover_url: coverUrl}]);
 
       if (error) throw error;
     },
@@ -60,12 +85,19 @@ export const useBooks = () => {
   });
 
   const editBook = useMutation({
-    mutationFn: async ({ id, updatedData }) => {
+    mutationFn: async ({ id, updatedData, file }) => {
+      let finalData = {...updatedData};
+
+      if(file) {
+        const coverUrl = await uploadImage(file);
+        finalData.cover_url = coverUrl;
+      }
+
       if (!id) throw new Error("ID Buku tidak ditemukan!");
 
       const { error } = await supabase
         .from("buku")
-        .update(updatedData)   
+        .update(finalData)   
         .eq("id", id);
       
       if (error) throw error;

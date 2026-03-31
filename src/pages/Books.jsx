@@ -26,15 +26,16 @@ const Books = () => {
     setDialogOpen(true);
   };
 
-  const handleSubmit = async (formData) => {
+  const handleSubmit = async (formData, file) => {
     try {
       if (editingBook && editingBook.id) {
         await editBook.mutateAsync({
           id: editingBook.id,
           updatedData: formData,
+          file: file
         });
       } else {
-        await addBook.mutateAsync(formData);
+        await addBook.mutateAsync({bookData: formData, file: file});
       }
       setDialogOpen(false);
       return true;
