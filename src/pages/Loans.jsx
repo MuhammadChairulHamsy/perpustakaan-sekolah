@@ -5,28 +5,21 @@ import {
   LoanDialog,
   LoanSkeleton,
   LoanTable,
-  PrintPreviewDialog,
 } from "../components/loans";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
-import { toast } from "sonner";
 
 const Loans = () => {
   const {
     loans,
     searchQuery,
     setSearchQuery,
-    selectedLoan,
-    setSelectedLoan,
     isLoading,
     error,
     addLoan,
-    returnLoan,
-    deleteLoan,
   } = useLoans();
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [previewOpen, setPreviewOpen] = useState(false);
 
   const handleOpenDialog = () => {
     setDialogOpen(true);
@@ -43,30 +36,6 @@ const Loans = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteLoan.mutateAsync(id);
-    } catch (err) {
-      console.error("Delete Error:", err);
-    }
-  };
-
-  const handleReturn = async (loan) => {
-    try {
-      await returnLoan(loan.id);
-      toast.success("Buku Telah Dikembalikan", {
-        description: "Status pinjaman diperbarui dan stok buku bertambah.",
-        className: "!text-white",
-      });
-    } catch (error) {
-      toast.error("Gagal memproses pengembalian");
-    }
-  };
-
-  const handlePrint = async (loan) => {
-    setSelectedLoan(loan);
-    setPreviewOpen(true);
-  };
 
   if (isLoading) {
     return <LoanSkeleton />;
@@ -123,14 +92,6 @@ const Loans = () => {
         <LoanTable
           loans={loans}
           searchQuery={searchQuery}
-          onDelete={handleDelete}
-          onReturn={handleReturn}
-          onPrint={handlePrint}
-        />
-        <PrintPreviewDialog
-          loan={selectedLoan}
-          open={previewOpen}
-          onOpenChange={setPreviewOpen}
         />
       </div>
     </div>

@@ -18,9 +18,6 @@ export const useLoans = () => {
           id,
           loan_date,
           due_date,
-          return_date,
-          status,
-          fine,
           siswa:student_id (name, class),
           buku:book_id (title, author)
         `)
@@ -51,38 +48,6 @@ export const useLoans = () => {
     },
   });
 
-  const deleteLoan = useMutation({
-    mutationFn: async (id) => {
-      const { error } = await supabase
-        .from("peminjaman")
-        .delete()
-        .eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["data-loans"] });
-      toast.success("Data pinjaman berhasil dihapus");
-    },
-    onError: (err) => {
-      toast.error(`Gagal: ${err.message}`);
-    },
-  });
-
-  const returnLoanMutation = useMutation({
-    mutationFn: async (id) => {
-       const { error } = await supabase
-        .from("peminjaman")
-        .update({
-          status: "returned",
-          return_date: new Date().toISOString().split("T")[0],
-        })
-        .eq("id", id);
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["data-loans"] });
-    },
-  });
 
   const filteredLoans = useMemo(() => {
     return allLoans.filter((loan) => {
@@ -103,8 +68,6 @@ export const useLoans = () => {
     isLoading,
     error: error?.message,
     addLoan,
-    returnLoan: returnLoanMutation.mutateAsync,
-    deleteLoan,
     refetch
   };
 };

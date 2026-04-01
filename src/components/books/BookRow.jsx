@@ -54,11 +54,11 @@ export const BookRow = ({ book, onEdit, onDelete }) => {
         </div>
       </TableCell>
 
-      <TableCell className="px-4 py-3 text-xs font-mono hidden lg:table-cell">
+      <TableCell className="px-4 py-3 text-xs font-mono lg:table-cell">
         {book.isbn}
       </TableCell>
 
-      <TableCell className="px-4 py-3 text-sm hidden md:table-cell">
+      <TableCell className="px-4 py-3 text-sm  md:table-cell">
         <span className="px-2 py-1 rounded-md bg-secondary text-secondary-foreground text-xs">
           {book.category || "-"}
         </span>
@@ -74,7 +74,7 @@ export const BookRow = ({ book, onEdit, onDelete }) => {
         </span>
       </TableCell>
 
-      <TableCell className="px-4 py-3 text-sm text-muted-foreground hidden xl:table-cell">
+      <TableCell className="px-4 py-3 text-sm  hidetext-muted-foreground xl:table-cell">
         {formatDate(book.created_at)}
       </TableCell>
 

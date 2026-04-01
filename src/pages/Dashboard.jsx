@@ -1,4 +1,4 @@
-import { BookOpen, Users, BookMarked, AlertTriangle } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import {
   StatsCard,
   LatestActivityTable,
@@ -7,74 +7,29 @@ import {
 import { useDashboard } from "../hooks/useDashboard";
 import { lazy, Suspense } from "react";
 import { useMemo } from "react";
+import {
+ getStatsCards,
+ getChartStatusData
+} from "../data/dataDashboard";
 
-const LoanStatusChart = lazy(() => 
-  import("../components/reports/LoanStatusChart").then(module => ({ 
-    default: module.LoanStatusChart 
-  }))
+const LoanStatusChart = lazy(() =>
+  import("../components/reports/LoanStatusChart").then((module) => ({
+    default: module.LoanStatusChart,
+  })),
 );
 export const Dashboard = () => {
   const { data, isLoading, error } = useDashboard();
 
-  const stats = data?.stats || {};
+  const statsCards = useMemo(() => getStatsCards(data), [data]);
+  const chartStatusData = useMemo(() => getChartStatusData(data), [data]);
   const latestActivities = data?.latestActivities || [];
 
-  const statsCards = [
-    {
-      title: "Total Buku",
-      value: Number(stats.totalBooks || 0), 
-      icon: BookOpen,
-      color: "text-sky-400",
-      bgColor: "bg-sky-100",
-      description: "Koleksi buku yang siap dipinjam.",
-    },
-    {
-      title: "Dipinjam Hari Ini",
-      value: Number(stats.borrowedToday || 0),
-      icon: BookMarked,
-      color: "text-green-400",
-      bgColor: "bg-green-100",
-      description: "Trend membaca hari ini meningkat.",
-    },
-    {
-      title: "Total Siswa",
-      value: Number(stats.totalStudents || 0),
-      icon: Users,
-      color: "text-green-400",
-      bgColor: "bg-green-100",
-      description: "Anggota perpustakaan yang terdaftar.",
-    },
-    {
-      title: "Pinjaman Tertunggak",
-      value: Number(stats.overdueLoan || 0),
-      icon: AlertTriangle,
-      color: "text-orange-400",
-      bgColor: "bg-orange-100",
-      description: "Segera tindak lanjuti keterlambatan.",
-    },
-  ];
-
- const chartStatusData = useMemo(
-  () => [
-    {
-     status: "borrowed", 
-      total: Number(stats.totalActiveBorrowed || 0), 
-    },
-    {
-     status: "returned",
-      total: Number(stats.totalReturned || 0),
-    },
-    {
-     status: "overdue",
-      total: Number(stats.overdueLoan || 0),
-    },
-  ],
-  [stats]
-);
-
- const totalAllLoans = useMemo(() => {
-  return chartStatusData.reduce((acc, curr) => acc + (Number(curr.total) || 0), 0);
-}, [chartStatusData]);
+  const totalAllLoans = useMemo(() => {
+    return chartStatusData.reduce(
+      (acc, curr) => acc + (Number(curr.total) || 0),
+      0,
+    );
+  }, [chartStatusData]);
 
   if (isLoading) {
     return <DashboardSkeleton />;

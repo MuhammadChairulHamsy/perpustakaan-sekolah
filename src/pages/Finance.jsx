@@ -1,14 +1,25 @@
-import { AlertCircle, BookOpen, CheckCircle2, DollarSign } from "lucide-react";
 import { StatsCard } from "../components/dashboard/StatsCard";
 import { useFinance } from "../hooks/useFinance";
 import {
   FineCollectionTrend,
   FinanceSkeleton,
   QuickSummary,
+  FinanceTable,
 } from "../components/finance";
 import { SearchBar } from "../components/search-bar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 import { Filter } from "lucide-react";
+import { getStatsCards } from "../data/dataFinance";
+import { useMemo } from "react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { PrintPreviewDialog } from "../components/loans";
 
 const Finance = () => {
   const {
@@ -16,56 +27,41 @@ const Finance = () => {
     finance,
     searchQuery,
     setSearchQuery,
+    selectedLoan,
+    setSelectedLoan,
+    returnLoan,
     isLoading,
     error,
+    deleteLoan,
     collectedData,
   } = useFinance();
-  const statsCards = [
-    {
-      title: "Pendapatan Total",
-      value: new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        maximumFractionDigits: 0,
-      }).format(finance.totalRevenue),
-      icon: DollarSign,
-      color: "text-sky-400",
-      bgColor: "bg-sky-100",
-      description: "Semua waktu yang dikumpulkan",
-    },
-    {
-      title: "Denda yang Tertunda",
-      value: new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        maximumFractionDigits: 0,
-      }).format(finance.pendingFinance),
-      icon: AlertCircle,
-      color: "text-amber-400",
-      bgColor: "bg-amber-100",
-      description: "5 transaksi yang belum dibayar.",
-    },
-    {
-      title: "Denda yang Dikumpulkan",
-      value: new Intl.NumberFormat("id-ID", {
-        style: "currency",
-        currency: "IDR",
-        maximumFractionDigits: 0,
-      }).format(finance.collectedFines),
-      icon: CheckCircle2,
-      color: "text-green-400",
-      bgColor: "bg-green-100",
-      description: "Pembayaran berhasil.",
-    },
-    {
-      title: "Buku Terlambat Dikembalikan",
-      value: `${finance.overdueBooks} Buku`,
-      icon: BookOpen,
-      color: "text-orange-400",
-      bgColor: "bg-orange-100",
-      description: "Saat ini sudah jatuh tempo.",
-    },
-  ];
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const statsCards = useMemo(() => getStatsCards(finance), [finance]);
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteLoan.mutateAsync(id);
+    } catch (err) {
+      console.error("Delete Error:", err);
+    }
+  };
+
+  const handleReturn = async (loan) => {
+    try {
+      await returnLoan(loan.id);
+      toast.success("Buku Telah Dikembalikan", {
+        description: "Status pinjaman diperbarui dan stok buku bertambah.",
+        className: "!text-white",
+      });
+    } catch (error) {
+      toast.error("Gagal memproses pengembalian");
+    }
+  };
+
+  const handlePrint = async (loan) => {
+    setSelectedLoan(loan);
+    setPreviewOpen(true);
+  };
 
   if (isLoading) {
     return <FinanceSkeleton />;
@@ -120,18 +116,30 @@ const Finance = () => {
         </div>
         <Select>
           <SelectTrigger className="w-40">
-          <Filter className="mr-2 h-4 w-4 text-muted-foreground"/>
-          <SelectValue/>
+            <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem>
-
-            </SelectItem>
+            <SelectItem value="all">Semua Status</SelectItem>
+            <SelectItem value="paid">Dibayar</SelectItem>
+            <SelectItem value="unpaid">Belum Dibayar</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
+      <FinanceTable
+        fines={fines}
+        searchQuery={searchQuery}
+        onReturn={handleReturn}
+        onPrint={handlePrint}
+        onDelete={handleDelete}
+      />
 
+      <PrintPreviewDialog
+        loan={selectedLoan}
+        open={previewOpen}
+        onOpenChange={setPreviewOpen}
+      />
     </div>
   );
 };

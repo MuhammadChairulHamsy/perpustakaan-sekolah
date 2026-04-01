@@ -15,19 +15,17 @@ export const BookTable = ({ books, searchQuery, onEdit, onDelete }) => {
         <Table className="w-full">
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30">
-              {/* Kolom Buku (Judul + Cover) dibuat lebih lebar */}
               <TableHead className="px-4 py-3 w-[40%] min-w-52">
                 Info Buku
               </TableHead>
-              {/* ISBN disembunyikan di layar kecil (sm), muncul di lg */}
-              <TableHead className="px-4 py-3 hidden lg:table-cell">
+              <TableHead className="px-4 py-3 lg:table-cell">
                 ISBN
               </TableHead>
-              <TableHead className="px-4 py-3 hidden md:table-cell">
+              <TableHead className="px-4 py-3 md:table-cell">
                 Kategori
               </TableHead>
               <TableHead className="px-4 py-3 text-center">Stok</TableHead>
-              <TableHead className="px-4 py-3 hidden xl:table-cell">
+              <TableHead className="px-4 py-3 xl:table-cell">
                 Tanggal
               </TableHead>
               <TableHead className="px-4 py-3 text-right">Aksi</TableHead>

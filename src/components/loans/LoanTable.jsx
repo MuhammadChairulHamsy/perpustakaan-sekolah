@@ -11,9 +11,6 @@ import { LoanRow } from "./LoanRow";
 export const LoanTable = ({
   loans,
   searchQuery,
-  onDelete,
-  onReturn,
-  onPrint,
 }) => {
   return (
     <div className="data-table rounded-lg border border-border bg-card">
@@ -32,18 +29,6 @@ export const LoanTable = ({
               </TableHead>
               <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
                 Tanggal kembali
-              </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
-                Denda
-              </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
-                Status
-              </TableHead>
-              <TableHead className="px-4 py-3 text-left center-sm font-medium text-muted-foreground">
-                Konfirmasi
-              </TableHead>
-              <TableHead className="py-4 px-3 text-right text-sm font-medium text-muted-foreground">
-                Aksi
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -68,9 +53,6 @@ export const LoanTable = ({
                 <LoanRow
                   key={loan.id}
                   loan={loan}
-                  onDelete={onDelete}
-                  onReturn={onReturn}
-                  onPrint={onPrint}
                 />
               ))
             )}
