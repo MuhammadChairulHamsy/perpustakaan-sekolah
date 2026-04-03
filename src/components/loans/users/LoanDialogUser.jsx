@@ -4,19 +4,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "../ui/dialog";
-import { Button } from "../ui/button";
+} from "../../ui/dialog";
+import { Button } from "../../ui/button";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import  {supabase}  from "../../lib/supabase/client";
+} from "../../ui/select";
+import { supabase } from "../../../lib/supabase/client";
 import { useEffect, useState } from "react";
 
-export const LoanDialog = ({ open, onOpenChange, onSubmit }) => {
+export const LoanDialogUser = ({ open, onOpenChange, onSubmit }) => {
   const [students, setStudents] = useState([]);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);

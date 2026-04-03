@@ -1,23 +1,14 @@
 import { Plus } from "lucide-react";
-import { useLoans } from "../hooks/useLoans";
-import { SearchBar } from "../components/search-bar";
-import {
-  LoanDialogUser,
-  LoanTableUser,
-} from "../components/loans";
-import { LoanSkeleton } from "../components/loans";
-import { Button } from "../components/ui/button";
+import { useLoans } from "../../hooks/useLoans";
+import { SearchBar } from "../../components/search-bar";
+import { LoanDialogAdmin, LoanTableAdmin } from "../../components/loans";
+import { LoanSkeleton } from "../../components/loans";
+import { Button } from "../../components/ui/button";
 import { useState } from "react";
 
-const LoansUser = () => {
-  const {
-    loans,
-    searchQuery,
-    setSearchQuery,
-    isLoading,
-    error,
-    addLoan,
-  } = useLoans();
+const LoansAdmin = () => {
+  const { loans, searchQuery, setSearchQuery, isLoading, error, addLoan } =
+    useLoans();
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -35,7 +26,6 @@ const LoansUser = () => {
       return false;
     }
   };
-
 
   if (isLoading) {
     return <LoanSkeleton />;
@@ -83,19 +73,16 @@ const LoansUser = () => {
           />
         </div>
 
-        <LoanDialogUser
+        <LoanDialogAdmin
           open={dialogOpen}
           onOpenChange={setDialogOpen}
           onSubmit={handleSubmit}
         />
 
-        <LoanTableUser
-          loans={loans}
-          searchQuery={searchQuery}
-        />
+        <LoanTableAdmin loans={loans} searchQuery={searchQuery} />
       </div>
     </div>
   );
 };
 
-export default LoansUser;
+export default LoansAdmin;

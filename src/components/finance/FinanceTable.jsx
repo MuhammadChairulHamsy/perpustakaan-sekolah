@@ -27,11 +27,11 @@ export const FinanceTable = ({
               <TableHead className="px-4 py-3 hidden lg:table-cell">
                 Judul Buku
               </TableHead>
-              <TableHead className="px-4 py-3 hidden lg:table-cell">
-                tenggat waktu
+              <TableHead className="px-2 py-3 hidden lg:table-cell">
+                Tanggal Pinjam
               </TableHead>
-              <TableHead className="px-4 py-3 hidden lg:table-cell">
-                Terlambat Beberapa Hari
+              <TableHead className="px-2 py-3 hidden lg:table-cell">
+               Tanggal Kembali
               </TableHead>
               <TableHead className="px-4 py-3 hidden lg:table-cell">
                 Jumlah Denda

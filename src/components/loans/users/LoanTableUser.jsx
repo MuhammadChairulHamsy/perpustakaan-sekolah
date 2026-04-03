@@ -5,13 +5,10 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import { LoanRow } from "./LoanRow";
+} from "../../ui/table";
+import { LoanRowUser } from "./LoanRowUser";
 
-export const LoanTable = ({
-  loans,
-  searchQuery,
-}) => {
+export const LoanTableUser = ({ loans, searchQuery }) => {
   return (
     <div className="data-table rounded-lg border border-border bg-card">
       <div className="overflow-x-auto">
@@ -49,12 +46,7 @@ export const LoanTable = ({
                 </TableCell>
               </TableRow>
             ) : (
-              loans.map((loan) => (
-                <LoanRow
-                  key={loan.id}
-                  loan={loan}
-                />
-              ))
+              loans.map((loan) => <LoanRowUser key={loan.id} loan={loan} />)
             )}
           </TableBody>
         </Table>

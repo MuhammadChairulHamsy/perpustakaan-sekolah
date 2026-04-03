@@ -6,7 +6,7 @@ import { Dashboard } from "../pages/Dashboard";
 import Books from "../pages/Books";
 import Catalog from "../pages/Catalog";
 import Students from "../pages/Students";
-import Loans from "../pages/Loans";
+import LoansAdmin from "../pages/admin/LoansAdmin";
 import Reports from "../pages/Reports";
 import Settings from "../pages/Settings";
 import NotFound from "../pages/NotFound";
@@ -14,6 +14,7 @@ import { Notification } from "../pages/Notification";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 import AuthCallback from "../context/AuthCallback";
 import Finance from "../pages/Finance";
+import LoansUser from "../pages/Loans";
 
 const staffRoles = ["Admin", "Pustakawan", "Asisten"];
 
@@ -34,7 +35,7 @@ const router = createBrowserRouter([
       // Bisa diakses semua orang yang sudah login (Siswa, Admin, dsb)
       { path: "dashboard", element: <Dashboard /> },
       { path: "buku", element: <Books /> },
-      { path: "pinjaman", element: <Loans /> },
+      { path: "pinjaman-user", element: <LoansUser /> },
       { path: "katalog", element: <Catalog /> },
       { path: "notifikasi", element: <Notification /> },
 
@@ -44,6 +45,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={staffRoles}>
             <Students />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "kelola-pinjaman",
+        element: (
+          <ProtectedRoute allowedRoles={staffRoles}>
+            <LoansAdmin />
           </ProtectedRoute>
         ),
       },

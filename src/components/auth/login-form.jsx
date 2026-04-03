@@ -66,7 +66,11 @@ export function LoginForm({
                     type={showPassword ? "text" : "password"}
                     {...register("password")}
                     placeholder="••••••••"
-                    className="font-sans"
+                    className={cn(
+                      "font-sans",
+                      errors.password &&
+                        "border-red-500 focus-visible:ring-red-500",
+                    )}
                   />
                   <button
                     type="button"
@@ -77,7 +81,7 @@ export function LoginForm({
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-xs text-red-500">
+                  <p className="text-[11px] font-medium text-red-500 mt-1">
                     {errors.password.message}
                   </p>
                 )}

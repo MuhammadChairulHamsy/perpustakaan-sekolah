@@ -1,8 +1,8 @@
-import { TableCell, TableRow } from "../ui/table";
+import { TableCell, TableRow } from "../../ui/table";
 import { BookOpen } from "lucide-react";
-import { formatDate } from "../../utils/dateUtils";
+import { formatDate } from "../../../utils/dateUtils";
 
-export const LoanRow = ({ loan}) => {
+export const LoanRowUser = ({ loan }) => {
   return (
     <TableRow className="hover:bg-muted/50 transition-colors">
       <TableCell className="px-4 py-3">
