@@ -28,8 +28,13 @@ export const FinanceSkeleton = () => {
       </div>
 
       {/* Chart Status — setengah halaman */}
-      <div className="w-1/2">
-        <Skeleton className="h-96 w-full rounded-xl border bg-gray-200" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-6">
+        <div className="lg:col-span-7">
+          <Skeleton className="h-96 w-full rounded-xl border bg-gray-200" />
+        </div>
+         <div className="lg:col-span-3">
+         <Skeleton className="h-96 w-full rounded-xl border bg-gray-200" />
+         </div>
       </div>
     </div>
   );

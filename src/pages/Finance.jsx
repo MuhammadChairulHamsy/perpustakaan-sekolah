@@ -16,8 +16,7 @@ import {
 } from "../components/ui/select";
 import { Filter } from "lucide-react";
 import { getStatsCards } from "../data/dataFinance";
-import { useMemo } from "react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PrintPreviewDialog } from "../components/loans";
 
@@ -36,7 +35,17 @@ const Finance = () => {
     collectedData,
   } = useFinance();
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [filter, setFilter] = useState("all");
   const statsCards = useMemo(() => getStatsCards(finance), [finance]);
+
+  const filterData = useMemo(() => {
+    if (filter === "unpaid")
+      return fines.filter((n) => n.displayStatus === "unpaid");
+    if (filter === "paid")
+      return fines.filter((n) => n.displayStatus === "paid");
+
+    return fines;
+  }, [fines, filter]);
 
   const handleDelete = async (id) => {
     try {
@@ -114,10 +123,10 @@ const Finance = () => {
             className="max-w-md"
           />
         </div>
-        <Select>
-          <SelectTrigger className="w-40">
+        <Select value={filter} onValueChange={setFilter}>
+          <SelectTrigger className="w-48">
             <Filter className="mr-2 h-4 w-4 text-muted-foreground" />
-            <SelectValue />
+            <SelectValue placeholder="Pilih Filter" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Semua Status</SelectItem>
@@ -128,7 +137,7 @@ const Finance = () => {
       </div>
 
       <FinanceTable
-        fines={fines}
+        filtered={filterData}
         searchQuery={searchQuery}
         onReturn={handleReturn}
         onPrint={handlePrint}

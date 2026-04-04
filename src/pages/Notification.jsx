@@ -10,10 +10,17 @@ import { Button } from "../components/ui/button";
 import { NotificationList } from "../components/notification/NotificationList";
 import { useNotification } from "../hooks/useNotification";
 import { useState, useMemo } from "react";
+import { NotificationSkeleton } from "../components/notification/NotificationSkeleton";
 
 export const Notification = () => {
-  const { notifications, isLoading, markAsRead, markAllAsRead, unreadCount, deleteNotification  } =
-    useNotification();
+  const {
+    notifications,
+    isLoading,
+    markAsRead,
+    markAllAsRead,
+    unreadCount,
+    deleteNotification,
+  } = useNotification();
   const [filter, setFilter] = useState("all");
 
   const filteredData = useMemo(() => {
@@ -23,7 +30,7 @@ export const Notification = () => {
   }, [notifications, filter]);
 
   if (isLoading) {
-    return <div className="text-center py-10">Memuat notifikasi...</div>;
+    return <NotificationSkeleton />;
   }
   return (
     <div className="container min-h-screen space-y-6">
@@ -59,7 +66,11 @@ export const Notification = () => {
         </div>
       </div>
 
-      <NotificationList filtered={filteredData} onMarkAsRead={markAsRead} onDelete={deleteNotification } />
+      <NotificationList
+        filtered={filteredData}
+        onMarkAsRead={markAsRead}
+        onDelete={deleteNotification}
+      />
     </div>
   );
 };

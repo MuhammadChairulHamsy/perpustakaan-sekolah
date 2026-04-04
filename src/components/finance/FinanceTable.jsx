@@ -10,12 +10,17 @@ import {
 import { FinanceRow } from "./FinanceRow";
 
 export const FinanceTable = ({
-  fines,
+  filtered = [],
   searchQuery,
   onReturn,
   onPrint,
   onDelete,
 }) => {
+  const total = filtered.reduce(
+    (sum, item) => sum + (Number(item.fine) || 0),
+    0,
+  );
+
   return (
     <div className="rounded-lg border bg-card overflow-hidden">
       <div className="overflow-x-auto">
@@ -47,23 +52,26 @@ export const FinanceTable = ({
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-border">
-            {fines.length === 0 ? (
+            {filtered.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={8}
-                  className="h-24 text-center text-muted-foreground"
+                  className="h-32 text-center text-muted-foreground"
                 >
-                  {searchQuery ? (
-                    <span>
-                      Tidak ada data Keuangan <b>"{searchQuery}"</b>
-                    </span>
-                  ) : (
-                    "Tidak ada data keuangan tersedia"
-                  )}
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Coins className="h-8 w-8 opacity-30" />
+                    {searchQuery ? (
+                      <span>
+                        Tidak ada data untuk <b>"{searchQuery}"</b>
+                      </span>
+                    ) : (
+                      <span>Tidak ada data keuangan tersedia</span>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ) : (
-              fines.map((loan) => (
+              filtered.map((loan) => (
                 <FinanceRow
                   key={loan.id}
                   fines={loan}
@@ -74,7 +82,7 @@ export const FinanceTable = ({
               ))
             )}
           </TableBody>
-          <TableFooter >
+          <TableFooter>
             <TableRow className="bg-muted/50 font-semibold hover:bg-muted/50">
               <TableCell colSpan={7} className="text-foreground lg:table-cell">
                 <b>Total : </b>
@@ -85,7 +93,7 @@ export const FinanceTable = ({
                   style: "currency",
                   currency: "IDR",
                   minimumFractionDigits: 0,
-                }).format(2003)}
+                }).format(total)}
               </TableCell>
             </TableRow>
           </TableFooter>
