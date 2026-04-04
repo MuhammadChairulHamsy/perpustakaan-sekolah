@@ -71,7 +71,7 @@ const Students = () => {
   }
 
   return (
-    <div className="container min-h-screen">
+    <div className="container min-h-screen space-y-8">
       <div className="mb-6 w-full flex flex-col gap-4">
         <div className="flex flex-col justify-between items-start lg:flex lg:flex-row">
           <div className="flex flex-col">

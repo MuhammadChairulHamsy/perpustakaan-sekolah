@@ -47,10 +47,14 @@ export function LoginForm({
                   type="email"
                   {...register("email")}
                   placeholder="m@example.com"
-                  className="font-sans"
+                  className={cn(
+                    "font-sans",
+                    errors.password &&
+                      "border-red-500 focus-visible:ring-red-500",
+                  )}
                 />
                 {errors.email && (
-                  <p className="text-xs text-red-500">{errors.email.message}</p>
+                  <p className="text-xs font-medium text-red-500 mt-1">{errors.email.message}</p>
                 )}
               </Field>
 
@@ -81,7 +85,7 @@ export function LoginForm({
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-[11px] font-medium text-red-500 mt-1">
+                  <p className="text-xs font-medium text-red-500 mt-1">
                     {errors.password.message}
                   </p>
                 )}

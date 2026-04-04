@@ -21,7 +21,7 @@ const Reports = () => {
 
   if (error) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center ">
         <div className="text-center">
           <p className="text-destructive font-semibold mb-2">Error</p>
           <p className="text-muted-foreground">{error}</p>

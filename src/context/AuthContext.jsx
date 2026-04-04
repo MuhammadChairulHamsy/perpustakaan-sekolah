@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
       name: supabaseUser.user_metadata?.full_name || 
             supabaseUser.user_metadata?.name || 
             supabaseUser.email.split("@")[0],
-      role: supabaseUser.user_metadata?.role || "siswa",
+      role: supabaseUser.user_metadata?.role || "user",
     };
   };
 

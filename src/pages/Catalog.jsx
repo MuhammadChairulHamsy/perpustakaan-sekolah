@@ -43,7 +43,7 @@ const Catalog = () => {
   }
 
   return (
-    <div className="container min-h-screen space-y-6">
+    <div className="container min-h-screen space-y-8">
       <div className="flex flex-col justify-between items-start lg:flex lg:flex-row">
         <div>
           <h1 className="text-2xl font-bold text-foreground">

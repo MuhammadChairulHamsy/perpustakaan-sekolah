@@ -7,10 +7,7 @@ import {
 import { useDashboard } from "../hooks/useDashboard";
 import { lazy, Suspense } from "react";
 import { useMemo } from "react";
-import {
- getStatsCards,
- getChartStatusData
-} from "../data/dataDashboard";
+import { getStatsCards, getChartStatusData } from "../data/dataDashboard";
 
 const LoanStatusChart = lazy(() =>
   import("../components/reports/LoanStatusChart").then((module) => ({
@@ -55,7 +52,7 @@ export const Dashboard = () => {
 
   return (
     <div className="container space-y-8">
-      <div className="flex flex-col md:flex-row     md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row    md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">
             Dashboard
@@ -89,23 +86,21 @@ export const Dashboard = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 pb-10 items-stretch">
-        <div className="lg:col-span-2 flex flex-col space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold tracking-tight">
-              Aktivitas Terkini
-            </h2>
-          </div>
-          <div className="flex-1 bg-slate-50 border rounded-xl overflow-hidden shadow-sm">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-10 gap-5">
+        <div className="lg:col-span-7 flex flex-col gap-4">
+          <h2 className="text-lg font-semibold tracking-tight">
+            Aktivitas Terkini
+          </h2>
+          <div className="flex-1 bg-card border rounded-xl overflow-hidden shadow-sm">
             <LatestActivityTable activities={latestActivities} />
           </div>
         </div>
 
-        <div className="space-y-4">
+        <div className="lg:col-span-3 flex flex-col gap-4">
           <h2 className="text-lg font-semibold tracking-tight">
             Statistik Status
           </h2>
-          <div className="bg-white border rounded-xl shadow-sm h-full flex items-center justify-center">
+          <div className="bg-white border rounded-xl shadow-sm flex-1 items-center justify-center">
             <Suspense fallback={<div>Loading chart...</div>}>
               <LoanStatusChart data={chartStatusData} />
             </Suspense>

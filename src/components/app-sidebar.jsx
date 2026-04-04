@@ -106,7 +106,7 @@ export function AppSidebar({ ...props }) {
                 </div>
                 <div className="flex flex-col gap-0.5 overflow-hidden">
                   <span className="font-bold text-sidebar-foreground text-base leading-none">
-                    Pusat <span className="text-primary">Perpustakaan</span>
+                    Pusat Perpustakaan
                   </span>
                   <span className="text-[10px] uppercase tracking-wider font-medium text-slate-300">
                     Perpustakaan Sekolah

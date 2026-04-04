@@ -79,7 +79,7 @@ const Settings = () => {
   }
 
   return (
-    <div className="container max-w-6xl space-y-6 animate-in fade-in duration-500">
+    <div className="container max-w-6xl space-y-8 animate-in fade-in duration-500">
       <div className="flex flex-col gap-1">
         <h1 className="text-3xl font-bold tracking-tight">Pengaturan</h1>
         <p className="text-muted-foreground text-lg">

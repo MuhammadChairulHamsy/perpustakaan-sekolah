@@ -8,7 +8,7 @@ import {
 } from "../../ui/table";
 import { LoanRowAdmin } from "./LoanRowAdmin";
 
-export const LoanTableAdmin = ({ loans, searchQuery, onEdit, onDelete }) => {
+export const LoanTableAdmin = ({ loans, searchQuery, onDelete }) => {
   return (
     <div className="data-table rounded-lg border border-border bg-card">
       <div className="overflow-x-auto">
@@ -53,7 +53,6 @@ export const LoanTableAdmin = ({ loans, searchQuery, onEdit, onDelete }) => {
                 <LoanRowAdmin
                   key={loan.id}
                   loan={loan}
-                  onEdit={onEdit}
                   onDelete={onDelete}
                 />
               ))

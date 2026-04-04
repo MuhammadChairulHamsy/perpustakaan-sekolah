@@ -14,9 +14,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../../ui/alert-dialog";
-import { Pencil } from "lucide-react";
 
-export const LoanRowAdmin = ({ loan, onEdit, onDelete }) => {
+export const LoanRowAdmin = ({ loan, onDelete }) => {
   return (
     <TableRow className="hover:bg-muted/50 transition-colors">
       <TableCell className="px-4 py-3">
@@ -52,14 +51,6 @@ export const LoanRowAdmin = ({ loan, onEdit, onDelete }) => {
       </TableCell>
       <TableCell className="px-4 py-3">
         <div className="flex justify-end gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onEdit(loan)}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10 cursor-pointer"
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button

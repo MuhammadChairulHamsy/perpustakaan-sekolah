@@ -2,6 +2,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -13,7 +14,7 @@ export const FinanceTable = ({
   searchQuery,
   onReturn,
   onPrint,
-  onDelete
+  onDelete,
 }) => {
   return (
     <div className="rounded-lg border bg-card overflow-hidden">
@@ -31,7 +32,7 @@ export const FinanceTable = ({
                 Tanggal Pinjam
               </TableHead>
               <TableHead className="px-2 py-3 hidden lg:table-cell">
-               Tanggal Kembali
+                Tanggal Kembali
               </TableHead>
               <TableHead className="px-4 py-3 hidden lg:table-cell">
                 Jumlah Denda
@@ -42,9 +43,7 @@ export const FinanceTable = ({
               <TableHead className="px-4 py-3 hidden lg:table-cell">
                 Konfirmasi
               </TableHead>
-              <TableHead className="px-4 py-3 hidden lg:table-cell">
-                Aksi
-              </TableHead>
+              <TableHead className="px-4 py-3 text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-border">
@@ -75,6 +74,21 @@ export const FinanceTable = ({
               ))
             )}
           </TableBody>
+          <TableFooter >
+            <TableRow className="bg-muted/50 font-semibold hover:bg-muted/50">
+              <TableCell colSpan={7} className="text-foreground lg:table-cell">
+                <b>Total : </b>
+              </TableCell>
+
+              <TableCell className="text-right text-primary whitespace-nowrap">
+                {new Intl.NumberFormat("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                  minimumFractionDigits: 0,
+                }).format(2003)}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
         </Table>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { NotificationBell } from "./notification-bell";
+import { NotificationBell } from "./notification/NotificationBell";
 
 export function SiteHeader() {
   return (

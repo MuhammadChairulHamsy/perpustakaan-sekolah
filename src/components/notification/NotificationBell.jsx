@@ -7,32 +7,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ScrollArea } from "./ui/scroll-area";
-import { supabase } from "../lib/supabase/client";
-import { useAuth } from "../context/AuthContext";
-import { useNotifications } from "../context/NotificationContext";
-import { Button } from "./ui/button";
+import { ScrollArea } from "../ui/scroll-area";
+import { Button } from "../ui/button";
+import { useNotification } from "../../hooks/useNotification.jsx";
 
 export const NotificationBell = () => {
-  const { user } = useAuth();
-  const { notifications, setNotifications, deleteAllNotifications } = useNotifications();
-  const unreadCount = notifications.filter((n) => !n.is_read).length;
-
-  // Fungsi untuk menandai semua sudah dibaca
-  const markAllAsRead = async () => {
-    if (unreadCount === 0) return;
-
-    const { error } = await supabase
-      .from("notifications")
-      .update({ is_read: true })
-      .eq("user_id", user.id)
-      .eq("is_read", false);
-
-    if (!error) {
-      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
-    }
-  };
-
+  const { notifications, unreadCount, markAllAsRead, deleteAllNotifications } =
+    useNotification();
   return (
     <DropdownMenu onOpenChange={(open) => open && markAllAsRead()}>
       <DropdownMenuTrigger className="relative p-2 outline-none cursor-pointer group">
@@ -56,11 +37,10 @@ export const NotificationBell = () => {
           </div>
           {notifications.length > 0 && (
             <Button
-            variant="outline"
+              variant="outline"
               onClick={(e) => {
-                e.stopPropagation(); 
-                if (confirm("Hapus semua notifikasi?"))
-                  deleteAllNotifications();
+                e.stopPropagation();
+                if (confirm("Hapus semua notifikasi?")) deleteAllNotifications();
               }}
               className="text-xs font-normal text-destructive hover:underline flex items-center gap-1 cursor-pointer"
             >
@@ -85,9 +65,7 @@ export const NotificationBell = () => {
                 }`}
               >
                 <div className="flex w-full justify-between items-center gap-2">
-                  <p
-                    className={`text-sm font-semibold ${!n.is_read ? "text-primary" : "text-foreground"}`}
-                  >
+                  <p className={`text-sm font-semibold ${!n.is_read ? "text-primary" : "text-foreground"}`}>
                     {n.title}
                   </p>
                   {!n.is_read && (
