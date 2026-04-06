@@ -10,7 +10,12 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { useState, useEffect } from "react";
 
-export const StudentDialog = ({ open, onOpenChange, student, onSubmit }) => {
+export const StudentDialog = ({
+  open,
+  onOpenChange,
+  student,
+  onSubmit,
+}) => {
   const [formData, setFormData] = useState({
     name: "",
     class: "",
@@ -98,7 +103,9 @@ export const StudentDialog = ({ open, onOpenChange, student, onSubmit }) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="created_at" className="cursor-pointer">Tanggal daftar</Label>
+            <Label htmlFor="created_at" className="cursor-pointer">
+              Tanggal daftar
+            </Label>
             <Input
               id="created_at"
               type="date"

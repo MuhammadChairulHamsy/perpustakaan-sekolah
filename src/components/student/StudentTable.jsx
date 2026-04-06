@@ -8,7 +8,12 @@ import {
 } from "../ui/table";
 import { StudentRow } from "./StudentRow";
 
-export const StudentTable = ({ students, searchQuery, onEdit, onDelete }) => {
+export const StudentTable = ({
+  students,
+  searchQuery,
+  onEdit,
+  onDelete,
+}) => {
   return (
     <div className="data-table rounded-lg border border-border bg-card">
       <div className="overflow-x-auto">
@@ -40,7 +45,9 @@ export const StudentTable = ({ students, searchQuery, onEdit, onDelete }) => {
                   className="h-24 text-center text-muted-foreground"
                 >
                   {searchQuery ? (
-                    <span>Tidak ada data siswa <b>"{searchQuery}"</b></span>
+                    <span>
+                      Tidak ada data siswa <b>"{searchQuery}"</b>
+                    </span>
                   ) : (
                     "Tidak ada data siswa tersedia"
                   )}

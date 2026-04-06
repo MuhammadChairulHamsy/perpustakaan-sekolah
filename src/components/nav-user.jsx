@@ -92,8 +92,10 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <CircleUser />
-                Account
+                <Link to="/account" className="flex gap-2 items-center">
+                  <CircleUser />
+                  Account
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Link to="/notifikasi" className="flex gap-2 items-center">

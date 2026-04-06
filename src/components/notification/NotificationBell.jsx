@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "../ui/scroll-area";
 import { Button } from "../ui/button";
-import { useNotification } from "../../hooks/useNotification.jsx";
+import { useNotification } from "../../hooks/useNotification";
 
 export const NotificationBell = () => {
   const { notifications, unreadCount, markAllAsRead, deleteAllNotifications } =

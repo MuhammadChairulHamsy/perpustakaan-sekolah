@@ -8,18 +8,7 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { cn } from "../../lib/utils";
-
-const formatRelativeTime = (dateStr) => {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const minutes = Math.floor(diff / 60000);
-  const hours = Math.floor(minutes / 60);
-  const days = Math.floor(hours / 24);
-
-  if (minutes < 1) return "Baru saja";
-  if (minutes < 60) return `${minutes} menit lalu`;
-  if (hours < 24) return `${hours} jam lalu`;
-  return `${days} hari lalu`;
-};
+import { getTimeAgo } from "../../utils/statusUtils";
 
 const iconMap = {
   book: BookOpen,
@@ -46,20 +35,20 @@ export const NotificationList = ({ filtered, onMarkAsRead, onDelete }) => {
         filtered.map((item) => {
           const Icon = iconMap[item.type] ?? Bell;
           const iconStyle =
-            iconStyleMap[item.type] ?? "bg-muted text-muted-foreground";
+            iconStyleMap[item.type] ?? "bg-amber-100 text-amber-400";
 
           return (
             <div
               key={item.id}
               className={cn(
-                "flex items-start gap-4 px-5 py-4 transition-colors duration-150",
+                "flex items-start rounded-xl gap-4 px-5 py-4 transition-colors duration-150",
                 !item.is_read && "bg-primary/3 dark:bg-primary/6",
               )}
             >
               {/* Icon */}
               <div
                 className={cn(
-                  "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl",
+                  "flex h-10 w-10  shrink-0 items-center justify-center rounded-xl",
                   iconStyle,
                 )}
               >
@@ -69,7 +58,7 @@ export const NotificationList = ({ filtered, onMarkAsRead, onDelete }) => {
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-semibold text-foreground">
+                  <p className="text-sm font-bold text-foreground">
                     {item.title}
                   </p>
                   {!item.is_read && (
@@ -81,7 +70,7 @@ export const NotificationList = ({ filtered, onMarkAsRead, onDelete }) => {
                 </p>
                 <div className="flex items-center gap-1.5 mt-2 text-xs text-muted-foreground">
                   <Clock className="h-3 w-3" />
-                  {formatRelativeTime(item.created_at)}
+                  {getTimeAgo(item.created_at)}
                 </div>
               </div>
 

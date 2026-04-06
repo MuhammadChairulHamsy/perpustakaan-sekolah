@@ -1,17 +1,11 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase/client";
 import { useAuth } from "../context/AuthContext";
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useCallback,
-  useEffect,
-} from "react";
+import { useContext, useMemo, useCallback, useEffect } from "react";
+import { NotificationContext } from "../context/NotificationContext";
 import { toast } from "sonner";
 
-const NotificationContext = createContext(null);
-export const NotificationProvider = ({ children }) => {
+export const useNotificationValue = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const queryKey = ["notifications", user?.id];
@@ -36,54 +30,47 @@ export const NotificationProvider = ({ children }) => {
 
     const channel = supabase
       .channel(`db-notifications-${user.id}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "notifications",
-          filter: `user_id=eq.${user.id}`,
-        },
-        (payload) => {
-          queryClient.setQueryData(queryKey, (prev) => {
-            if (!prev) return [payload.new];
-            if (prev.find((n) => n.id === payload.new.id)) return prev;
-            return [payload.new, ...prev];
-          });
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: `user_id=eq.${user.id}`,
+      }, (payload) => {
+        queryClient.setQueryData(queryKey, (prev) => {
+          if (!prev) return [payload.new];
+          if (prev.find((n) => n.id === payload.new.id)) return prev;
+          return [payload.new, ...prev];
+        });
 
-          new Audio("/audio/notification.mp3")
-            .play()
-            .catch((err) => console.warn("Audio diblokir browser:", err));
+        new Audio("/audio/notification.mp3")
+          .play()
+          .catch((err) => console.warn("Audio diblokir browser:", err));
 
-          toast.info(payload.new.title, {
-            description: payload.new.message,
-            action: {
-              label: "Tandai Baca",
-              onClick: () => markAsRead(payload.new.id),
-            },
-          });
-        },
-      )
+        toast.info(payload.new.title, {
+          description: payload.new.message,
+          action: {
+            label: "Tandai Baca",
+            onClick: () => markAsRead(payload.new.id),
+          },
+        });
+      })
       .subscribe();
 
     return () => supabase.removeChannel(channel);
   }, [user?.id]);
 
-  const markAsRead = useCallback(
-    async (id) => {
-      const { error } = await supabase
-        .from("notifications")
-        .update({ is_read: true })
-        .eq("id", id);
+  const markAsRead = useCallback(async (id) => {
+    const { error } = await supabase
+      .from("notifications")
+      .update({ is_read: true })
+      .eq("id", id);
 
-      if (!error) {
-        queryClient.setQueryData(queryKey, (prev) =>
-          prev?.map((n) => (n.id === id ? { ...n, is_read: true } : n)),
-        );
-      }
-    },
-    [queryKey],
-  );
+    if (!error) {
+      queryClient.setQueryData(queryKey, (prev) =>
+        prev?.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+      );
+    }
+  }, [queryKey]);
 
   const markAllAsRead = useCallback(async () => {
     const unreadIds = data?.filter((n) => !n.is_read).map((n) => n.id);
@@ -96,10 +83,23 @@ export const NotificationProvider = ({ children }) => {
 
     if (!error) {
       queryClient.setQueryData(queryKey, (prev) =>
-        prev?.map((n) => ({ ...n, is_read: true })),
+        prev?.map((n) => ({ ...n, is_read: true }))
       );
     }
   }, [data, queryKey]);
+
+  const deleteNotification = useCallback(async (id) => {
+    const { error } = await supabase
+      .from("notifications")
+      .delete()
+      .eq("id", id);
+
+    if (!error) {
+      queryClient.setQueryData(queryKey, (prev) =>
+        prev?.filter((n) => n.id !== id)
+      );
+    }
+  }, [queryKey]);
 
   const deleteAllNotifications = useCallback(async () => {
     if (!user) return;
@@ -118,19 +118,6 @@ export const NotificationProvider = ({ children }) => {
     toast.success("Semua notifikasi dihapus permanen");
   }, [user, queryKey]);
 
-  const deleteNotification = useCallback(async (id) => {
-  const { error } = await supabase
-    .from("notifications")
-    .delete()
-    .eq("id", id);
-
-  if (!error) {
-    queryClient.setQueryData(queryKey, (prev) =>
-      prev?.filter((n) => n.id !== id)
-    );
-  }
-}, [queryKey]);
-
   const { unread, read, unreadCount } = useMemo(() => {
     if (!data) return { unread: [], read: [], unreadCount: 0 };
     const unread = data.filter((n) => !n.is_read);
@@ -138,26 +125,21 @@ export const NotificationProvider = ({ children }) => {
     return { unread, read, unreadCount: unread.length };
   }, [data]);
 
-  return (
-    <NotificationContext.Provider
-      value={{
-        notifications: data || [],
-        unread,
-        read,
-        unreadCount,
-        isLoading,
-        error,
-        markAsRead,
-        markAllAsRead,
-        deleteNotification,
-        deleteAllNotifications,
-      }}
-    >
-      {children}
-    </NotificationContext.Provider>
-  );
+  return {
+    notifications: data || [],
+    unread,
+    read,
+    unreadCount,
+    isLoading,
+    error,
+    markAsRead,
+    markAllAsRead,
+    deleteNotification,
+    deleteAllNotifications,
+  };
 };
 
+// Consumer hook — dipakai oleh komponen
 export const useNotification = () => {
   const ctx = useContext(NotificationContext);
   if (!ctx)

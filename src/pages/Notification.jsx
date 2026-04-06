@@ -7,10 +7,10 @@ import {
   SelectTrigger,
 } from "../components/ui/select";
 import { Button } from "../components/ui/button";
-import { NotificationList } from "../components/notification/NotificationList";
+import { NotificationList, NotificationSkeleton } from "../components/notification";
 import { useNotification } from "../hooks/useNotification";
 import { useState, useMemo } from "react";
-import { NotificationSkeleton } from "../components/notification/NotificationSkeleton";
+;
 
 export const Notification = () => {
   const {

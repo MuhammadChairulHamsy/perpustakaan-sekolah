@@ -15,6 +15,7 @@ import ProtectedRoute from "../components/auth/ProtectedRoute";
 import AuthCallback from "../context/AuthCallback";
 import Finance from "../pages/Finance";
 import LoansUser from "../pages/Loans";
+import ProfileAccount from "../pages/ProfileAccount";
 
 const staffRoles = ["Admin", "Pustakawan", "Asisten"];
 
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
       { path: "pinjaman-user", element: <LoansUser /> },
       { path: "katalog", element: <Catalog /> },
       { path: "notifikasi", element: <Notification /> },
+      { path: "account", element: <ProfileAccount /> },
 
       // KHUSUS STAF (Admin, Pustakawan, Asisten)
       {
