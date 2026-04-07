@@ -1,3 +1,5 @@
+import { ProfileFormChangePassword } from "../components/profile/ProfileFormChangePassword";
+import { ProfileFormInformation } from "../components/profile/ProfileFormInformation";
 import { ProfilePicture } from "../components/profile/ProfilePicture";
 
 const ProfileAccount = () => {
@@ -13,7 +15,16 @@ const ProfileAccount = () => {
           </p>
         </div>
       </div>
-        <ProfilePicture />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="lg:col-span-1">
+          <ProfilePicture />
+        </div>
+        
+        <div className="lg:col-span-2 flex flex-col gap-6">
+          <ProfileFormInformation />
+          <ProfileFormChangePassword />
+        </div>
+      </div>
     </div>
   );
 };
