@@ -5,16 +5,16 @@ import { toast } from "sonner";
 
 export const useProfile = () => {
   const queryClient = useQueryClient();
-  const {user} = useAuth();
-  const profileQuery =  useQuery({
+  const { user } = useAuth();
+  const profileQuery = useQuery({
     queryKey: ["data-profile", user?.id],
     enabled: !!user?.id,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select(
-          "full_name, email, role, avatar_url",
-        ).eq("id", user.id).single();
+        .select("full_name, email, role, avatar_url")
+        .eq("id", user.id)
+        .single();
 
       if (error) throw error;
       return data;
@@ -23,9 +23,8 @@ export const useProfile = () => {
 
   const updateMutation = useMutation({
     mutationFn: async (newName) => {
-
       const { error: authError } = await supabase.auth.updateUser({
-        data: { full_name: newName }
+        data: { full_name: newName },
       });
       if (authError) throw authError;
 
@@ -42,14 +41,54 @@ export const useProfile = () => {
     },
     onError: (error) => {
       toast.error("Gagal memperbarui: " + error.message);
-    }
+    },
+  });
+
+  const uploadAvatarMutation = useMutation({
+    mutationFn: async (file) => {
+      // Sekarang 'user.id' di bawah ini tidak akan error lagi
+      if (!user?.id) throw new Error("User tidak ditemukan");
+
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`; 
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, file, { 
+          upsert: true,
+          contentType: file.type 
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      await Promise.all([
+        supabase.auth.updateUser({ data: { avatar_url: publicUrl } }),
+        supabase.from("profiles").update({ avatar_url: publicUrl }).eq("id", user.id)
+      ]);
+
+      return publicUrl;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["data-profile", user?.id] });
+      toast.success("Foto profil berhasil diperbarui!");
+    },
+    onError: (error) => {
+      toast.error("Gagal unggah foto: " + error.message);
+    },
   });
 
   return {
-    profile: profileQuery.data,       
-    isLoading: profileQuery.isLoading,     
+    profile: profileQuery.data,
+    isLoading: profileQuery.isLoading,
     isUpdating: updateMutation.isPending,
     updateProfile: updateMutation.mutate,
-    error: profileQuery.error
-  }
+    uploadAvatar: uploadAvatarMutation.mutate,
+    isUploadingAvatar: uploadAvatarMutation.isPending,
+    error: profileQuery.error,
+  };
 };
