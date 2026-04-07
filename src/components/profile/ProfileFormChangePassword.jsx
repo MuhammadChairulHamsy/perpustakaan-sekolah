@@ -11,7 +11,7 @@ export const ProfileFormChangePassword = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false)
 
    const handleChangePassword = (e) => {
     e.preventDefault();
@@ -29,7 +29,7 @@ export const ProfileFormChangePassword = () => {
     setConfirmPassword("");
   };
   return (
-    <section className="lg:col-span-3">
+    <section className="w-full">
       <div className="border rounded-xl p-6 space-y-6 bg-card shadow-sm">
         <div>
           <h2 className="text-lg font-semibold text-foreground">

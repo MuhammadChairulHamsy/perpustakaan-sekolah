@@ -3,22 +3,24 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import { useProfile } from "../../hooks/useProfile";
 import { useForm } from "react-hook-form";
-import { useAuth } from "../../context/AuthContext";
 
 export const ProfileFormInformation = () => {
-  const { user } = useAuth();
+  const { profile, isLoading, isUpdating, updateProfile,  } = useProfile();
+
   const { register, handleSubmit } = useForm({
-    defaultValues: {
-      fullName: user?.user_metadata?.full_name || "",
-      email: user?.email || "",
+    values: {
+      fullName: profile?.full_name || "",
+      email: profile?.email || "",
     },
   });
 
   const onSaveProfile = (data) => {
-    console.log("Data yang akan disimpan:", data);
-    // Di sini nanti panggil supabase.auth.updateUser...
+    updateProfile(data.fullName);
   };
+
+  if (isLoading) return <p>Memuat...</p>;
   return (
     <section className="lg:col-span-2 space-y-6">
       <form
@@ -42,6 +44,7 @@ export const ProfileFormInformation = () => {
             </Label>
             <Input
               id="fullName"
+             defaultValue={profile?.full_name}
               {...register("fullName")}
               placeholder="Masukkan nama lengkap"
               className="focus-visible:ring-primary"
@@ -67,9 +70,10 @@ export const ProfileFormInformation = () => {
           <Button
             type="submit"
             className="gap-2 px-6 shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+            disabled={isUpdating}
           >
             <Save className="h-4 w-4" />
-            Simpan Perubahan
+            {isUpdating ? "Menyimpan..." : "Simpan"}
           </Button>
         </div>
       </form>
