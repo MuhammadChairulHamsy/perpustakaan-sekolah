@@ -69,7 +69,7 @@ export const ProfileFormInformation = () => {
         <div className="flex justify-end pt-4">
           <Button
             type="submit"
-            className="gap-2 px-6 shadow-lg shadow-primary/20 hover:scale-105 transition-transform"
+            className="gap-2 px-6 shadow-lg shadow-primary/20 hover:scale-105 transition-transform cursor-pointer"
             disabled={isUpdating}
           >
             <Save className="h-4 w-4" />

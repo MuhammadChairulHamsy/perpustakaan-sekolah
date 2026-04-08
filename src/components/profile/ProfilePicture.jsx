@@ -64,6 +64,7 @@ export const ProfilePicture = () => {
                 {profile?.full_name}
               </p>
               <p className="text-sm text-muted-foreground">{profile?.role}</p>
+              <p className="text-sm text-muted-foreground">{profile?.email}</p>
             </>
           )}
         </div>
@@ -72,7 +73,7 @@ export const ProfilePicture = () => {
           size="sm"
           onClick={() => fileInputRef.current.click()}
           disabled={isUploadingAvatar}
-          className="gap-2 w-full hover:bg-primary hover:text-primary-foreground transition-colors"
+          className="gap-2 w-full hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
         >
           {isUploadingAvatar ? (
             <Loader2 className="h-4 w-4 animate-spin" />

@@ -9,7 +9,7 @@ export const signupSchema = z
     }),
     password: z
       .string()
-      .min(8, { message: "Miniamal 8 karakter" })
+      .min(8, { message: "Minimal 8 karakter" })
       .regex(/[A-Z]/, {
         message: "Harus ada 1 huruf besar",
       })

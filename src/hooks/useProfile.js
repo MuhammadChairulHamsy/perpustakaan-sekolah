@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../lib/supabase/client";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "sonner";
@@ -46,7 +46,6 @@ export const useProfile = () => {
 
   const uploadAvatarMutation = useMutation({
     mutationFn: async (file) => {
-      // Sekarang 'user.id' di bawah ini tidak akan error lagi
       if (!user?.id) throw new Error("User tidak ditemukan");
 
       const fileExt = file.name.split('.').pop();
@@ -82,6 +81,26 @@ export const useProfile = () => {
     },
   });
 
+  const changepasswordMutation = useMutation({
+    mutationFn: async ({currentPassword, newPassowrd}) => {
+      if(currentPassword === newPassowrd) {
+        throw new Error("Kata sandi baru tidak boleh sama dengan kata sandi lama.");
+      }
+      const {data, error} = await supabase.auth.updateUser({
+        password: newPassowrd,
+      });
+
+      if(error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+     toast.success("Kata sandi berhasil diperbarui!");
+    },
+    onError: (error) => {
+      toast.error(error.message || "Gagal memperbarui kata sandi");
+    },
+  });
+
   return {
     profile: profileQuery.data,
     isLoading: profileQuery.isLoading,
@@ -89,6 +108,8 @@ export const useProfile = () => {
     updateProfile: updateMutation.mutate,
     uploadAvatar: uploadAvatarMutation.mutate,
     isUploadingAvatar: uploadAvatarMutation.isPending,
+    changePassword: changepasswordMutation.mutate,
+    isChangingPassword: changepasswordMutation.isPending,
     error: profileQuery.error,
   };
 };

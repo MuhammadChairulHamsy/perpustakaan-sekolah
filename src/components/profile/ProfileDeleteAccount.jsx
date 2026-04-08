@@ -1,4 +1,4 @@
-import { AlertTriangle, Trash2  } from "lucide-react";
+import { AlertTriangle, Trash2 } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,12 +14,12 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useState } from "react";
 
+
 export const ProfileDeleteAccount = () => {
-    const [deleteConfirm, setDeleteConfirm] = useState("");
-    const handleDeleteAccount = () => {
+  const [deleteConfirm, setDeleteConfirm] = useState("");
+  const handleDeleteAccount = () => {
     // Logika hapus akun
     console.log("Delete Account");
-    
   };
   return (
     <section className="rounded-xl border-2 border-destructive/20 bg-destructive/5 p-6 space-y-4">
@@ -28,21 +28,23 @@ export const ProfileDeleteAccount = () => {
         <h2 className="text-lg font-semibold text-destructive">Zona Bahaya</h2>
       </div>
       <p className="text-sm text-muted-foreground">
-       Setelah Anda menghapus akun, tidak ada jalan kembali. Semua data Anda akan dihapus secara permanen setelah 30 hari.
+        Setelah Anda menghapus akun, tidak ada jalan kembali. Semua data Anda
+        akan dihapus secara permanen setelah 30 hari.
       </p>
       <AlertDialog>
         <AlertDialogTrigger asChild>
-          <Button variant="destructive" className="gap-2">
+          <Button variant="destructive" className="gap-2 cursor-pointer">
             <Trash2 className="h-4 w-4" />
-           Hapus Akun
+            Hapus Akun
           </Button>
         </AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Apakah Anda benar-benar yakin??</AlertDialogTitle>
             <AlertDialogDescription>
-             Tindakan ini akan menjadwalkan penghapusan permanen akun Anda. Semua data akan dihapus setelah 30 hari. Jenis <strong>Hapus</strong>{" "}
-              untuk mengkonfirmasi.
+              Tindakan ini akan menjadwalkan penghapusan permanen akun Anda.
+              Semua data akan dihapus setelah 30 hari. Jenis{" "}
+              <strong>Hapus</strong> untuk mengkonfirmasi.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <Input
@@ -52,7 +54,7 @@ export const ProfileDeleteAccount = () => {
           />
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setDeleteConfirm("")}>
-             Membatalkan
+              Membatalkan
             </AlertDialogCancel>
             <AlertDialogAction
               disabled={deleteConfirm !== "DELETE"}
