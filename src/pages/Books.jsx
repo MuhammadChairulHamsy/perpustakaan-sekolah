@@ -3,13 +3,24 @@ import { Plus } from "lucide-react";
 import { useBooks } from "../hooks/useBooks";
 import { SearchBar } from "../components/search-bar";
 import { Button } from "../components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BookDialog } from "../components/books/BookDialog";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../components/ui/pagination";
 
 
 const Books = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const {
     books,
+    totalCount,
     searchQuery,
     setSearchQuery,
     isLoading,
@@ -17,9 +28,14 @@ const Books = () => {
     addBook,
     editBook,
     deleteBook,
-  } = useBooks();
+  } = useBooks(currentPage, pageSize);
+  const totalPages = Math.ceil(totalCount / pageSize);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const handleOpenDialog = (book = null) => {
     setEditingBook(book);
@@ -32,10 +48,10 @@ const Books = () => {
         await editBook.mutateAsync({
           id: editingBook.id,
           updatedData: formData,
-          file: file
+          file: file,
         });
       } else {
-        await addBook.mutateAsync({bookData: formData, file: file});
+        await addBook.mutateAsync({ bookData: formData, file: file });
       }
       setDialogOpen(false);
       return true;
@@ -43,6 +59,11 @@ const Books = () => {
       console.error("Submit Error:", err);
       return false;
     }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
   };
 
   const handleDelete = async (id) => {
@@ -103,6 +124,62 @@ const Books = () => {
           onEdit={handleOpenDialog}
           onDelete={handleDelete}
         />
+
+        {!isLoading && totalPages > 1 && (
+          <Pagination className="mt-8">
+            <PaginationContent>
+              {/* Tombol Previous */}
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+                  }}
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+
+              {/* Logic Angka Halaman */}
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i} className="hidden sm:block">
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === i + 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage(i + 1);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              {/* Tombol Next */}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage < totalPages)
+                      setCurrentPage((prev) => prev + 1);
+                  }}
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
 
         <BookDialog
           open={dialogOpen}

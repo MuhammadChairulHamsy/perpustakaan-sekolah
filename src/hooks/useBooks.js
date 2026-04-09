@@ -4,75 +4,80 @@ import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useBooks = () => {
+export const useBooks = (page = 1, pageSize = 10) => {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const {
-    data: allBooks = [],
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["data-books"],
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["data-books", page, pageSize, searchQuery],
     queryFn: async () => {
-      const { data, error: dbError } = await supabase
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      let query = supabase
         .from("buku")
-        .select("id, title, author, isbn, cover_url, category, stock, created_at")
-        .order("created_at", { ascending: false });
+        .select(
+          "id, title, author, isbn, cover_url, category, stock, created_at",
+          {
+            count: "exact",
+          },
+        );
+
+      if (searchQuery) {
+        query = query.or(
+          `title.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%,isbn.ilike.%${searchQuery}%`,
+        );
+      }
+      const {
+        data: books,
+        error: dbError,
+        count,
+      } = await query
+        .order("created_at", {
+          ascending: false,
+        })
+        .range(from, to);
 
       if (dbError) throw dbError;
 
-      return data.map((book) => ({
+      const formattedBooks = (books || []).map((book) => ({
         ...book,
         available: book.stock || 0,
       }));
+      return { books: formattedBooks, totalCount: count || 0 };
     },
-
-    staleTime: 100 * 60 * 10,
+    staleTime: 1000 * 60 * 5,
   });
 
-  const filteredBooks = useMemo(() => {
-    return allBooks.filter((book) => {
-      const search = searchQuery.toLowerCase();
-      return (
-        book.title?.toLowerCase().includes(search) ||
-        book.author?.toLowerCase().includes(search) ||
-        book.isbn?.toLowerCase().includes(search) ||
-        book.category?.toLowerCase().includes(search)
-      );
-    });
-  }, [allBooks, searchQuery]);
-
   const uploadImage = async (file) => {
-    if(!file) return null;
+    if (!file) return null;
 
     const fileExt = file.name.split(".").pop();
-    const fileName = `${Math.random()}.${fileExt}`;
-    const filePath = `${fileName}`;
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `covers/${fileName}`;
 
-    const {error: uploadError, data} = await supabase.storage.from("book-covers").upload(filePath, file);
+    const { error: uploadError, data } = await supabase.storage
+      .from("book-covers")
+      .upload(filePath, file);
 
-   if (uploadError) {
-    console.error("Upload detail:", uploadError);
-    throw uploadError;
-  }
+    if (uploadError) {
+      console.error("Upload detail:", uploadError);
+      throw uploadError;
+    }
 
-    const {data: {publicUrl} } = supabase.storage.from("book-covers").getPublicUrl(filePath);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("book-covers").getPublicUrl(filePath);
 
     return publicUrl;
-  }
+  };
 
   const addBook = useMutation({
-    mutationFn: async ({bookData, file}) => {
-      let coverUrl = null;
-
-      if(file) {
-        coverUrl = await uploadImage(file)
-      }
-
-      const { error } = await supabase.from("buku").insert([{...bookData, cover_url: coverUrl}]);
-
+    mutationFn: async ({ bookData, file }) => {
+      let coverUrl = file ? await uploadImage(file) : null;
+      const { error } = await supabase
+        .from("buku")
+        .insert([{ ...bookData, cover_url: coverUrl }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -86,9 +91,9 @@ export const useBooks = () => {
 
   const editBook = useMutation({
     mutationFn: async ({ id, updatedData, file }) => {
-      let finalData = {...updatedData};
+      let finalData = { ...updatedData };
 
-      if(file) {
+      if (file) {
         const coverUrl = await uploadImage(file);
         finalData.cover_url = coverUrl;
       }
@@ -97,9 +102,9 @@ export const useBooks = () => {
 
       const { error } = await supabase
         .from("buku")
-        .update(finalData)   
+        .update(finalData)
         .eq("id", id);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -111,7 +116,7 @@ export const useBooks = () => {
     },
   });
 
- const deleteBook = useMutation({
+  const deleteBook = useMutation({
     mutationFn: async (id) => {
       const { error } = await supabase.from("buku").delete().eq("id", id);
       if (error) throw error;
@@ -126,7 +131,8 @@ export const useBooks = () => {
   });
 
   return {
-    books: filteredBooks,
+    books: data?.books || [],
+    totalCount: data?.totalCount || 0,
     searchQuery,
     setSearchQuery,
     isLoading,
