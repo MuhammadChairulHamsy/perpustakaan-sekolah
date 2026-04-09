@@ -5,12 +5,34 @@ import { LoanDialogAdmin, LoanTableAdmin } from "../../components/loans";
 import { LoanSkeleton } from "../../components/loans";
 import { Button } from "../../components/ui/button";
 import { useState } from "react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../../components/ui/pagination";
+import { useEffect } from "react";
 
 const LoansAdmin = () => {
-  const { loans, searchQuery, setSearchQuery, isLoading, error, addLoan } =
-    useLoans();
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
+  const {
+    loans,
+    totalCount,
+    searchQuery,
+    setSearchQuery,
+    isLoading,
+    error,
+    addLoan,
+  } = useLoans(currentPage, pageSize);
+  const totalPages = Math.ceil(totalCount / pageSize);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const handleOpenDialog = () => {
     setDialogOpen(true);
@@ -25,6 +47,11 @@ const LoansAdmin = () => {
       console.error("Submit Error:", err);
       return false;
     }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
   };
 
   if (isLoading) {
@@ -68,7 +95,7 @@ const LoansAdmin = () => {
           <SearchBar
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder="Cari berdasarkan siswa atau buku..."
+            placeholder="Cari berdasarkan siswa..."
             className="max-w-md"
           />
         </div>
@@ -80,6 +107,62 @@ const LoansAdmin = () => {
         />
 
         <LoanTableAdmin loans={loans} searchQuery={searchQuery} />
+
+        {!isLoading && totalPages > 1 && (
+          <Pagination className="mt-8">
+            <PaginationContent>
+              {/* Tombol Previous */}
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+                  }}
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+
+              {/* Logic Angka Halaman */}
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i} className="hidden sm:block">
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === i + 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage(i + 1);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              {/* Tombol Next */}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage < totalPages)
+                      setCurrentPage((prev) => prev + 1);
+                  }}
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </div>
   );

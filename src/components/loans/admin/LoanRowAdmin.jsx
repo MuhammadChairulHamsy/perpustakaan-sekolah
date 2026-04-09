@@ -21,7 +21,7 @@ export const LoanRowAdmin = ({ loan, onDelete }) => {
       <TableCell className="px-4 py-3">
         <div className="flex flex-col">
           <span className="font-medium text-foreground">
-            {loan.siswa?.name || "Unknown Student"}
+            {loan.siswa?.name || "Siswa Tidak Dikenal"}
           </span>
           <span className="text-xs text-muted-foreground">
             {loan.siswa?.class || "-"}

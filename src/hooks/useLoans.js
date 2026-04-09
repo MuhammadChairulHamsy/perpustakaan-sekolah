@@ -1,66 +1,68 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
 import { toast } from "sonner";
 
-export const useLoans = () => {
+export const useLoans = (page = 1, pageSize = 10) => {
   const queryClient = useQueryClient();
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const { data: allLoans = [], isLoading, error, refetch } = useQuery({
-    queryKey: ["data-loans"],
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["data-loans", page, pageSize, debouncedSearch],
     queryFn: async () => {
-      const { data, error: dbError } = await supabase
-        .from("peminjaman")
-        .select(`
-          id,
-          loan_date,
-          due_date,
-          siswa:student_id (name, class),
-          buku:book_id (title, author)
-        `)
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase.rpc("search_peminjaman", {
+        search_query: debouncedSearch || "",
+        page_offset: (page - 1) * pageSize,
+        page_limit: pageSize,
+      });
 
-      if (dbError) throw dbError;
-      return data;
+      if (error) throw error;
+
+      const loans = (data || []).map((item) => ({
+        id: item.id,
+        loan_date: item.loan_date,
+        due_date: item.due_date,
+        status: item.status,
+        siswa: { name: item.student_name, class: item.student_class },
+        buku: { title: item.book_title, author: item.book_author },
+      }));
+
+      const totalCount = data?.[0]?.total_count || 0;
+
+      return { loans, totalCount };
     },
-    staleTime: 1000 * 60 * 10,
+    staleTime: 1000 * 60 * 5,
   });
 
   const addLoan = useMutation({
-    mutationFn: async ({ student_id, book_id }) => {
+    mutationFn: async ({ student_id, book_id, loan_date, due_date }) => {
       const { error } = await supabase
         .from("peminjaman")
-        .insert([{ student_id, book_id }]); 
+        .insert([{ student_id, book_id, loan_date, due_date, status: "dipinjam" }]);
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["data-loans"] });
-      toast.success("Peminjaman Berhasil!", {
-        description: "Data peminjaman telah dicatat.",
-      });
+      toast.success("Peminjaman Berhasil!");
     },
-    onError: (err) => { 
-      toast.error(`Gagal: ${err.message || "Terjadi kesalahan"}`);
+    onError: (err) => {
+      toast.error(`Gagal: ${err.message}`);
     },
   });
 
-
-  const filteredLoans = useMemo(() => {
-    return allLoans.filter((loan) => {
-      const search = searchQuery.toLowerCase();
-      return (
-        loan.siswa?.name?.toLowerCase().includes(search) ||
-        loan.buku?.title?.toLowerCase().includes(search)
-      );
-    });
-  }, [allLoans, searchQuery]);
-
   return {
-    loans: filteredLoans,
+    loans: data?.loans || [],
+    totalCount: data?.totalCount || 0,
     searchQuery,
     setSearchQuery,
     setSelectedLoan,
@@ -68,6 +70,6 @@ export const useLoans = () => {
     isLoading,
     error: error?.message,
     addLoan,
-    refetch
+    refetch,
   };
 };

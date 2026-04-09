@@ -1,25 +1,37 @@
 import { Plus } from "lucide-react";
 import { useLoans } from "../hooks/useLoans";
 import { SearchBar } from "../components/search-bar";
-import {
-  LoanDialogUser,
-  LoanTableUser,
-} from "../components/loans";
+import { LoanDialogUser, LoanTableUser } from "../components/loans";
 import { LoanSkeleton } from "../components/loans";
 import { Button } from "../components/ui/button";
 import { useState } from "react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../components/ui/pagination";
 
 const LoansUser = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const {
     loans,
+    totalCount,
     searchQuery,
     setSearchQuery,
     isLoading,
     error,
     addLoan,
   } = useLoans();
-
+  const totalPages = Math.ceil(totalCount / pageSize);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   const handleOpenDialog = () => {
     setDialogOpen(true);
@@ -36,6 +48,10 @@ const LoansUser = () => {
     }
   };
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
+  };
 
   if (isLoading) {
     return <LoanSkeleton />;
@@ -89,10 +105,63 @@ const LoansUser = () => {
           onSubmit={handleSubmit}
         />
 
-        <LoanTableUser
-          loans={loans}
-          searchQuery={searchQuery}
-        />
+        <LoanTableUser loans={loans} searchQuery={searchQuery} />
+
+        {!isLoading && totalPages > 1 && (
+          <Pagination className="mt-8">
+            <PaginationContent>
+              {/* Tombol Previous */}
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+                  }}
+                  className={
+                    currentPage === 1
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+
+              {/* Logic Angka Halaman */}
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i} className="hidden sm:block">
+                  <PaginationLink
+                    href="#"
+                    isActive={currentPage === i + 1}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setCurrentPage(i + 1);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+
+              {/* Tombol Next */}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (currentPage < totalPages)
+                      setCurrentPage((prev) => prev + 1);
+                  }}
+                  className={
+                    currentPage === totalPages
+                      ? "pointer-events-none opacity-50"
+                      : "cursor-pointer"
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
       </div>
     </div>
   );

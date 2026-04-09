@@ -22,7 +22,7 @@ export const FinanceRow = ({ fines, onReturn, onPrint, onDelete }) => {
       <TableCell className="px-4 py-3">
         <div className="flex flex-col">
           <span className="font-medium text-foreground">
-            {fines.siswa?.name || "Unknown Student"}
+            {fines.siswa?.name || "Siswa Tidak Dikenal"}
           </span>
         </div>
       </TableCell>
@@ -103,7 +103,7 @@ export const FinanceRow = ({ fines, onReturn, onPrint, onDelete }) => {
                 <AlertDialogTitle>Hapus Siswa Pinjam Buku?</AlertDialogTitle>
                 <AlertDialogDescription>
                   Apakah Anda yakin ingin menghapus data peminjaman nama{" "}
-                  <b>{fines.siswa?.name ?? "Unknown Student"}</b> ini?
+                  <b>{fines.siswa?.name ?? "Siswa Tidak Dikenal"}</b> ini?
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
