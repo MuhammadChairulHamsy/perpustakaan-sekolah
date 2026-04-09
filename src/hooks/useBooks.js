@@ -7,9 +7,17 @@ import { toast } from "sonner";
 export const useBooks = (page = 1, pageSize = 10) => {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["data-books", page, pageSize, searchQuery],
+    queryKey: ["data-books", page, pageSize, debouncedSearch],
     queryFn: async () => {
       const from = (page - 1) * pageSize;
       const to = from + pageSize - 1;
@@ -23,9 +31,9 @@ export const useBooks = (page = 1, pageSize = 10) => {
           },
         );
 
-      if (searchQuery) {
+      if (debouncedSearch) {
         query = query.or(
-          `title.ilike.%${searchQuery}%,author.ilike.%${searchQuery}%,isbn.ilike.%${searchQuery}%`,
+          `title.ilike.%${debouncedSearch}%,author.ilike.%${debouncedSearch}%,isbn.ilike.%${debouncedSearch}%`,
         );
       }
       const {
