@@ -125,7 +125,7 @@ export const useBooks = (page = 1, pageSize = 10) => {
 
   const deleteBook = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from("buku").delete().eq("id", id);
+      const { error } = await supabase.from("buku").delete().in("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -146,7 +146,7 @@ export const useBooks = (page = 1, pageSize = 10) => {
     error: error?.message,
     addBook,
     editBook,
-    deleteBook,
+    deleteBook: deleteBook.mutateAsync,
     refetch,
   };
 };

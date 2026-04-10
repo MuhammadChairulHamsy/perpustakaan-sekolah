@@ -47,13 +47,30 @@ export const useLoans = (page = 1, pageSize = 10) => {
     mutationFn: async ({ student_id, book_id, loan_date, due_date }) => {
       const { error } = await supabase
         .from("peminjaman")
-        .insert([{ student_id, book_id, loan_date, due_date, status: "dipinjam" }]);
+        .insert([
+          { student_id, book_id, loan_date, due_date, status: "dipinjam" },
+        ]);
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["data-loans"] });
       toast.success("Peminjaman Berhasil!");
+    },
+    onError: (err) => {
+      toast.error(`Gagal: ${err.message}`);
+    },
+  });
+
+  const deleteLoan = useMutation({
+    mutationFn: async (id) => {
+      const { error } = await supabase.from("peminjaman").delete().in("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["data-finance"] });
+      toast.success("Data pinjaman berhasil dihapus");
     },
     onError: (err) => {
       toast.error(`Gagal: ${err.message}`);
@@ -70,6 +87,7 @@ export const useLoans = (page = 1, pageSize = 10) => {
     isLoading,
     error: error?.message,
     addLoan,
+    deleteLoan: deleteLoan.mutateAsync,
     refetch,
   };
 };

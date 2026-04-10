@@ -13,10 +13,26 @@ import { TableCell, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
 import { Pencil, Trash2, User } from "lucide-react";
 import { formatDate } from "../../utils/dateUtils";
+import { Checkbox } from "../ui/checkbox";
 
-export const StudentRow = ({ student, onEdit, onDelete }) => {
+export const StudentRow = ({
+  student,
+  onEdit,
+  onDelete,
+  isSelected,
+  onSelectOne,
+}) => {
   return (
-    <TableRow key={student.id} className="hover:bg-muted/50 transition-colors">
+    <TableRow
+      key={student.id}
+      className={isSelected ? "bg-muted/50 transition-colors" : ""}
+    >
+      <TableCell>
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={(checked) => onSelectOne(student.id, checked)}
+        />
+      </TableCell>
       <TableCell className="px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
@@ -69,7 +85,9 @@ export const StudentRow = ({ student, onEdit, onDelete }) => {
               </AlertDialogHeader>
 
               <AlertDialogFooter>
-                <AlertDialogCancel className="cursor-pointer">Batal</AlertDialogCancel>
+                <AlertDialogCancel className="cursor-pointer">
+                  Batal
+                </AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-destructive text-white hover:bg-destructive/90 cursor-pointer"
                   onClick={() => onDelete(student.id)}

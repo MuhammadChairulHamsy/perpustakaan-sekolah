@@ -1,3 +1,4 @@
+import { Checkbox } from "../../ui/checkbox";
 import {
   Table,
   TableBody,
@@ -8,13 +9,29 @@ import {
 } from "../../ui/table";
 import { LoanRowAdmin } from "./LoanRowAdmin";
 
-export const LoanTableAdmin = ({ loans, searchQuery, onDelete }) => {
+export const LoanTableAdmin = ({
+  loans,
+  selectedIds,
+  onSelectAll,
+  onSelectOne,
+  searchQuery,
+  onDelete,
+}) => {
   return (
     <div className="data-table rounded-lg border border-border bg-card">
       <div className="overflow-x-auto">
         <Table className="w-full">
           <TableHeader>
             <TableRow className="border-b border-border bg-muted/30 hover:bg-muted/30">
+              <TableHead className="w-14">
+                <Checkbox
+                  checked={
+                    loans.length > 0 &&
+                    selectedIds.length === loans.length
+                  }
+                  onCheckedChange={onSelectAll}
+                />
+              </TableHead>
               <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
                 Nama Siswa
               </TableHead>
@@ -54,6 +71,8 @@ export const LoanTableAdmin = ({ loans, searchQuery, onDelete }) => {
                   key={loan.id}
                   loan={loan}
                   onDelete={onDelete}
+                  isSelected={selectedIds.includes(loan.id)}
+                  onSelectOne={onSelectOne}
                 />
               ))
             )}

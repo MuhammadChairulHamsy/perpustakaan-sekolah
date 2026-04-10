@@ -28,6 +28,7 @@ import {
   PaginationPrevious,
 } from "../components/ui/pagination";
 import { useEffect } from "react";
+import { Button } from "../components/ui/button";
 
 const Finance = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,7 +41,6 @@ const Finance = () => {
     setSearchQuery,
     selectedLoan,
     setSelectedLoan,
-    summary,
     returnLoan,
     isLoading,
     error,
@@ -50,11 +50,16 @@ const Finance = () => {
   const totalPages = Math.ceil(totalCount / pageSize);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [selectedIds, setSelectedIds] = useState([]);
   const statsCards = useMemo(() => getStatsCards(finance), [finance]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [filter]);
+
+  useEffect(() => {
+    setSelectedIds([]);
+  }, [currentPage, filter]);
 
   const filterData = useMemo(() => {
     if (filter === "unpaid")
@@ -64,11 +69,34 @@ const Finance = () => {
     return fines;
   }, [fines, filter]);
 
+  const handleSelectAll = (checked) => {
+    if (checked) {
+      const allIdsOnPage = fines.map((item) => item.id);
+      setSelectedIds(allIdsOnPage);
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id, checked) => {
+    if (checked) {
+      setSelectedIds((prev) => [...prev, id]);
+    } else {
+      setSelectedIds((prev) => prev.filter((item) => item !== id));
+    }
+  };
+
   const handleDelete = async (id) => {
-    try {
-      await deleteLoan.mutateAsync(id);
-    } catch (err) {
-      console.error("Delete Error:", err);
+    const idsToDelete = typeof id === "string" ? [id] : selectedIds;
+
+    if (idsToDelete.length === 0) return;
+    if (confirm(`Yakin ingin menghapus ${selectedIds.length} data terpilih?`)) {
+      try {
+        await deleteLoan(idsToDelete);
+        setSelectedIds([]);
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -158,8 +186,27 @@ const Finance = () => {
         </Select>
       </div>
 
+      {selectedIds.length > 0 && (
+        <div className="flex items-center justify-between bg-destructive/10 p-4 rounded-lg border border-destructive/20 animate-in fade-in slide-in-from-top-2">
+          <p className="text-sm font-medium text-destructive">
+            {selectedIds.length} data terpilih
+          </p>
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={handleDelete}
+            className="cursor-pointer"
+          >
+            Hapus Semua Terpilih
+          </Button>
+        </div>
+      )}
+
       <FinanceTable
         filtered={filterData}
+        selectedIds={selectedIds}
+        onSelectAll={handleSelectAll}
+        onSelectOne={handleSelectOne}
         searchQuery={searchQuery}
         onReturn={handleReturn}
         onPrint={handlePrint}

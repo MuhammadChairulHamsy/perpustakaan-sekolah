@@ -3,8 +3,8 @@ import {
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogHeader,
-  AlertDialogAction, 
-  AlertDialogCancel, 
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogFooter,
   AlertDialogTitle,
   AlertDialogTrigger,
@@ -14,11 +14,25 @@ import { BookOpen, Trash2, CheckCircle, Printer } from "lucide-react";
 import { getLoanStatus } from "../../utils/loanUtils";
 import { formatDate } from "../../utils/dateUtils";
 import { TableCell, TableRow } from "../ui/table";
+import { Checkbox } from "../ui/checkbox";
 
-export const FinanceRow = ({ fines, onReturn, onPrint, onDelete }) => {
+export const FinanceRow = ({
+  fines,
+  onReturn,
+  onPrint,
+  onDelete,
+  isSelected,
+  onSelectOne,
+}) => {
   const statusInfo = getLoanStatus(fines);
   return (
-    <TableRow className="hover:bg-muted/50 transition-colors">
+    <TableRow className={isSelected ? "bg-muted/50 transition-colors" : ""}>
+      <TableCell>
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={(checked) => onSelectOne(fines.id, checked)}
+        />
+      </TableCell>
       <TableCell className="px-4 py-3">
         <div className="flex flex-col">
           <span className="font-medium text-foreground">
@@ -107,7 +121,7 @@ export const FinanceRow = ({ fines, onReturn, onPrint, onDelete }) => {
                 </AlertDialogDescription>
               </AlertDialogHeader>
 
-               <AlertDialogFooter>
+              <AlertDialogFooter>
                 <AlertDialogCancel className="cursor-pointer">
                   Batal
                 </AlertDialogCancel>

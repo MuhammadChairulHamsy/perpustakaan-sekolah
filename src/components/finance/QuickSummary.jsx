@@ -1,5 +1,4 @@
 export const QuickSummary = ({ summary }) => {
-  // Ambil angka total dari summary yang dikirim hook (hasil RPC)
   const total = summary?.totalCount || 0;
   const paidCount = summary?.paidCount || 0;
   const unpaidCount = summary?.unpaidCount || 0;

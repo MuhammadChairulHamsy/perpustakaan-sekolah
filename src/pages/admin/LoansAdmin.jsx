@@ -17,6 +17,7 @@ import { useEffect } from "react";
 
 const LoansAdmin = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedIds, setSelectedIds] = useState([]);
   const pageSize = 10;
   const {
     loans,
@@ -26,6 +27,7 @@ const LoansAdmin = () => {
     isLoading,
     error,
     addLoan,
+    deleteLoan,
   } = useLoans(currentPage, pageSize);
   const totalPages = Math.ceil(totalCount / pageSize);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -33,6 +35,10 @@ const LoansAdmin = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery]);
+
+  useEffect(() => {
+    setSelectedIds([]);
+  }, [currentPage, searchQuery]);
 
   const handleOpenDialog = () => {
     setDialogOpen(true);
@@ -46,6 +52,37 @@ const LoansAdmin = () => {
     } catch (err) {
       console.error("Submit Error:", err);
       return false;
+    }
+  };
+
+  const handleSelectAll = (checked) => {
+    if (checked) {
+      const allIdsOnPage = loans.map((item) => item.id);
+      setSelectedIds(allIdsOnPage);
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectOne = (id, checked) => {
+    if (checked) {
+      setSelectedIds((prev) => [...prev, id]);
+    } else {
+      setSelectedIds((prev) => prev.filter((item) => item !== id));
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const idsToDelete = typeof id === "string" ? [id] : selectedIds;
+
+    if (idsToDelete.length === 0) return;
+    if (confirm(`Yakin ingin menghapus ${selectedIds.length} data terpilih?`)) {
+      try {
+        await deleteLoan(idsToDelete);
+        setSelectedIds([]);
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -106,7 +143,30 @@ const LoansAdmin = () => {
           onSubmit={handleSubmit}
         />
 
-        <LoanTableAdmin loans={loans} searchQuery={searchQuery} />
+        {selectedIds.length > 0 && (
+          <div className="flex items-center justify-between bg-destructive/10 p-4 rounded-lg border border-destructive/20 animate-in fade-in slide-in-from-top-2">
+            <p className="text-sm font-medium text-destructive">
+              {selectedIds.length} data terpilih
+            </p>
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleDelete}
+              className="cursor-pointer"
+            >
+              Hapus Semua Terpilih
+            </Button>
+          </div>
+        )}
+
+        <LoanTableAdmin
+          loans={loans}
+          selectedIds={selectedIds}
+          onSelectAll={handleSelectAll}
+          onSelectOne={handleSelectOne}
+          searchQuery={searchQuery}
+          onDelete={handleDelete}
+        />
 
         {!isLoading && totalPages > 1 && (
           <Pagination className="mt-8">

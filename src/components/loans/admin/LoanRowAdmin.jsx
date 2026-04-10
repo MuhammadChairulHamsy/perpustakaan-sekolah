@@ -14,10 +14,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../../ui/alert-dialog";
+import { Checkbox } from "../../ui/checkbox";
 
-export const LoanRowAdmin = ({ loan, onDelete }) => {
+export const LoanRowAdmin = ({ loan, onDelete, isSelected, onSelectOne }) => {
   return (
-    <TableRow className="hover:bg-muted/50 transition-colors">
+    <TableRow className={isSelected ? "bg-muted/50 transition-colors" : ""}>
+      <TableCell>
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={(checked) => onSelectOne(loan.id, checked)}
+        />
+      </TableCell>
       <TableCell className="px-4 py-3">
         <div className="flex flex-col">
           <span className="font-medium text-foreground">

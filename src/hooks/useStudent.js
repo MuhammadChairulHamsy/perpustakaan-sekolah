@@ -42,12 +42,11 @@ export const useStudents = (page = 1, pageSize = 10) => {
       const formattedStudents = (students || []).map((student) => ({
         ...student,
       }));
-      return {students: formattedStudents, totalCount: count || 0}
+      return { students: formattedStudents, totalCount: count || 0 };
     },
 
     staleTime: 100 * 60 * 10,
   });
-
 
   const addStudent = useMutation({
     mutationFn: async (studentData) => {
@@ -86,7 +85,7 @@ export const useStudents = (page = 1, pageSize = 10) => {
 
   const deleteStudent = useMutation({
     mutationFn: async (id) => {
-      const { error } = await supabase.from("siswa").delete().eq("id", id);
+      const { error } = await supabase.from("siswa").delete().in("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -107,7 +106,7 @@ export const useStudents = (page = 1, pageSize = 10) => {
     error: error?.message,
     addStudent,
     editStudent,
-    deleteStudent,
+    deleteStudent: deleteStudent.mutateAsync,
     refetch,
   };
 };

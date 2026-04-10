@@ -1,4 +1,3 @@
-// src/components/books/BookRow.jsx
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,8 +13,15 @@ import { TableCell, TableRow } from "../ui/table";
 import { Button } from "../ui/button";
 import { BookOpen, Pencil, Trash2 } from "lucide-react";
 import { formatDate } from "../../utils/dateUtils";
+import { Checkbox } from "../ui/checkbox";
 
-export const BookRow = ({ book, onEdit, onDelete }) => {
+export const BookRow = ({
+  book,
+  onEdit,
+  onDelete,
+  isSelected,
+  onSelectOne,
+}) => {
   const getStockBadgeClass = (stock) => {
     if (stock > 5) {
       return "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400";
@@ -27,7 +33,13 @@ export const BookRow = ({ book, onEdit, onDelete }) => {
   };
 
   return (
-    <TableRow className="hover:bg-muted/50 transition-colors">
+    <TableRow className={isSelected ? "bg-muted/50 transition-colors" : ""}>
+      <TableCell>
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={(checked) => onSelectOne(book.id, checked)}
+        />
+      </TableCell>
       <TableCell className="px-4 py-3">
         <div className="flex items-center gap-3">
           <div className="shrink-0">
@@ -64,10 +76,10 @@ export const BookRow = ({ book, onEdit, onDelete }) => {
         </span>
       </TableCell>
 
-     <TableCell className="px-4 py-3 text-center">
+      <TableCell className="px-4 py-3 text-center">
         <span
           className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getStockBadgeClass(
-            book.stock
+            book.stock,
           )}`}
         >
           {book.stock} buku

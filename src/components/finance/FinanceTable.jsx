@@ -8,10 +8,14 @@ import {
   TableRow,
 } from "../ui/table";
 import { FinanceRow } from "./FinanceRow";
+import { Checkbox } from "../ui/checkbox";
 import { Coins } from "lucide-react";
 
 export const FinanceTable = ({
-  filtered = [],
+  filtered,
+  selectedIds,
+  onSelectAll,
+  onSelectOne,
   searchQuery,
   onReturn,
   onPrint,
@@ -28,6 +32,15 @@ export const FinanceTable = ({
         <Table className="w-full">
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <TableHead className="w-14">
+                <Checkbox
+                  checked={
+                    filtered.length > 0 &&
+                    selectedIds.length === filtered.length
+                  }
+                  onCheckedChange={onSelectAll}
+                />
+              </TableHead>
               <TableHead className="px-4 py-3 text-sm font-medium text-muted-foreground">
                 Nama Siswa
               </TableHead>
@@ -79,13 +92,15 @@ export const FinanceTable = ({
                   onReturn={onReturn}
                   onPrint={onPrint}
                   onDelete={onDelete}
+                  isSelected={selectedIds.includes(loan.id)}
+                  onSelectOne={onSelectOne}
                 />
               ))
             )}
           </TableBody>
           <TableFooter>
             <TableRow className="bg-muted/50 font-semibold hover:bg-muted/50">
-              <TableCell colSpan={7} className="text-foreground lg:table-cell">
+              <TableCell colSpan={8} className="text-foreground lg:table-cell">
                 <b>Total : </b>
               </TableCell>
 

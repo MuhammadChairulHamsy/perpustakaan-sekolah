@@ -80,11 +80,13 @@ export const useFinance = (page = 1, pageSize = 10) => {
       const { error } = await supabase
         .from("peminjaman")
         .delete()
-        .eq("id", id);
+        .in("id", id);
+
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["data-finance"] });
+      queryClient.invalidateQueries({ queryKey: ["data-finance-chart"] });
       toast.success("Data pinjaman berhasil dihapus");
     },
     onError: (err) => {
@@ -129,7 +131,7 @@ export const useFinance = (page = 1, pageSize = 10) => {
     returnLoan: returnLoanMutation.mutateAsync,
     isLoading,
     error: error?.message,
-    deleteLoan,
+    deleteLoan: deleteLoan.mutateAsync,
     refetch,
   };
 };

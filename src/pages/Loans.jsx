@@ -48,6 +48,8 @@ const LoansUser = () => {
     }
   };
 
+
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     setCurrentPage(1);

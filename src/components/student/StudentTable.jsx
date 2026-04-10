@@ -1,3 +1,4 @@
+import { Checkbox } from "../ui/checkbox";
 import {
   Table,
   TableBody,
@@ -10,6 +11,9 @@ import { StudentRow } from "./StudentRow";
 
 export const StudentTable = ({
   students,
+  selectedIds,
+  onSelectAll,
+  onSelectOne,
   searchQuery,
   onEdit,
   onDelete,
@@ -20,6 +24,15 @@ export const StudentTable = ({
         <Table className="w-full">
           <TableHeader>
             <TableRow className="border-b border-border bg-muted/30 hover:bg-muted/30">
+              <TableHead className="w-14">
+                <Checkbox
+                  checked={
+                    students.length > 0 &&
+                    selectedIds.length === students.length
+                  }
+                  onCheckedChange={onSelectAll}
+                />
+              </TableHead>
               <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
                 Nama
               </TableHead>
@@ -60,6 +73,8 @@ export const StudentTable = ({
                   student={student}
                   onEdit={onEdit}
                   onDelete={onDelete}
+                  isSelected={selectedIds.includes(student.id)}
+                  onSelectOne={onSelectOne}
                 />
               ))
             )}
