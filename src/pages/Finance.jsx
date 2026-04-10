@@ -19,31 +19,48 @@ import { getStatsCards } from "../data/dataFinance";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { PrintPreviewDialog } from "../components/loans";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../components/ui/pagination";
+import { useEffect } from "react";
 
 const Finance = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
   const {
     fines,
     finance,
+    totalCount,
     searchQuery,
     setSearchQuery,
     selectedLoan,
     setSelectedLoan,
+    summary,
     returnLoan,
     isLoading,
     error,
     deleteLoan,
     collectedData,
-  } = useFinance();
+  } = useFinance(currentPage, pageSize);
+  const totalPages = Math.ceil(totalCount / pageSize);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [filter, setFilter] = useState("all");
   const statsCards = useMemo(() => getStatsCards(finance), [finance]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
 
   const filterData = useMemo(() => {
     if (filter === "unpaid")
       return fines.filter((n) => n.displayStatus === "unpaid");
     if (filter === "paid")
       return fines.filter((n) => n.displayStatus === "paid");
-
     return fines;
   }, [fines, filter]);
 
@@ -65,6 +82,11 @@ const Finance = () => {
     } catch (error) {
       toast.error("Gagal memproses pengembalian");
     }
+  };
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setCurrentPage(1);
   };
 
   const handlePrint = async (loan) => {
@@ -110,7 +132,7 @@ const Finance = () => {
         </div>
 
         <div className="lg:col-span-3 bg-card border rounded-xl overflow-hidden shadow-sm">
-          <QuickSummary fines={finance.finesRaw || []} />
+          <QuickSummary summary={finance} />
         </div>
       </div>
 
@@ -143,6 +165,62 @@ const Finance = () => {
         onPrint={handlePrint}
         onDelete={handleDelete}
       />
+
+      {!isLoading && totalPages > 1 && (
+        <Pagination className="mt-8">
+          <PaginationContent>
+            {/* Tombol Previous */}
+            <PaginationItem>
+              <PaginationPrevious
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+                }}
+                className={
+                  currentPage === 1
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer"
+                }
+              />
+            </PaginationItem>
+
+            {/* Logic Angka Halaman */}
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i} className="hidden sm:block">
+                <PaginationLink
+                  href="#"
+                  isActive={currentPage === i + 1}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setCurrentPage(i + 1);
+                  }}
+                  className="cursor-pointer"
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+
+            {/* Tombol Next */}
+            <PaginationItem>
+              <PaginationNext
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (currentPage < totalPages)
+                    setCurrentPage((prev) => prev + 1);
+                }}
+                className={
+                  currentPage === totalPages
+                    ? "pointer-events-none opacity-50"
+                    : "cursor-pointer"
+                }
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       <PrintPreviewDialog
         loan={selectedLoan}

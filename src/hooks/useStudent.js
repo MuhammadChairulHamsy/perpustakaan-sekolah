@@ -1,46 +1,53 @@
 import { useState } from "react";
 import { supabase } from "../lib/supabase/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
 import { toast } from "sonner";
+import { useEffect } from "react";
 
-export const useStudents = () => {
+export const useStudents = (page = 1, pageSize = 10) => {
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
-  const {
-    data: allStudents = [],
-    isLoading,
-    error,
-    refetch,
-  } = useQuery({
-    queryKey: ["data-students"],
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["data-students", page, pageSize, debouncedSearch],
     queryFn: async () => {
-      const { data, error: dbError } = await supabase
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
+      let query = supabase
         .from("siswa")
-        .select("id, name, class, email, created_at")
-        .order("created_at", { ascending: false });
-    
+        .select("id, name, class, email, created_at", { count: "exact" });
+
+      if (debouncedSearch) {
+        query = query.or(
+          `name.ilike.%${debouncedSearch}%, email.ilike.%${debouncedSearch}%, class.ilike.%${debouncedSearch}%`,
+        );
+      }
+      const {
+        data: students,
+        error: dbError,
+        count,
+      } = await query.order("created_at", { ascending: false }).range(from, to);
+
       if (dbError) throw dbError;
 
-      return data.map((student) => ({
+      const formattedStudents = (students || []).map((student) => ({
         ...student,
       }));
+      return {students: formattedStudents, totalCount: count || 0}
     },
 
     staleTime: 100 * 60 * 10,
   });
 
-  const filteredStudents = useMemo(() => {
-    return allStudents.filter((student) => {
-      const search = searchQuery.toLowerCase();
-      return (
-        student.name?.toLowerCase().includes(search) ||
-        student.email?.toLowerCase().includes(search) ||
-        student.class?.toLowerCase().includes(search)
-      );
-    });
-  }, [allStudents, searchQuery]);
 
   const addStudent = useMutation({
     mutationFn: async (studentData) => {
@@ -58,7 +65,7 @@ export const useStudents = () => {
   });
 
   const editStudent = useMutation({
-    mutationFn: async ({id, updatedData}) => {
+    mutationFn: async ({ id, updatedData }) => {
       if (!id) throw new Error("Id Siswa tidak ditemukan!");
 
       const { error } = await supabase
@@ -92,7 +99,8 @@ export const useStudents = () => {
   });
 
   return {
-    students: filteredStudents,
+    students: data?.students || [],
+    totalCount: data?.totalCount || 0,
     searchQuery,
     setSearchQuery,
     isLoading,

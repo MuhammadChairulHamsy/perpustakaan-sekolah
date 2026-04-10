@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { FinanceRow } from "./FinanceRow";
+import { Coins } from "lucide-react";
 
 export const FinanceTable = ({
   filtered = [],

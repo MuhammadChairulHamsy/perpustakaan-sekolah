@@ -1,15 +1,19 @@
-export const QuickSummary = ({ fines = [] }) => {
-  const total = fines.length;
+export const QuickSummary = ({ summary }) => {
+  // Ambil angka total dari summary yang dikirim hook (hasil RPC)
+  const total = summary?.totalCount || 0;
+  const paidCount = summary?.paidCount || 0;
+  const unpaidCount = summary?.unpaidCount || 0;
+
   const statusData = [
     {
       label: "Dibayar",
-      count: fines.filter((f) => f.status === "returned").length,
+      count: paidCount,
       color: "bg-emerald-500",
       textColor: "text-emerald-500",
     },
     {
       label: "Tidak dibayar",
-     count: fines.filter((f) => f.status === "overdue" || f.status === "borrowed").length,
+      count: unpaidCount,
       color: "bg-amber-500",
       textColor: "text-amber-500",
     },
@@ -21,7 +25,6 @@ export const QuickSummary = ({ fines = [] }) => {
     },
   ];
 
-  const paidCount = statusData[0].count;
   const collectionRate = total > 0 ? Math.round((paidCount / total) * 100) : 0;
 
   return (

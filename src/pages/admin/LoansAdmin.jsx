@@ -95,7 +95,7 @@ const LoansAdmin = () => {
           <SearchBar
             value={searchQuery}
             onChange={setSearchQuery}
-            placeholder="Cari berdasarkan siswa..."
+            placeholder="Cari berdasarkan siswa atau buku..."
             className="max-w-md"
           />
         </div>

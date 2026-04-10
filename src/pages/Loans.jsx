@@ -25,7 +25,7 @@ const LoansUser = () => {
     isLoading,
     error,
     addLoan,
-  } = useLoans();
+  } = useLoans(currentPage, pageSize);
   const totalPages = Math.ceil(totalCount / pageSize);
   const [dialogOpen, setDialogOpen] = useState(false);
 

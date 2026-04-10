@@ -1,86 +1,81 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase/client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { toast } from "sonner";
 
-export const useFinance = () => {
+export const useFinance = (page = 1, pageSize = 10) => {
+  const queryClient = useQueryClient();
   const [selectedLoan, setSelectedLoan] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const queryClient = useQueryClient();
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchQuery]);
 
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["data-finance"],
+    queryKey: ["data-finance", page, pageSize, debouncedSearch],
     queryFn: async () => {
-      const { data: loanData, error: dbError } = await supabase
-        .from("peminjaman")
-        .select(`
-          id, 
-          fine, 
-          status, 
-          return_date, 
-          created_at,
-          loan_date,
-          due_date,
-          siswa (name), 
-          buku (title, author)
-        `)
-        .not("fine", "is", null);
+      const offset = (page - 1) * pageSize;
 
-      if (dbError) throw dbError;
+      const [financeResult, chartResult, overdueResult] = await Promise.all([
+        supabase.rpc("get_finance_data", {
+          search_query: debouncedSearch || "",
+          page_offset: offset,
+          page_limit: pageSize,
+        }),
+        supabase.rpc("get_finance_chart"),
+        supabase
+          .from("peminjaman")
+          .select("*", { count: "exact", head: true })
+          .eq("status", "overdue"),
+      ]);
 
-      const { count: overdueCount } = await supabase
-        .from("peminjaman")
-        .select("*", { count: "exact", head: true })
-        .eq("status", "overdue");
+      if (financeResult.error) throw financeResult.error;
+      if (chartResult.error) throw chartResult.error;
 
-      let collected = 0;
-      let pending = 0;
+      const result = financeResult.data || [];
 
-      const mappedFines = (loanData || []).map((item) => ({
-        ...item,
+      const mappedFines = result.map((item) => ({
+        id: item.id,
+        loan_date: item.loan_date,
+        due_date: item.due_date,
+        return_date: item.return_date,
+        status: item.status,
+        fine: item.fine,
+        siswa: { name: item.student_name },
+        buku: { title: item.book_title },
         displayStatus: item.status === "returned" ? "paid" : "unpaid",
       }));
 
-      mappedFines.forEach((item) => {
-        const fineAmount = Number(item.fine) || 0;
-        if (item.status === "returned") {
-          collected += fineAmount;
-        } else {
-          pending += fineAmount;
-        }
-      });
+      const summary = {
+        totalRevenue: result[0]?.total_revenue_all || 0,
+        pendingFinance: result[0]?.total_pending_all || 0,
+        collectedFines: result[0]?.total_revenue_all || 0,
+        overdueBooks: overdueResult.count || 0,
+        paidCount: result[0]?.count_paid || 0,
+        unpaidCount: result[0]?.count_unpaid || 0,
+      };
 
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      
-      const grouped = (loanData || [])
-        .filter(item => item.status === "returned" && item.return_date && new Date(item.return_date) >= sevenDaysAgo)
-        .reduce((acc, curr) => {
-          const dateLabel = new Date(curr.return_date).toLocaleDateString("id-ID", { day: "numeric", month: "short" });
-          acc[dateLabel] = (acc[dateLabel] || 0) + Number(curr.fine || 0);
-          return acc;
-        }, {});
-
-      const chartData = Object.keys(grouped).map((key) => ({
-        date: key,
-        amount: grouped[key],
+      const chartData = (chartResult.data || []).map((item) => ({
+        date: item.date_label,
+        amount: Number(item.total_amount) || 0,
       }));
 
       return {
-        summary: {
-          totalRevenue: collected,
-          pendingFinance: pending,
-          collectedFines: collected,
-          overdueBooks: overdueCount || 0,
-          finesRaw: mappedFines,
-        },
+        fines: mappedFines,
+        totalCount: result[0]?.total_count_filtered || 0,
+        summary,
         chartData,
       };
     },
     staleTime: 1000 * 60 * 5,
   });
 
-    const deleteLoan = useMutation({
+  const deleteLoan = useMutation({
     mutationFn: async (id) => {
       const { error } = await supabase
         .from("peminjaman")
@@ -89,7 +84,7 @@ export const useFinance = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["data-loans"] });
+      queryClient.invalidateQueries({ queryKey: ["data-finance"] });
       toast.success("Data pinjaman berhasil dihapus");
     },
     onError: (err) => {
@@ -110,29 +105,28 @@ export const useFinance = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["data-finance"] });
+      toast.success("Peminjaman berhasil dikembalikan");
+    },
+    onError: (err) => {
+      toast.error(`Gagal: ${err.message}`);
     },
   });
 
-  const filteredFines = useMemo(() => {
-    const rawData = data?.summary?.finesRaw || [];
-    if (!searchQuery) return rawData;
-
-    const search = searchQuery.toLowerCase();
-    return rawData.filter((item) => 
-      item.siswa?.name?.toLowerCase().includes(search) ||
-      item.buku?.title?.toLowerCase().includes(search)
-    );
-  }, [data?.summary?.finesRaw, searchQuery]);
-
   return {
-    fines: filteredFines,
-    finance: data?.summary || { totalRevenue: 0, pendingFinance: 0, collectedFines: 0, overdueBooks: 0, finesRaw: [] },
+    fines: data?.fines || [],
+    totalCount: data?.totalCount || 0,
+    finance: data?.summary || {
+      totalRevenue: 0,
+      pendingFinance: 0,
+      collectedFines: 0,
+      overdueBooks: 0,
+    },
+    collectedData: data?.chartData || [],
     searchQuery,
     setSearchQuery,
     setSelectedLoan,
     selectedLoan,
     returnLoan: returnLoanMutation.mutateAsync,
-    collectedData: data?.chartData || [],
     isLoading,
     error: error?.message,
     deleteLoan,
