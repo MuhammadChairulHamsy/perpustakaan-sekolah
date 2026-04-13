@@ -127,7 +127,7 @@ export const FinanceRow = ({
                 </AlertDialogCancel>
                 <AlertDialogAction
                   className="bg-destructive text-white hover:bg-destructive/90 cursor-pointer"
-                  onClick={() => onDelete(loan.id)}
+                  onClick={() => onDelete(fines.id)}
                 >
                   Ya, Hapus
                 </AlertDialogAction>

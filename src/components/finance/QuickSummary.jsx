@@ -1,7 +1,13 @@
+import React from "react";
+
+/**
+ * Komponen QuickSummary
+ * Menampilkan ringkasan status pembayaran denda dalam bentuk progress bar.
+ */
 export const QuickSummary = ({ summary }) => {
-  const total = summary?.totalCount || 0;
-  const paidCount = summary?.paidCount || 0;
-  const unpaidCount = summary?.unpaidCount || 0;
+  const paidCount = Number(summary?.paidCount) || 0;
+  const unpaidCount = Number(summary?.unpaidCount) || 0;
+  const displayTotal = paidCount + unpaidCount;
 
   const statusData = [
     {
@@ -18,44 +24,52 @@ export const QuickSummary = ({ summary }) => {
     },
     {
       label: "Dikecualikan",
-      count: 0, 
+      count: 0,
       color: "bg-slate-400",
       textColor: "text-slate-400",
     },
   ];
 
-  const collectionRate = total > 0 ? Math.round((paidCount / total) * 100) : 0;
-
   return (
-    <div className="flex flex-col justify-between h-full p-6">
-      <div>
-        <h2 className="text-lg font-semibold text-foreground mb-6">Rincian Status</h2>
-        <div className="space-y-6">
-          {statusData.map((item) => (
-            <div key={item.label}>
-              <div className="mb-2 flex justify-between text-sm">
+    <div className="p-6 space-y-6">
+     <div className="flex items-center justify-between">
+        <h3 className="font-semibold text-lg">Ringkasan Status</h3>
+        <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+          Total: {displayTotal} Data
+        </span>
+      </div>
+
+      <div className="space-y-5">
+        {statusData.map((item, index) => {
+          const percentage = displayTotal > 0 ? (item.count / displayTotal) * 100 : 0;
+
+          return (
+            <div key={index} className="space-y-2">
+              <div className="flex justify-between items-center text-sm">
                 <span className={`font-medium ${item.textColor}`}>{item.label}</span>
-                <span className="text-muted-foreground font-medium">
-                  {item.count} / {total}
+                <span className={`font-bold ${item.textColor}`}>
+                  {item.count}
                 </span>
               </div>
+
               <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                 <div
-                  className={`h-full rounded-full ${item.color} transition-all duration-700`}
-                  style={{ width: `${total > 0 ? (item.count / total) * 100 : 0}%` }}
+                  className={`h-full rounded-full ${item.color} transition-all duration-1000 ease-in-out`}
+                  style={{ 
+                    width: `${percentage}%`,
+                    minWidth: item.count > 0 ? "4px" : "0px" 
+                  }}
                 />
               </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
-      <div className="mt-8 rounded-xl bg-muted/50 p-4 border border-border/50">
-        <p className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Tingkat Pengumpulan</p>
-        <div className="flex items-baseline gap-2 mt-1">
-          <p className="text-3xl font-bold text-foreground">{collectionRate}%</p>
-          <p className="text-xs text-muted-foreground">dari semua denda</p>
-        </div>
+      <div className="pt-4 border-t border-border/50">
+        <p className="text-[12px] text-muted-foreground leading-relaxed italic">
+          * Persentase dihitung berdasarkan perbandingan antara denda yang sudah dibayar dan yang belum.
+        </p>
       </div>
     </div>
   );
