@@ -44,11 +44,23 @@ export const useLoans = (page = 1, pageSize = 10) => {
   });
 
   const addLoan = useMutation({
-    mutationFn: async ({ student_id, book_id, loan_date, due_date }) => {
+    mutationFn: async ({ student_id, book_id }) => {
+      const today = new Date();
+      const loanDate = today.toISOString().split("T")[0];
+      const returnDate = new Date();
+      returnDate.setDate(today.getDate() + 7);
+      const dueDate = returnDate.toISOString().split("T")[0];
+
       const { error } = await supabase
         .from("peminjaman")
         .insert([
-          { student_id, book_id, loan_date, due_date, status: "dipinjam" },
+          {
+            student_id,
+            book_id,
+            loan_date: loanDate,
+            due_date: dueDate,
+            status: "dipinjam",
+          },
         ]);
 
       if (error) throw error;
