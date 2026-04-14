@@ -4,7 +4,7 @@ import { SearchBar } from "../components/search-bar";
 import { LoanDialogUser, LoanTableUser } from "../components/loans";
 import { LoanSkeleton } from "../components/loans";
 import { Button } from "../components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Pagination,
   PaginationContent,

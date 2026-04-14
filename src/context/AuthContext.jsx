@@ -13,9 +13,11 @@ export const AuthProvider = ({ children }) => {
     return {
       id: supabaseUser.id,
       email: supabaseUser.email,
-      name: supabaseUser.user_metadata?.full_name || 
-            supabaseUser.user_metadata?.name || 
-            supabaseUser.email.split("@")[0],
+      name:
+        supabaseUser.user_metadata?.full_name ||
+        supabaseUser.user_metadata?.name ||
+        supabaseUser.email.split("@")[0],
+      avatar_url: supabaseUser.user_metadata?.avatar_url,
       role: supabaseUser.user_metadata?.role || "user",
     };
   };
@@ -23,7 +25,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     // 1. Ambil sesi awal secara asinkron
     const initializeAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       setUser(formatUser(session?.user));
       setLoading(false);
     };
@@ -31,7 +35,9 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
 
     // 2. Satu listener untuk semua perubahan status (Login, Logout, Token Refresh)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(formatUser(session?.user));
       setLoading(false);
     });
@@ -44,7 +50,10 @@ export const AuthProvider = ({ children }) => {
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
-        queryParams: { prompt: "consent" },
+        queryParams: {
+          access_type: "offline",
+          prompt: "consent",
+        },
       },
     });
     if (error) return { success: false, message: error.message };
@@ -68,7 +77,10 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       if (error) throw error;
       return { success: true, data };
     } catch (error) {
@@ -88,12 +100,12 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    isAuthenticated: !!user
+    isAuthenticated: !!user,
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children} 
+      {!loading && children}
     </AuthContext.Provider>
   );
 };

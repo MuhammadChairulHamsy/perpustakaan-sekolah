@@ -10,19 +10,56 @@ export const useDashboard = () => {
       today.setHours(0, 0, 0, 0);
 
       const results = await Promise.all([
+        // 1. Total Buku
         supabase.from("buku").select("id", { count: "exact", head: true }),
+        // 2. Total Siswa
         supabase.from("siswa").select("id", { count: "exact", head: true }),
-        supabase.from("peminjaman").select("id", { count: "exact", head: true }).gte("loan_date", today.toISOString()),
-        supabase.from("peminjaman").select("id", { count: "exact", head: true }).lt("due_date", now).neq("status", "returned"),
-        supabase.from("peminjaman").select("id", { count: "exact", head: true }).eq("status", "returned"),
-        supabase.from("peminjaman").select("id", { count: "exact", head: true }).eq("status", "borrowed").gte("due_date", now),
-        supabase.from("peminjaman").select(`id, status, due_date, created_at, siswa:student_id (name), buku:book_id (title)` ).order("created_at", { ascending: false }).limit(5),
+        // 3. Dipinjam Hari Ini (Berdasarkan tanggal)
+        supabase
+          .from("peminjaman")
+          .select("id", { count: "exact", head: true })
+          .gte("loan_date", today.toISOString()),
+        // 4. Terlambat (Mendukung status 'kembali' atau 'dikembalikan')
+        supabase
+          .from("peminjaman")
+          .select("id", { count: "exact", head: true })
+          .lt("due_date", now)
+          .not("status", "in", '("kembali","dikembalikan","returned")'), 
+
+        // 5. Total Kembali (Mendukung berbagai istilah)
+        supabase
+          .from("peminjaman")
+          .select("id", { count: "exact", head: true })
+          .or("status.eq.kembali,status.eq.dikembalikan,status.eq.returned"),
+
+        // 6. Total Aktif Dipinjam (Yang belum jatuh tempo)
+        supabase
+          .from("peminjaman")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "dipinjam")
+          .gte("due_date", now),
+        // 7. Aktivitas Terbaru
+        supabase
+          .from("peminjaman")
+          .select(
+            `id, status, due_date, created_at, siswa:student_id (name), buku:book_id (title)`,
+          )
+          .order("created_at", { ascending: false })
+          .limit(5),
       ]);
 
-      const firstError = results.find(res => res.error);
+      const firstError = results.find((res) => res.error);
       if (firstError) throw firstError.error;
 
-      const [books, students, borrowedToday, overdue, returned, active, activities] = results;
+      const [
+        books,
+        students,
+        borrowedToday,
+        overdue,
+        returned,
+        active,
+        activities,
+      ] = results;
 
       return {
         stats: {

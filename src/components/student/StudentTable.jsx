@@ -33,19 +33,19 @@ export const StudentTable = ({
                   onCheckedChange={onSelectAll}
                 />
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-left text-sm font-bold text-muted-foreground">
                 Nama
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-left text-sm font-bold text-muted-foreground">
                 Kelas
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-left text-sm font-bold text-muted-foreground">
                 Email
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-left text-sm font-bold text-muted-foreground">
                 Tanggal Daftar
               </TableHead>
-              <TableHead className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-right text-sm font-bold text-muted-foreground">
                 Aksi
               </TableHead>
             </TableRow>

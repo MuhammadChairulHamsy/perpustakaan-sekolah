@@ -32,19 +32,19 @@ export const LoanTableAdmin = ({
                   onCheckedChange={onSelectAll}
                 />
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-left text-sm font-bold text-muted-foreground">
                 Nama Siswa
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-left text-sm font-bold text-muted-foreground">
                 Judul Buku
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-left text-sm font-bold text-muted-foreground">
                 Tanggal Pinjam
               </TableHead>
-              <TableHead className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-left text-sm font-bold text-muted-foreground">
                 Tanggal kembali
               </TableHead>
-              <TableHead className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-right text-sm font-bold text-muted-foreground">
                 Aksi
               </TableHead>
             </TableRow>

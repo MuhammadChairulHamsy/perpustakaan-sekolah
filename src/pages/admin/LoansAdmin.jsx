@@ -76,13 +76,11 @@ const LoansAdmin = () => {
     const idsToDelete = typeof id === "string" ? [id] : selectedIds;
 
     if (idsToDelete.length === 0) return;
-    if (confirm(`Yakin ingin menghapus ${selectedIds.length} data terpilih?`)) {
-      try {
-        await deleteLoan(idsToDelete);
-        setSelectedIds([]);
-      } catch (err) {
-        console.error(err);
-      }
+    try {
+      await deleteLoan(idsToDelete);
+      setSelectedIds([]);
+    } catch (err) {
+      console.error(err);
     }
   };
 

@@ -32,16 +32,16 @@ export const BookTable = ({
                   onCheckedChange={onSelectAll}
                 />
               </TableHead>
-              <TableHead className="px-4 py-3 w-[40%] min-w-52">
+              <TableHead className="px-4 py-3 font-bold w-[40%] min-w-52">
                 Info Buku
               </TableHead>
-              <TableHead className="px-4 py-3 lg:table-cell">ISBN</TableHead>
-              <TableHead className="px-4 py-3 md:table-cell">
+              <TableHead className="px-4 py-3 font-bold lg:table-cell">ISBN</TableHead>
+              <TableHead className="px-4 py-3 font-bold md:table-cell">
                 Kategori
               </TableHead>
-              <TableHead className="px-4 py-3 text-center">Stok</TableHead>
-              <TableHead className="px-4 py-3 xl:table-cell">Tanggal</TableHead>
-              <TableHead className="px-4 py-3 text-right">Aksi</TableHead>
+              <TableHead className="px-4 py-3 font-bold text-center">Stok</TableHead>
+              <TableHead className="px-4 py-3 font-bold xl:table-cell">Tanggal</TableHead>
+              <TableHead className="px-4 py-3 font-bold text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

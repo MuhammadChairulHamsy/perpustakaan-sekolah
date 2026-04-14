@@ -1,22 +1,12 @@
 import * as React from "react";
 import { Pie, PieChart, Label } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 const COLORS = {
-  borrowed: "#00BCFF",
+  borrowed: "#00BCFF", 
   returned: "#05DF72",
-  overdue: "#FF8904",
+  overdue: "#FF8904", 
 };
 
 const chartConfig = {
@@ -32,24 +22,22 @@ export const LoanStatusChart = ({ data }) => {
 
     let total = 0;
     const formatted = data.map((item) => {
-      const statusKey = typeof item.status === 'object' ? item.status?.name || "unknown" : String(item.status);
       const val = Number(item.total || 0);
-      
       total += val;
       
       return {
-        status: statusKey,
+        status: item.status,
         total: val,
-        fill: COLORS[statusKey] || "#e5e7eb",
+        fill: COLORS[item.status] || "#e5e7eb",
       };
     });
     return { formattedData: formatted, totalLoans: total };
   }, [data]);
 
-  if (!formattedData || formattedData.length === 0) {
+  if (totalLoans === 0) {
     return (
-      <div className="flex h-96 items-center justify-center">
-         <p className="text-muted-foreground text-sm animate-pulse">Menghitung statistik...</p>
+      <div className="flex h-64 items-center justify-center text-muted-foreground text-sm italic">
+        Belum ada data sirkulasi.
       </div>
     );
   }
@@ -61,15 +49,9 @@ export const LoanStatusChart = ({ data }) => {
         <CardDescription className="text-xs">Distribusi sirkulasi buku</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-64"
-        >
+        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-64">
           <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
             <Pie
               data={formattedData}
               dataKey="total"
@@ -78,26 +60,17 @@ export const LoanStatusChart = ({ data }) => {
               strokeWidth={8}
               stroke="white"
               paddingAngle={2}
-              isAnimationActive={true} 
             >
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
                     return (
                       <text x={viewBox.cx} y={viewBox.cy} textAnchor="middle" dominantBaseline="middle">
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-2xl font-bold"
-                        >
-                          {totalLoans.toLocaleString()}
+                        <tspan x={viewBox.cx} y={viewBox.cy} className="fill-foreground text-2xl font-bold">
+                          {totalLoans}
                         </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 20}
-                          className="fill-muted-foreground text-[10px] uppercase font-medium"
-                        >
-                          Total Sirkulasi
+                        <tspan x={viewBox.cx} y={(viewBox.cy || 0) + 20} className="fill-muted-foreground text-[10px] uppercase">
+                          Total
                         </tspan>
                       </text>
                     );
@@ -108,15 +81,13 @@ export const LoanStatusChart = ({ data }) => {
           </PieChart>
         </ChartContainer>
       </CardContent>
-
+      {/* Legend Manual */}
       <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 px-4 pb-4 text-xs">
         {formattedData.map((item) => (
           <div key={item.status} className="flex items-center gap-1.5">
             <div className="h-2 w-2 rounded-full" style={{ backgroundColor: item.fill }} />
-            <span className="text-muted-foreground">
-              {chartConfig[item.status]?.label || String(item.status)}
-            </span>
-            <span className="font-bold text-foreground">{item.total}</span>
+            <span className="text-muted-foreground">{chartConfig[item.status]?.label}</span>
+            <span className="font-bold">{item.total}</span>
           </div>
         ))}
       </div>

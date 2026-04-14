@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowRight, History } from "lucide-react";
+import { History } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { Button } from "../ui/button";
 import { getActivityStatus, getTimeAgo } from "../../utils/statusUtils";
 
 export const LatestActivityTable = React.memo(({ activities }) => {
@@ -18,7 +17,6 @@ export const LatestActivityTable = React.memo(({ activities }) => {
 
   const processedActivities = React.useMemo(() => {
     return displayActivities.map((activity) => {
-      // Pastikan fungsi ini tidak return object untuk label/action
       const statusInfo = getActivityStatus(activity) || {
         label: "Unknown",
         badge: "bg-gray-100",
@@ -39,7 +37,6 @@ export const LatestActivityTable = React.memo(({ activities }) => {
 
   return (
     <div className="flex flex-col h-full bg-card">
-      {/* HEADER */}
       <div className="flex items-center justify-between p-4 border-b border-border">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -54,34 +51,25 @@ export const LatestActivityTable = React.memo(({ activities }) => {
             </p>
           </div>
         </div>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-primary hover:text-primary-foreground hover:bg-primary transition-all"
-        >
-          Lihat semua
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
       </div>
 
       <div className="flex-1 p-3 overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/30 border-none">
-              <TableHead className="text-xs font-semibold uppercase tracking-wider">
+              <TableHead className="text-xs font-bold uppercase tracking-wider">
                 Siswa
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase tracking-wider">
+              <TableHead className="text-xs font-bold uppercase tracking-wider">
                 Buku
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase tracking-wider">
+              <TableHead className="text-xs font-bold uppercase tracking-wider">
                 Aksi
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase tracking-wider">
+              <TableHead className="text-xs font-bold uppercase tracking-wider">
                 Waktu
               </TableHead>
-              <TableHead className="text-xs font-semibold uppercase tracking-wider text-right">
+              <TableHead className="text-xs font-bold uppercase tracking-wider text-right">
                 Status
               </TableHead>
             </TableRow>
@@ -112,7 +100,6 @@ export const LatestActivityTable = React.memo(({ activities }) => {
                   </TableCell>
 
                   <TableCell className="py-4">
-                    {/* Tambah title untuk aksesibilitas */}
                     <p
                       className="text-sm text-muted-foreground truncate max-w-36"
                       title={activity.buku?.title}

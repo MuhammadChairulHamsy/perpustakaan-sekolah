@@ -5,10 +5,14 @@ import { Button } from "../ui/button";
 import { useProfile } from "../../hooks/useProfile";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "../../context/AuthContext";
 
 export const ProfilePicture = () => {
   const { profile, isLoading, uploadAvatar, isUploadingAvatar } = useProfile();
+  const { user } = useAuth();
   const fileInputRef = useRef(null);
+
+  const displayAvatar = profile?.avatar_url || user?.avatar_url;
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -25,10 +29,9 @@ export const ProfilePicture = () => {
         <div className="relative group">
           <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
             <AvatarImage
-              src={
-                profile?.avatar_url ||
-                `https://api.dicebear.com/7.x/initials/svg?seed=${profile?.email}`
-              }
+              src={displayAvatar}
+              alt={profile?.full_name}
+              referrerPolicy="no-referrer"
             />
             <AvatarFallback className="bg-primary text-primary-foreground text-2xl font-bold">
               {profile?.email?.substring(0, 2).toUpperCase()}

@@ -21,9 +21,11 @@ import { useProfile } from "../hooks/useProfile";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const {profile} = useProfile()
+  const { profile } = useProfile();
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const displayAvatar = profile?.avatar_url || user?.avatar_url;
 
   const handleLogout = async () => {
     try {
@@ -55,13 +57,19 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={profile?.avatar_url} alt={profile?.full_name} />
+                <AvatarImage
+                  src={displayAvatar}
+                  alt={profile?.full_name}
+                  referrerPolicy="no-referrer"
+                />
                 <AvatarFallback className="rounded-lg text-foreground">
                   {profile?.full_name?.slice(0, 2).toUpperCase() || "U"}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{profile?.full_name}</span>
+                <span className="truncate font-medium">
+                  {profile?.full_name}
+                </span>
                 <span className="text-muted truncate text-xs">
                   {profile?.email}
                 </span>
@@ -78,13 +86,19 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={profile?.avatar_url} alt={profile?.full_name} />
+                  <AvatarImage
+                    src={profile?.avatar_url}
+                    alt={profile?.full_name}
+                    referrerPolicy="no-referrer"
+                  />
                   <AvatarFallback className="rounded-lg">
                     {profile?.full_name?.slice(0, 2).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{profile?.full_name}</span>
+                  <span className="truncate font-medium">
+                    {profile?.full_name}
+                  </span>
                   <span className="text-muted-foreground truncate text-xs">
                     {profile?.email}
                   </span>

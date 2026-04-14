@@ -41,28 +41,30 @@ export const FinanceTable = ({
                   onCheckedChange={onSelectAll}
                 />
               </TableHead>
-              <TableHead className="px-4 py-3 text-sm font-medium text-muted-foreground">
+              <TableHead className="px-4 py-3 text-sm font-bold text-muted-foreground">
                 Nama Siswa
               </TableHead>
-              <TableHead className="px-4 py-3 hidden lg:table-cell">
+              <TableHead className="px-4 py-3 text-sm font-bold hidden lg:table-cell">
                 Judul Buku
               </TableHead>
-              <TableHead className="px-2 py-3 hidden lg:table-cell">
+              <TableHead className="px-2 py-3 text-sm font-bold hidden lg:table-cell">
                 Tanggal Pinjam
               </TableHead>
-              <TableHead className="px-2 py-3 hidden lg:table-cell">
+              <TableHead className="px-2 py-3 text-sm font-bold hidden lg:table-cell">
                 Tanggal Kembali
               </TableHead>
-              <TableHead className="px-4 py-3 hidden lg:table-cell">
+              <TableHead className="px-4 py-3 text-sm font-bold hidden lg:table-cell">
                 Jumlah Denda
               </TableHead>
-              <TableHead className="px-4 py-3 hidden lg:table-cell">
+              <TableHead className="px-4 py-3 text-sm font-bold hidden lg:table-cell">
                 Status
               </TableHead>
-              <TableHead className="px-4 py-3 hidden lg:table-cell">
+              <TableHead className="px-4 py-3 text-sm font-bold hidden lg:table-cell">
                 Konfirmasi
               </TableHead>
-              <TableHead className="px-4 py-3 text-right">Aksi</TableHead>
+              <TableHead className="px-4 py-3 text-sm font-bold text-right">
+                Aksi
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="divide-y divide-border">

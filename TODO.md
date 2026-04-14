@@ -3,13 +3,8 @@
 2. Manajemen Buku: Menambahkan fitur scan barcode (menggunakan kamera laptop/HP) untuk mempermudah petugas saat meminjamkan buku.
 
 Nama Halaman Fungsi Utama Target User
+3. Inventaris Stok fisik, label barcode, dan kondisi buku.Admin
 
-3. Inventaris	Stok fisik, label barcode, dan kondisi buku.Admin
+4. E-Resource	Link ke PDF atau jurnal digital (Open Access).	Semua
 
-4. Keuangan/Denda Rekapitulasi denda keterlambatan.	Bendahara/Admin
-
-5. E-Resource	Link ke PDF atau jurnal digital (Open Access).	Semua
-
-6. fitur "Export ke Excel/PDF" sehingga admin bisa mendownload laporan denda mingguan
-
-7. Perbaikin bug ketika peminjaman data di hapus seharusnya keuntungan di keuangan tidak berkurang 
+5. fitur "Export ke Excel/PDF" sehingga admin bisa mendownload laporan denda mingguan
