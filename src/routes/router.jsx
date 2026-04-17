@@ -17,7 +17,7 @@ import Finance from "../pages/Finance";
 import LoansUser from "../pages/Loans";
 import ProfileAccount from "../pages/ProfileAccount";
 
-const staffRoles = ["Admin", "Pustakawan", "Asisten"];
+const staffRoles = ["admin", "pustakawan", "assistant"];
 
 const router = createBrowserRouter([
   { path: "/login", element: <LoginPage /> },

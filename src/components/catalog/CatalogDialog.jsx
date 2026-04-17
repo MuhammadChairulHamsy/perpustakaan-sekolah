@@ -10,8 +10,13 @@ import {
 } from "../ui/dialog";
 import { Link } from "react-router-dom";
 import { RatingCatalogStars } from "./RatingCatalogStars";
+import { useAuth } from "../../context/AuthContext";
 
 export const CatalogDialog = ({ book, onClose, onWishlist }) => {
+  const {user} = useAuth();
+  const isAdmin = user?.role === "admin" || user?.role === "pustakawan" || user?.role === "assistant"
+
+  const targetUrl = isAdmin ? "/kelola-peminjaman" : "/peminjaman-user";
   if (!book) return null;
 
   const isAvailable = Number(book.available) > 0;
@@ -71,8 +76,8 @@ export const CatalogDialog = ({ book, onClose, onWishlist }) => {
               {/* Tombol Logika */}
               {isAvailable ? (
                 <Button asChild className="w-full cursor-pointer">
-                  <Link to={`/pinjaman?bookId=${book.id}`}>
-                    Pinjam Sekarang
+                  <Link to={`${targetUrl}?bookId=${book.id}`}>
+                    {isAdmin ? "Kelola Peminjaman" : "Pinjam Sekarang"}
                   </Link>
                 </Button>
               ) : (

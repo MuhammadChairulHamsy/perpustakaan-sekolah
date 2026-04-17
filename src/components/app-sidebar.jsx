@@ -30,7 +30,8 @@ import { useAuth } from "../context/AuthContext";
 export function AppSidebar({ ...props }) {
   const { user } = useAuth();
 
-  const isStaff = ["Admin", "Pustakawan", "Asisten"].includes(user?.role);
+  const isStaff = ["admin", "pustakawan", "assistant"].includes(user?.role);
+  
   const navigationData = {
     main: [
       {

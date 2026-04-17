@@ -21,7 +21,7 @@ export const SettingDialog = ({ open, onOpenChange, user, onSubmit }) => {
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
-    role: "Asisten",
+    role: "assistant",
   });
 
   useEffect(() => {
@@ -29,13 +29,13 @@ export const SettingDialog = ({ open, onOpenChange, user, onSubmit }) => {
       setFormData({
         full_name: user.full_name || "",
         email: user.email || "",
-        role: user.role || "Asisten",
+        role: user.role || "assistant",
       });
     } else {
       setFormData({
         full_name: "",
         email: "",
-        role: "Asisten",
+        role: "assistant",
       });
     }
   }, [user, open]);
@@ -89,9 +89,9 @@ export const SettingDialog = ({ open, onOpenChange, user, onSubmit }) => {
                 <SelectValue placeholder="Pilih Role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Admin">Admin</SelectItem>
-                <SelectItem value="Pustakawan">Pustakawan</SelectItem>
-                <SelectItem value="Asisten">Asisten</SelectItem>
+                <SelectItem value="admin">admin</SelectItem>
+                <SelectItem value="pustakawan">pustakawan</SelectItem>
+                <SelectItem value="assistant">assistant</SelectItem>
               </SelectContent>
             </Select>
           </div>

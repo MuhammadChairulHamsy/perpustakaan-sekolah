@@ -15,9 +15,9 @@ import { Pencil, Trash2, User } from "lucide-react";
 
 export const SettingRow = ({ user, onEdit, onDelete }) => {
   const roleColors = {
-    Admin: "bg-red-100 text-red-700 border-red-200",
-    Pustakawan: "bg-blue-100 text-blue-700 border-blue-200",
-    Asisten: "bg-green-100 text-green-700 border-green-200",
+    admin: "bg-red-100 text-red-700 border-red-200",
+    pustakawan: "bg-blue-100 text-blue-700 border-blue-200",
+    assistant: "bg-green-100 text-green-700 border-green-200",
   };
   return (
     <TableRow key={user.id} className="hover:bg-muted/50 transition-colors">

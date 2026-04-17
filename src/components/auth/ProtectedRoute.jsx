@@ -1,5 +1,5 @@
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+import { Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function ProtectedRoute({ children, allowedRoles = [] }) {
   const { user, role, loading } = useAuth();
@@ -18,10 +18,14 @@ export default function ProtectedRoute({ children, allowedRoles = [] }) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // 2. Jika ada pembatasan Role (misal: halaman khusus staf)
-  // Kita cek apakah role user saat ini ada di dalam daftar role yang diizinkan
-  if (allowedRoles.length > 0 && !allowedRoles.includes(role)) {
-    return <Navigate to="/dashboard" replace />;
+  if (allowedRoles.length > 0) {
+    const userRoleLower = role?.toLowerCase();
+
+    const allowedRolesLower = allowedRoles.map((role) => role.toLowerCase());
+
+    if (!allowedRolesLower.includes(userRoleLower)) {
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   return children;

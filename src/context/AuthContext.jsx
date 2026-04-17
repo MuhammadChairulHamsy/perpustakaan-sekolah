@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Helper untuk memformat data user agar konsisten
-  const formatUser = (supabaseUser) => {
+  const formatUser = (supabaseUser, profileData = null) => {
     if (!supabaseUser) return null;
     return {
       id: supabaseUser.id,
@@ -17,8 +17,8 @@ export const AuthProvider = ({ children }) => {
         supabaseUser.user_metadata?.full_name ||
         supabaseUser.user_metadata?.name ||
         supabaseUser.email.split("@")[0],
-      avatar_url: supabaseUser.user_metadata?.avatar_url,
-      role: supabaseUser.user_metadata?.role || "user",
+      role: (profileData?.role || supabaseUser.user_metadata?.role || "user").toLowerCase(),
+      avatar_url: profileData?.avatar_url || supabaseUser.user_metadata?.avatar_url,
     };
   };
 
