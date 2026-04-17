@@ -19,11 +19,22 @@ import {
 } from "../components/ui/select";
 import { useSettings } from "../hooks/useSettings";
 import { useAuth } from "../context/AuthContext";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "../components/ui/pagination";
 
 const Settings = () => {
   const { user: currentUser } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 5;
   const {
     users,
+    totalCount,
     notifications: serverNotifications,
     config: serverConfig,
     updateNotifications,
@@ -31,10 +42,10 @@ const Settings = () => {
     isLoading,
     isSaving,
     addUsers,
-    editUser,
+    editUsers,
     deleteUser,
-  } = useSettings(currentUser);
-
+  } = useSettings(currentUser, currentPage, pageSize);
+  const totalPages = Math.ceil(totalCount / pageSize);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
 
@@ -65,6 +76,24 @@ const Settings = () => {
       });
     }
   }, [serverNotifications?.overdue, serverNotifications?.email]);
+
+  const handleSubmit = async (formData) => {
+    try {
+      if (editingUser && editingUser.id) {
+        await editUsers.mutateAsync({
+          id: editingUser.id,
+          updatedUsers: formData,
+        });
+      } else {
+        await addUsers(formData);
+      }
+      setDialogOpen(false);
+      return true;
+    } catch (err) {
+      console.error("Submit Error:", err);
+      return false;
+    }
+  };
 
   const handleSaveConfig = async () => {
     await updateConfig(localConfig);
@@ -117,13 +146,66 @@ const Settings = () => {
           >
             <SettingTable
               setting={users}
-              onEdit={(u) => {
-                setEditingUser(u);
+              onEdit={(user) => {
+                setEditingUser(user);
                 setDialogOpen(true);
               }}
               onDelete={deleteUser}
             />
           </SettingSection>
+
+          {totalPages > 1 && (
+            <Pagination className="mt-4">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+                    }}
+                    className={
+                      currentPage === 1
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+
+                {[...Array(totalPages)].map((_, i) => (
+                  <PaginationItem key={i} className="hidden sm:block">
+                    <PaginationLink
+                      href="#"
+                      isActive={currentPage === i + 1}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCurrentPage(i + 1);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (currentPage < totalPages)
+                        setCurrentPage((prev) => prev + 1);
+                    }}
+                    className={
+                      currentPage === totalPages
+                        ? "pointer-events-none opacity-50"
+                        : "cursor-pointer"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </TabsContent>
 
         <TabsContent value="library">
@@ -215,14 +297,7 @@ const Settings = () => {
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         user={editingUser}
-        onSubmit={async (formData) => {
-          const success = editingUser
-            ? await editUser(editingUser.id, formData)
-            : await addUsers(formData);
-
-          if (success) setDialogOpen(false);
-          return success;
-        }}
+        onSubmit={handleSubmit}
       />
     </div>
   );

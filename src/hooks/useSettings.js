@@ -2,21 +2,26 @@ import { supabase } from "../lib/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useSettings = (currentUser) => {
+export const useSettings = (currentUser, page = 1, pageSize = 5) => {
   const queryClient = useQueryClient();
   const { data, isLoading, error, refetch } = useQuery({
-    queryKey: ["settings-data"],
+    queryKey: ["settings-data", page, pageSize],
     queryFn: async () => {
+      const from = (page - 1) * pageSize;
+      const to = from + pageSize - 1;
+
       const [usersRes, prefRes, configRes] = await Promise.all([
         supabase
           .from("profiles")
-          .select("id, full_name, email, role, updated_at")
-          .order("full_name", { ascending: true }),
+          .select("id, full_name, email, role, updated_at", {count: "exact"})
+          .order("full_name", { ascending: false }).range(from, to),
 
         currentUser
           ? supabase
               .from("profiles")
-              .select("overdue_notifications, due_date_reminders, email_notifications")
+              .select(
+                "overdue_notifications, due_date_reminders, email_notifications",
+              )
               .eq("id", currentUser.id)
               .single()
           : Promise.resolve({ data: null }),
@@ -33,6 +38,7 @@ export const useSettings = (currentUser) => {
 
       return {
         users: usersRes.data || [],
+        totalCount: usersRes.count || 0,
         notifications: {
           overdue: prefRes.data?.overdue_notifications ?? true,
           reminders: prefRes.data?.due_date_reminders ?? true,
@@ -44,7 +50,7 @@ export const useSettings = (currentUser) => {
         },
       };
     },
-    enabled: !!currentUser, 
+    enabled: !!currentUser,
   });
 
   const updateConfig = useMutation({
@@ -54,7 +60,7 @@ export const useSettings = (currentUser) => {
           { key: "loan_duration", value: loanDuration },
           { key: "max_books", value: maxBooks },
         ],
-        { onConflict: "key" }
+        { onConflict: "key" },
       );
       if (error) throw error;
     },
@@ -83,6 +89,48 @@ export const useSettings = (currentUser) => {
     },
   });
 
+  const addUsers = async (formData) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: "PasswordDefault123!",
+        options: {
+          data: { full_name: formData.full_name, role: formData.role },
+        },
+      });
+      if (error) throw error;
+      queryClient.invalidateQueries({ queryKey: ["settings-data"] });
+      toast.success("User ditambahkan");
+      return true;
+    } catch (err) {
+      toast.error(err.message);
+      return false;
+    }
+  };
+
+  const editUsers = useMutation({
+    mutationFn: async ({ id, updatedUsers }) => {
+      if (!id) throw new Error("Id User tidak ditemukan!");
+
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: updatedUsers.full_name,
+          role: updatedUsers.role,
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["settings-data"] });
+      toast.success("profile berhasil diperbarui");
+    },
+    onError: (err) => {
+      toast.error(`Gagal: ${err.message || "Terjadi kesalahan sistem"}`);
+    },
+  });
+
   const deleteUser = useMutation({
     mutationFn: async (id) => {
       const { error } = await supabase.from("profiles").delete().eq("id", id);
@@ -94,34 +142,26 @@ export const useSettings = (currentUser) => {
     },
   });
 
-  const addUsers = async (formData) => {
-    try {
-      const { error } = await supabase.auth.signUp({
-        email: formData.email,
-        password: "PasswordDefault123!",
-        options: { data: { full_name: formData.full_name, role: formData.role } },
-      });
-      if (error) throw error;
-    queryClient.invalidateQueries({ queryKey: ["settings-data"] });
-      toast.success("User ditambahkan");
-      return true;
-    } catch (err) {
-      toast.error(err.message);
-      return false;
-    }
-  };
-
   return {
-    users: data?.users || [],
-    notifications: data?.notifications || { overdue: true, reminders: true, email: true },
+    users:  data?.users || [],
+    totalCount: data?.totalCount || 0,
+    notifications: data?.notifications || {
+      overdue: true,
+      reminders: true,
+      email: true,
+    },
     config: data?.config || { loanDuration: "7", maxBooks: "5" },
     isLoading,
-    isSaving: updateConfig.isPending || updateNotifications.isPending || deleteUser.isPending,
+    isSaving:
+      updateConfig.isPending ||
+      updateNotifications.isPending ||
+      deleteUser.isPending,
     error: error?.message,
     updateConfig: updateConfig.mutateAsync,
     updateNotifications: updateNotifications.mutateAsync,
     deleteUser: deleteUser.mutateAsync,
     addUsers,
+    editUsers,
     refetch,
   };
 };

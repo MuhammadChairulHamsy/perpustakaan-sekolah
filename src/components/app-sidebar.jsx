@@ -11,7 +11,6 @@ import {
   Wallet,
   Settings,
 } from "lucide-react";
-
 import {
   Sidebar,
   SidebarContent,
@@ -58,13 +57,13 @@ export function AppSidebar({ ...props }) {
       },
       isStaff
         ? {
-            title: "Transaksi Pinjaman",
-            url: "/kelola-pinjaman",
+            title: "Peminjaman Buku",
+            url: "/kelola-peminjaman",
             icon: FileText,
           }
         : {
-            title: "Transaksi Pinjaman",
-            url: "/pinjaman-user",
+            title: "Peminjaman Buku",
+            url: "/peminjaman-user",
             icon: FileText,
           },
       {

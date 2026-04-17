@@ -83,16 +83,6 @@ export const SettingDialog = ({ open, onOpenChange, user, onSubmit }) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              placeholder="Masukkan email anda"
-              required
-            />
-          </div>
-          <div className="space-y-2">
             <Label htmlFor="role">Role</Label>
             <Select value={formData.role} onValueChange={handleRoleChange}>
               <SelectTrigger id="role" className="w-full">

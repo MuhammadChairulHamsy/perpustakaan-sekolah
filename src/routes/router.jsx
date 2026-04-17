@@ -36,7 +36,7 @@ const router = createBrowserRouter([
       // Bisa diakses semua orang yang sudah login (Siswa, Admin, dsb)
       { path: "dashboard", element: <Dashboard /> },
       { path: "buku", element: <Books /> },
-      { path: "pinjaman-user", element: <LoansUser /> },
+      { path: "peminjaman-user", element: <LoansUser /> },
       { path: "katalog", element: <Catalog /> },
       { path: "notifikasi", element: <Notification /> },
       { path: "account", element: <ProfileAccount /> },
@@ -51,7 +51,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "kelola-pinjaman",
+        path: "kelola-peminjaman",
         element: (
           <ProtectedRoute allowedRoles={staffRoles}>
             <LoansAdmin />

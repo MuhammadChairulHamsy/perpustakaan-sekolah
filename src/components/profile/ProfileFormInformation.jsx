@@ -60,9 +60,6 @@ export const ProfileFormInformation = () => {
               disabled
               className="bg-muted/50 cursor-not-allowed border-dashed"
             />
-            <p className="text-[10px] text-orange-500 font-medium italic">
-              Hubungi admin untuk mengubah email utama
-            </p>
           </div>
         </div>
 
